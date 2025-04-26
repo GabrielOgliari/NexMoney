@@ -4,14 +4,8 @@
 
 ### 🟢 **Nomes Modernos / Tecnológicos**
 
-1. **NexMoney**
+**NexMoney**
     - *“A nova geração do controle financeiro.”*
-2. **Fluxx**
-    - *“Simplifique o fluxo da sua vida financeira.”*
-3. **GranaHub**
-    - *“Tudo sobre sua grana em um só lugar.”*
-4. **ZenFinance**
-    - *“Controle financeiro sem estresse.”*
 
 ## 🧾 **Descrição do Projeto - Sistema Financeiro Pessoal**
 
