@@ -1,0 +1,1 @@
+//# (Planejado vs Real) → Comparativo entre orçado e real
