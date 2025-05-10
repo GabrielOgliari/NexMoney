@@ -1,0 +1,1 @@
+//# Gerenciamento de estado (ex: React Query, Context)
