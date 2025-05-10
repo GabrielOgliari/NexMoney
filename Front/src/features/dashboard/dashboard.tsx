@@ -1,1 +1,0 @@
-//# (Painel) → Tela principal com visão geral

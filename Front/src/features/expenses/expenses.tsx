@@ -1,1 +1,0 @@
-//# (Despesas) → Contas a pagar

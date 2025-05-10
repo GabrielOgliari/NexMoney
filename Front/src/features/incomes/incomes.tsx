@@ -1,1 +1,0 @@
-//# (Receitas) → Contas a receber
