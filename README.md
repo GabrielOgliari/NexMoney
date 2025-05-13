@@ -184,8 +184,8 @@ NexMoney/
 │ │ ├── utils/
 │ │ │ ├── date_helpers.js
 │ │ │ └── format_currency.js
-│ │ ├── app.css
-│ │ ├── app.jsx
+│ │ ├── App.css
+│ │ ├── App.jsx
 │ │ ├── index.css
 │ │ └── main.jsx
 │ ├── .env
