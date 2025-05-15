@@ -24,7 +24,8 @@ import { SettingsPage } from "../pages/settings/settings_page.jsx";
 // Configuração das rotas da aplicação
 const router = createBrowserRouter([
   {
-    path: "/",
+    // path: "/",
+    path: "/auth",
     element: <App />, // layout para login/cadastro
     children: [
       { path: "login", element: <LoginPage /> },
