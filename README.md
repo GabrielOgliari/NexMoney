@@ -119,50 +119,86 @@
 # Estrutura de pastas
 
 [rocketseat](https://www.rocketseat.com.br/blog/artigos/post/organizacao-pastas-react-estrutura-escalavel#caba73cce29e47dbb0f1cfe2793babef)
+
 NexMoney/
-├── public/
-│ └── index.html
-├── src/
-│ ├── assets/ # Imagens e arquivos estáticos
-│ ├── components/ # Componentes reutilizáveis
-│ │ ├── Button/
-│ │ │ ├── Button.js
-│ │ │ ├── Button.test.js
-│ │ │ └── Button.css
-│ │ └── Modal/
-│ │ ├── Modal.js
-│ │ ├── Modal.test.js
-│ │ └── Modal.css
-│ ├── context/ # Contextos para estado global
-│ │ └── AuthContext.js
-│ ├── features/ # Funcionalidades específicas da aplicação
-│ │ ├── Auth/
-│ │ │ ├── Login.js
-│ │ │ ├── Register.js
-│ │ │ └── authSlice.js
-│ │ └── Dashboard/
-│ │ ├── Dashboard.js
-│ │ ├── Dashboard.css
-│ │ └── Dashboard.test.js
-│ ├── hooks/ # Hooks personalizados
-│ │ ├── useAuth.js
-│ │ └── useFetch.js
-│ ├── pages/ # Páginas principais da aplicação
-│ │ ├── Home.js
-│ │ └── Profile.js
-│ ├── services/ # Serviços de API e outras integrações externas
-│ │ ├── api.js
-│ │ └── authService.js
-│ ├── styles/ # Estilos globais
-│ │ ├── variables.css
-│ │ └── main.css
-│ ├── utils/ # Utilitários e funções auxiliares
-│ │ ├── formatDate.js
-│ │ └── slugify.js
-│ ├── App.js
-│ ├── index.js
-├── .env # Variáveis de ambiente
-├── package.json
+├── back/ # 🟡 Backend (ex: Fastify, Express)
+│ ├── node_modules/
+│ ├── src/
+│ │ ├── controllers/
+│ │ ├── database/
+│ │ ├── routes/
+│ │ ├── services/
+│ │ └── main.js
+│ ├── .env
+│ ├── jsconfig.json
+│ └── package.json
+│
+├── front/ # 🔵 Frontend (React + Vite)
+│ ├── node_modules/
+│ ├── public/
+│ │ └── index.html
+│ ├── src/
+│ │ ├── assets/
+│ │ ├── components/
+│ │ │ ├── charts/
+│ │ │ ├── layout/
+│ │ │ └── ui/
+│ │ ├── constants/
+│ │ │ ├── categories.js
+│ │ │ ├── messages.js
+│ │ │ └── routes.js
+│ │ ├── context/
+│ │ │ └── auth_context.js
+│ │ ├── hooks/
+│ │ │ └── use_auth.js
+│ │ ├── lib/
+│ │ │ └── validator.js
+│ │ ├── pages/
+│ │ │ ├── auth/
+│ │ │ │ ├── login_page.jsx
+│ │ │ │ └── register_page.jsx
+│ │ │ ├── bank_statement/
+│ │ │ │ └── bank_statement_page.jsx
+│ │ │ ├── budget_vs_actual/ # Usada na rota /mapping
+│ │ │ │ └── budget_vs_actual_page.jsx
+│ │ │ ├── categories/
+│ │ │ │ └── categories_page.jsx
+│ │ │ ├── dashboard/
+│ │ │ │ └── dashboard_page.jsx
+│ │ │ ├── expenses/
+│ │ │ │ └── expenses_page.jsx
+│ │ │ ├── incomes/
+│ │ │ │ └── incomes_page.jsx
+│ │ │ ├── investments/
+│ │ │ │ └── investments_page.jsx
+│ │ │ ├── profile/
+│ │ │ │ └── profile_page.jsx
+│ │ │ └── settings/
+│ │ │ └── settings_page.jsx
+│ │ ├── router/
+│ │ │ └── index.jsx
+│ │ ├── services/
+│ │ │ ├── api/
+│ │ │ │ ├── auth.js
+│ │ │ │ ├── finance.js
+│ │ │ │ ├── index.js
+│ │ │ │ └── investments.js
+│ │ ├── store/
+│ │ │ └── query_client.js
+│ │ ├── utils/
+│ │ │ ├── date_helpers.js
+│ │ │ └── format_currency.js
+│ │ ├── App.css
+│ │ ├── App.jsx
+│ │ ├── index.css
+│ │ └── main.jsx
+│ ├── .env
+│ ├── .gitignore
+│ ├── package.json
+│ ├── tailwind.config.js
+│ └── vite.config.js
+│
+├── .gitignore
 └── README.md
 
 assets/: Armazena imagens, ícones e outros arquivos estáticos. Ideal para manter esses arquivos organizados fora do código principal.
