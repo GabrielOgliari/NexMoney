@@ -159,8 +159,10 @@ NexMoney/
 │ │ │ │ └── register_page.jsx
 │ │ │ ├── bank_statement/
 │ │ │ │ └── bank_statement_page.jsx
-│ │ │ ├── budget_vs_actual/
+│ │ │ ├── budget_vs_actual/ # Usada na rota /mapping
 │ │ │ │ └── budget_vs_actual_page.jsx
+│ │ │ ├── categories/
+│ │ │ │ └── categories_page.jsx
 │ │ │ ├── dashboard/
 │ │ │ │ └── dashboard_page.jsx
 │ │ │ ├── expenses/
@@ -169,8 +171,10 @@ NexMoney/
 │ │ │ │ └── incomes_page.jsx
 │ │ │ ├── investments/
 │ │ │ │ └── investments_page.jsx
-│ │ │ └── profile/
-│ │ │ └── profile_page.jsx
+│ │ │ ├── profile/
+│ │ │ │ └── profile_page.jsx
+│ │ │ └── settings/
+│ │ │ └── settings_page.jsx
 │ │ ├── router/
 │ │ │ └── index.jsx
 │ │ ├── services/
@@ -184,8 +188,8 @@ NexMoney/
 │ │ ├── utils/
 │ │ │ ├── date_helpers.js
 │ │ │ └── format_currency.js
-│ │ ├── app.css
-│ │ ├── app.jsx
+│ │ ├── App.css
+│ │ ├── App.jsx
 │ │ ├── index.css
 │ │ └── main.jsx
 │ ├── .env
