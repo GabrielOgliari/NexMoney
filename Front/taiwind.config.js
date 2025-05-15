@@ -1,14 +1,14 @@
-import { Config } from "tailwindcss";
-import { tailwindcssAnimate } from "tailwindcss-animate";
+import { tailwindcssAnimate } from "tailwindcss-animate"
 
-export const config = {
+/** @type {import('tailwindcss').Config} */
+export default {
   darkMode: ["class", "dark"],
   content: [
-    "./pages/**/*.{ts,tsx}",
-    "./components/**/*.{ts,tsx}",
-    "./app/**/*.{ts,tsx}",
-    "./src/**/*.{ts,tsx}",
-    "*.{js,ts,jsx,tsx,mdx}",
+    "./pages/**/*.{js,jsx}",
+    "./components/**/*.{js,jsx}",
+    "./app/**/*.{js,jsx}",
+    "./src/**/*.{js,jsx}",
+    "*.{js,jsx}",
   ],
   prefix: "",
   theme: {
@@ -101,4 +101,4 @@ export const config = {
     },
   },
   plugins: [tailwindcssAnimate],
-};
+}
