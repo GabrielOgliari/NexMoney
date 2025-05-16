@@ -1,8 +1,8 @@
-export const Label = ({ htmlFor, children, className = "" }) => {
+export const Label = ({ children, className = "", ...props }) => {
   return (
     <label
-      htmlFor={htmlFor}
-      className={`text-sm font-medium text-foreground ${className}`}
+      className={`text-sm font-medium text-foreground block ${className}`}
+      {...props}
     >
       {children}
     </label>
