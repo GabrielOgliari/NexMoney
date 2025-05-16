@@ -47,31 +47,15 @@ export function MainLayout() {
   //     </main>
   //   </div>
   // );
-  const { openSidebar } = useSidebar();
+
 
 
   return (
     <div className="flex min-h-screen bg-background text-foreground">
-      {/* Sidebar (fica fixa na esquerda) */}
       <Sidebar />
-
-      {/* Área de conteúdo principal */}
-      <div className="flex-1 min-h-screen flex flex-col">
-        {/* Header (botão hamburguer somente em mobile) */}
-        <header className="sm:hidden p-4">
-          <button
-            onClick={openSidebar}
-            className="p-2 text-xl text-sidebar-foreground bg-sidebar-accent rounded-md shadow-sm hover:bg-sidebar-primary"
-          >
-            <FaBars />
-          </button>
-        </header>
-
-        {/* Conteúdo renderizado dinamicamente */}
-        <main className="flex-1 p-4 sm:p-6 overflow-y-auto">
-          <Outlet />
-        </main>
-      </div>
+      <main className="flex-1 p-6 overflow-y-auto">
+        <Outlet />
+      </main>
     </div>
   );
 }

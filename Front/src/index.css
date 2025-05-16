@@ -70,3 +70,21 @@ button:focus-visible {
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+[data-radix-dialog-content] {
+  z-index: 50;
+}
+
+@layer base {
+  html, body, #root {
+    height: 100%;
+  }
+
+  body {
+    position: relative;
+  }
+}
+
+body {
+  background-color: #f9fafb;
+}
