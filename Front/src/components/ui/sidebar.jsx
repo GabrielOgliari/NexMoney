@@ -1,9 +1,15 @@
-// src/components/ui/sidebar.jsx
 import { NavLink } from "react-router-dom";
 import {
-  FaChartPie, FaArrowCircleUp, FaMoneyBillWave,
-  FaExchangeAlt, FaClipboardList, FaWallet,
-  FaTags, FaCog, FaSignOutAlt, FaBars
+  FaChartPie,
+  FaArrowCircleUp,
+  FaMoneyBillWave,
+  FaExchangeAlt,
+  FaClipboardList,
+  FaWallet,
+  FaTags,
+  FaCog,
+  FaSignOutAlt,
+  FaBars,
 } from "react-icons/fa";
 import { useSidebar } from "../../context/sidebar_context";
 
@@ -23,21 +29,20 @@ export const Sidebar = () => {
 
   return (
     <aside
-      className={`h-screen flex flex-col justify-between transition-all duration-300
-        bg-card text-card-foreground border-r border-border
-        ${collapsed ? "w-16" : "w-64"}
-      `}
+      className={`h-screen flex flex-col justify-between transition-all duration-300 bg-sidebar text-sidebar-foreground border-r border-sidebar-border ${
+        collapsed ? "w-16" : "w-64"
+      }`}
     >
       <div>
-        {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-border">
+        {/* Cabeçalho */}
+        <div className="flex items-center justify-between p-4 border-b border-sidebar-border">
           <div className="flex items-center gap-2">
-            <span className="text-primary text-2xl font-bold">$</span>
-            {!collapsed && <h1 className="text-lg font-bold whitespace-nowrap">NexMoney</h1>}
+            <span className="text-sidebar-primary text-2xl font-bold">$</span>
+            {!collapsed && <h1 className="text-lg font-bold">NexMoney</h1>}
           </div>
           <button
             onClick={toggleSidebar}
-            className="text-muted-foreground hover:text-primary transition-colors"
+            className="text-muted-foreground hover:text-sidebar-primary transition-colors"
           >
             <FaBars />
           </button>
@@ -56,12 +61,12 @@ export const Sidebar = () => {
               key={to}
               to={to}
               className={({ isActive }) =>
-                `flex items-center gap-3 px-4 py-2 rounded-md transition-colors text-sm ${
+                `flex items-center gap-3 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
                   collapsed ? "justify-center" : ""
                 } ${
                   isActive
-                    ? "bg-accent text-accent-foreground"
-                    : "hover:bg-muted"
+                    ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                    : "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                 }`
               }
             >
@@ -72,8 +77,8 @@ export const Sidebar = () => {
         </nav>
       </div>
 
-      {/* Footer */}
-      <div className="p-4 border-t border-border">
+      {/* Rodapé */}
+      <div className="p-4 border-t border-sidebar-border">
         <NavLink
           to="/sair"
           className="flex items-center gap-3 text-destructive hover:text-destructive-foreground transition-colors"
