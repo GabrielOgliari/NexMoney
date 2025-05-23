@@ -1,6 +1,12 @@
-import { Bell, User } from "lucide-react";
+
 
 import { Link, useLocation } from "react-router";
+
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import LogoutIcon from '@mui/icons-material/Logout';
+import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
+
 
 export const Header = () => {
   const { pathname } = useLocation();
@@ -37,52 +43,35 @@ export const Header = () => {
   };
 
   return (
-    <header className="flex bg-blue-950">
-      <div className="flex items-center gap-2 lg:gap-4">
-        <h1 className="text-xl font-semibold">{getPageTitle()}</h1>
-      </div>
+    <header className="flex bg-blue-900">
+      {/* <div className="flex items-center gap-2 lg:gap-4">
+        <h1 className="text-xl font-semibold  text-white">{getPageTitle()}</h1>
+      </div> */}
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 ml-auto">
         <button
           variant="ghost"
           size="icon"
           className="h-9 w-9"
           aria-label="Notifications"
         >
-          <Bell className="h-5 w-5" />
+          <NotificationsNoneIcon className="h-5 w-5  text-white" />
         </button>
 
         <div className="flex">
-          <div>
-            <button
-              variant="ghost"
-              size="icon"
-              className="h-9 w-9 rounded-full"
-            >
-              <div className="flex gap-2">
-                <span className="text-white">JD</span>
-              </div>
-            </button>
-          </div>
-          <div className="flex gap-2 items-center">
-            <div>Minha Conta</div>
 
-            <hr />
+          <div className="flex gap-2 items-center  text-white">
 
             <Link href="/settings" className="flex gap-2 text-white">
-              <User className="mr-2 h-4 w-4" />
-              Perfil
+              <AccountCircleIcon className="mr-2 h-4 w-4" />
             </Link>
 
-            <Link href="/settings" className="text-white">
-              Configurações
-            </Link>
+            <SettingsOutlinedIcon href="/settings" className="text-white"/>
+
 
             <hr />
             <div>
-              <Link href="/login" className="text-white">
-                Sair
-              </Link>
+              <LogoutIcon href="/login" className="text-white"/>
             </div>
           </div>
         </div>
