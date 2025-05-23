@@ -75,7 +75,7 @@ export const Sidebar = () => {
       label: "Financial Reports",
       icon: LineChart,
       to: "/financial-reports",
-      color: "text-purple-500",
+      color: "text-purple-400",
     },
     {
       label: "Settings",
@@ -85,7 +85,7 @@ export const Sidebar = () => {
   ];
 
   const SidebarContent = () => (
-    <div className="flex h-full flex-col border-r bg-background">
+    <div className="flex h-full flex-col border-r bg-background  bg-blue-950">
       <div className="flex h-14 items-center border-b px-4 justify-between">
         <Link to="/dashboard" className="flex items-center gap-2 font-semibold">
           <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center">
@@ -96,13 +96,17 @@ export const Sidebar = () => {
       </div>
 
       <div className="flex-1">
-        <nav className="grid items-start px-2 py-4">
+        <nav className="grid items-start px-2 py-4 text-white ">
           {routes.map((route) => (
             <div
               key={route.to}
               variant={pathname === route.to ? "default" : "ghost"}
+              className="flex items-center gap-2 py-2"
             >
-              <Link to={route.to}>{route.label}</Link>
+              <Link to={route.to} className="flex items-center gap-2">
+                <route.icon className={`h-5 w-5 ${route.color || ""}`} />
+                {route.label}
+              </Link>
             </div>
           ))}
         </nav>
