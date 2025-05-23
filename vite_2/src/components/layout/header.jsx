@@ -1,11 +1,11 @@
-import { Bell, User } from "lucide-react";
+
 
 import { Link, useLocation } from "react-router";
 
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LogoutIcon from '@mui/icons-material/Logout';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
-import SettingsIcon from '@mui/icons-material/Settings';
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 
 
 export const Header = () => {
@@ -66,7 +66,7 @@ export const Header = () => {
               <AccountCircleIcon className="mr-2 h-4 w-4" />
             </Link>
 
-            <SettingsIcon href="/settings" className="text-white"/>
+            <SettingsOutlinedIcon href="/settings" className="text-white"/>
 
 
             <hr />
