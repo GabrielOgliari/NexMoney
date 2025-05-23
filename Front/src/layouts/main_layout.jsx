@@ -6,7 +6,6 @@ import { Sidebar } from "../components/ui/sidebar";
 import { FaBars } from "react-icons/fa";
 import { useSidebar } from "../context/sidebar_context";
 
-
 // rotas de teste inicial
 // const links = [
 //   { to: "/dashboard", label: "Dashboard " },
@@ -47,8 +46,6 @@ export function MainLayout() {
   //     </main>
   //   </div>
   // );
-
-
 
   return (
     <div className="flex min-h-screen bg-background text-foreground">
