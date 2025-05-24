@@ -99,7 +99,7 @@ export const CategoryPage = () => {
   };
 
   return (
-    <div className="flex flex-col gap-4 bg-background bg-gray-800">
+    <div className="flex flex-col gap-4 bg-background bg-[#1B2232]">
       <Dialog open={open} onClose={handleCloseModal}>
         <DialogTitle>Adicionar Nova Categoria</DialogTitle>
         <DialogContent>
@@ -157,10 +157,35 @@ export const CategoryPage = () => {
         <DataGrid
           localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
           sx={{
-            backgroundColor: "#162456",
-            color: "#fff", // cor padrão do texto
-            
-            
+            backgroundColor: "#0F1729",
+            color: "#fff",
+            headerBg: "#0F1729",
+            borderColor: "#1E2B45",
+
+            "& .MuiDataGrid-footerContainer": {
+              backgroundColor: "#0F1729",
+              color: "#fff",
+              borderColor: "#1E2B45",
+            },
+            "& .MuiDataGrid-columnHeaders": {
+              backgroundColor: "#0F1729",
+              color: "#111",
+              fontWeight: "bold",
+              borderColor: "#1E2B45",
+            },
+            "& .MuiDataGrid-topContainer": {
+              borderColor: "#1E2B45", // <-- borda do header personalizada
+              backgroundColor: "#0F1729", // <-- fundo do header (opcional)
+            },
+            "& .MuiDataGrid-cell": {
+              borderColor: "#1E2B45",
+            },
+            "& .MuiDataGrid-virtualScroller": {
+              backgroundColor: "#0F1729",
+            },
+            "& .MuiDataGrid-row:hover": {
+              backgroundColor: "#162032",
+            },
           }}
           columns={[
             { field: "name", headerName: "Nome", flex: 1 },
@@ -179,13 +204,13 @@ export const CategoryPage = () => {
               renderCell: ({ row }) => {
                 return (
                   <div className="flex gap-3 justify-center items-center h-full">
-                <Button
-                  color="info"
-                  variant="outlined"
-                  onClick={() => handleEdit(row.id)}
-                >
-                  <EditOutlinedIcon></EditOutlinedIcon>
-                </Button>
+                    <Button
+                      color="info"
+                      variant="outlined"
+                      onClick={() => handleEdit(row.id)}
+                    >
+                      <EditOutlinedIcon></EditOutlinedIcon>
+                    </Button>
                     <Button
                       color="error"
                       variant="outlined"
@@ -193,7 +218,6 @@ export const CategoryPage = () => {
                     >
                       <DeleteOutlineOutlinedIcon></DeleteOutlineOutlinedIcon>
                     </Button>
-
                   </div>
                 );
               },

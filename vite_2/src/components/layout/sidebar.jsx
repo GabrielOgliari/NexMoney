@@ -65,7 +65,7 @@ export const Sidebar = () => {
   ];
 
   const SidebarContent = () => (
-    <div className="flex h-full flex-col border-r bg-background  bg-blue-950">
+    <div className="flex h-full flex-col border-r bg-background  bg-[#0F1729]">
       <div className="flex h-14 items-center border-b px-4 justify-between">
         <Link to="/dashboard" className="flex items-center gap-2 font-semibold">
           <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center">
