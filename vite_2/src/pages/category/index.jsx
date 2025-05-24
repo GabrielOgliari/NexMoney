@@ -12,8 +12,8 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { FormInputText } from "../components/ui/form-input-text";
-import { FormInputRadio } from "../components/ui/form-input-radio";
+import { FormInputText } from "../../components/ui/form-input-text";
+import { FormInputRadio } from "../../components/ui/form-input-radio";
 
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
