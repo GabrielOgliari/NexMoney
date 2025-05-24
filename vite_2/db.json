@@ -1,14 +1,6 @@
 {
   "categories": [
     {
-      "id": "4",
-      "name": "Lazer",
-      "description": "Despesas com lazer, como cinema e viagens",
-      "type": "income",
-      "color": "#ef4444",
-      "count": 3
-    },
-    {
       "id": "6",
       "name": "Salário",
       "description": "Receitas de salário",
@@ -40,14 +32,8 @@
     },
     {
       "id": "bf10",
-      "name": "dwd",
-      "description": "dwd",
-      "type": "income"
-    },
-    {
-      "id": "707e",
-      "name": "dwdw",
-      "description": "dwdw",
+      "name": "dwdWWWWWWW",
+      "description": "dwderewrewrwer",
       "type": "expanse"
     },
     {

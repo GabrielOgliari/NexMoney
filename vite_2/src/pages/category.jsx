@@ -15,6 +15,9 @@ import { useForm } from "react-hook-form";
 import { FormInputText } from "../components/ui/form-input-text";
 import { FormInputRadio } from "../components/ui/form-input-radio";
 
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+
 export const CategoryPage = () => {
   const [open, setOpen] = useState(false);
 
@@ -96,7 +99,7 @@ export const CategoryPage = () => {
   };
 
   return (
-    <>
+    <div className="flex flex-col gap-4 bg-background bg-gray-800">
       <Dialog open={open} onClose={handleCloseModal}>
         <DialogTitle>Adicionar Nova Categoria</DialogTitle>
         <DialogContent>
@@ -153,7 +156,17 @@ export const CategoryPage = () => {
 
         <DataGrid
           localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
+          sx={{
+            backgroundColor: "#162456",
+            color: "#fff", // cor padrão do texto
+            
+            
+          }}
           columns={[
+            { field: "name", headerName: "Nome", flex: 1 },
+            { field: "description", headerName: "Descrição", flex: 1 },
+            { field: "type", headerName: "Tipo", width: 100 },
+            { field: "count", headerName: "Uso", width: 100 },
             {
               field: "actions",
               headerName: "Ações",
@@ -166,34 +179,30 @@ export const CategoryPage = () => {
               renderCell: ({ row }) => {
                 return (
                   <div className="flex gap-3 justify-center items-center h-full">
+                <Button
+                  color="info"
+                  variant="outlined"
+                  onClick={() => handleEdit(row.id)}
+                >
+                  <EditOutlinedIcon></EditOutlinedIcon>
+                </Button>
                     <Button
                       color="error"
                       variant="outlined"
                       onClick={() => deleteCategoryMutation.mutate(row.id)}
                     >
-                      Deletar
+                      <DeleteOutlineOutlinedIcon></DeleteOutlineOutlinedIcon>
                     </Button>
 
-                    <Button
-                      color="info"
-                      variant="outlined"
-                      onClick={() => handleEdit(row.id)}
-                    >
-                      Editar
-                    </Button>
                   </div>
                 );
               },
             },
-            { field: "name", headerName: "Nome", flex: 1 },
-            { field: "description", headerName: "Descrição", flex: 1 },
-            { field: "type", headerName: "Tipo", width: 100 },
-            { field: "count", headerName: "Uso", width: 100 },
           ]}
           rows={loadCategoriesQuery.data}
           loading={loadCategoriesQuery.isPending}
         />
       </div>
-    </>
+    </div>
   );
 };
