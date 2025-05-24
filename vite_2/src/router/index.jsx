@@ -1,20 +1,15 @@
 import { createBrowserRouter } from "react-router";
 
-import { ExamplePage } from "../pages/example.jsx";
-import { Example2Page } from "../pages/example2.jsx";
 import { MainLayout } from "../components/layout/main.js";
+import { CategoryPage } from "../pages/category.jsx";
 
 export const router = createBrowserRouter([
   {
     element: <MainLayout />,
     children: [
       {
-        path: "example",
-        element: <ExamplePage />,
-      },
-      {
-        path: "example2",
-        element: <Example2Page />,
+        path: "categories",
+        element: <CategoryPage />,
       },
     ],
   },
