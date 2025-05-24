@@ -43,7 +43,7 @@ export const Header = () => {
   };
 
   return (
-    <header className="flex bg-blue-900">
+    <header className="flex bg-[#1E2B45]">
       {/* <div className="flex items-center gap-2 lg:gap-4">
         <h1 className="text-xl font-semibold  text-white">{getPageTitle()}</h1>
       </div> */}
