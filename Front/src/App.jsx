@@ -1,9 +1,13 @@
-import { Outlet } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { RouterProvider } from "react-router";
+import { router } from "./router";
 
-export function App() {
+const queryClient = new QueryClient();
+
+export const App = () => {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-100">
-      <Outlet />
-    </main>
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+    </QueryClientProvider>
   );
-}
+};
