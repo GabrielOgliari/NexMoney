@@ -1,13 +1,11 @@
-
-
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
-import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
-import CreditCardOutlinedIcon from '@mui/icons-material/CreditCardOutlined';
-import LocalAtmOutlinedIcon from '@mui/icons-material/LocalAtmOutlined';
-import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
-import LocalOfferOutlinedIcon from '@mui/icons-material/LocalOfferOutlined';
-import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
-import CompareArrowsOutlinedIcon from '@mui/icons-material/CompareArrowsOutlined';
+import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import CreditCardOutlinedIcon from "@mui/icons-material/CreditCardOutlined";
+import LocalAtmOutlinedIcon from "@mui/icons-material/LocalAtmOutlined";
+import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
+import LocalOfferOutlinedIcon from "@mui/icons-material/LocalOfferOutlined";
+import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalanceWalletOutlined";
+import CompareArrowsOutlinedIcon from "@mui/icons-material/CompareArrowsOutlined";
 
 import { Link, useLocation } from "react-router";
 
@@ -58,7 +56,7 @@ export const Sidebar = () => {
       color: "text-blue-500",
     },
     {
-      label: "Settings",
+      label: "Configurações",
       icon: SettingsOutlinedIcon,
       to: "/settings",
     },
@@ -83,7 +81,10 @@ export const Sidebar = () => {
               variant={pathname === route.to ? "default" : "ghost"}
               className="flex items-center gap-2 py-2"
             >
-              <Link to={route.to} className="flex items-center gap-2 rounded hover:bg-blue-900 hover:shadow-lg transition w-full y-full">
+              <Link
+                to={route.to}
+                className="flex items-center gap-2 rounded hover:bg-blue-900 hover:shadow-lg transition w-full y-full"
+              >
                 <route.icon className={`h-5 w-5 ${route.color || ""}`} />
                 {route.label}
               </Link>
