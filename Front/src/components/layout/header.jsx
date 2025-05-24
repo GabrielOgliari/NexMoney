@@ -1,12 +1,9 @@
-
-
 import { Link, useLocation } from "react-router";
 
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import LogoutIcon from '@mui/icons-material/Logout';
-import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
-
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import LogoutIcon from "@mui/icons-material/Logout";
+import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
+import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 
 export const Header = () => {
   const { pathname } = useLocation();
@@ -59,19 +56,16 @@ export const Header = () => {
         </button>
 
         <div className="flex">
-
           <div className="flex gap-2 items-center  text-white">
-
             <Link href="/settings" className="flex gap-2 text-white">
               <AccountCircleIcon className="mr-2 h-4 w-4" />
             </Link>
 
-            <SettingsOutlinedIcon href="/settings" className="text-white"/>
-
+            <SettingsOutlinedIcon href="/settings" className="text-white" />
 
             <hr />
             <div>
-              <LogoutIcon href="/login" className="text-white"/>
+              <LogoutIcon href="/login" className="text-white" />
             </div>
           </div>
         </div>
