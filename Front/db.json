@@ -66,5 +66,13 @@
       "id": "4ff5",
       "name": "Teste Criei Voce! 2222222222222222"
     }
-  ]
+  ],
+  "investiments":{
+    "total":{
+      "grand_total": 1000,
+      "total_fixed_income": 500,
+      "total_variable_income": 500,
+      "dividends": 100
+    }
+  }
 }
