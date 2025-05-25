@@ -7,13 +7,13 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
 const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: "#1B2232",
+  backgroundColor: "#0F1729",
   ...theme.typography.body2,
   padding: theme.spacing(3),
   textAlign: "center",
-  color: (theme.vars ?? theme).palette.text.secondary,
   borderRadius: 3,
-  border: "#1E2B45",
+  border: "#1E2B45 solid 0.1px",
+
   
 }));
 
@@ -38,8 +38,9 @@ export const InvestmentsPage = () => {
         sx={{
           flexGrow: 1,
           padding: 2,
-          backgroundColor: "#0F1729",
+          backgroundColor: "#1B2232",
           borderRadius: 1,
+          borderBlockColor:"#1E2B45",
           margin: 2,
           height: "100%",
         }}
@@ -47,7 +48,7 @@ export const InvestmentsPage = () => {
         <Grid container spacing={2}>
           <Grid size={3}>
             <Item>
-              <div className="flex flex-col bg-background bg-[#1B2232] h-full w-full border-0">
+              <div className="flex flex-col bg-background bg-[#0F1729] h-full w-full border-0">
                 <div className="flex flex-col gap-2 font-bold text-[14px] text-amber-50">
                   Total de Investimentos
                 </div>
@@ -60,7 +61,7 @@ export const InvestmentsPage = () => {
           </Grid>
           <Grid size={3}>
             <Item>
-              <div className="flex flex-col bg-background bg-[#1B2232] h-full w-full border-0">
+              <div className="flex flex-col bg-background bg-[#0F1729] h-full w-full border-0">
                 <div className="flex flex-col gap-2 font-bold text-[14px] text-amber-50">
                   Renda Fixa
                 </div>
@@ -73,7 +74,7 @@ export const InvestmentsPage = () => {
           </Grid>
           <Grid size={3}>
             <Item>
-              <div className="flex flex-col bg-background bg-[#1B2232] h-full w-full border-0">
+              <div className="flex flex-col bg-background bg-[#0F1729] h-full w-full border-0">
                 <div className="flex flex-col gap-2 font-bold text-[14px] text-amber-50">
                   Renda Variável
                 </div>
@@ -86,7 +87,7 @@ export const InvestmentsPage = () => {
           </Grid>
           <Grid size={3}>
           <Item>
-            <div className="flex flex-col bg-background bg-[#1B2232] h-full w-full border-0">
+            <div className="flex flex-col bg-background bg-[#0F1729] h-full w-full border-0">
                 <div className="flex flex-col gap-2 font-bold text-[14px] text-amber-50">
                   Dividendos
                 </div>
@@ -99,7 +100,7 @@ export const InvestmentsPage = () => {
           </Grid>
           <Grid size={15}>
             <Item>
-              <div className="flex flex-col bg-background bg-[#1B2232] h-full w-full border-0 text-amber-50 text-[18px] font-bold text-start ">
+              <div className="flex flex-col bg-background bg-[#0F1729] h-full w-full border-0 text-amber-50 text-[18px] font-bold text-start ">
                 Histórico de Desempenho
                 <div>
                   
