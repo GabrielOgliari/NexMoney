@@ -149,39 +149,57 @@
     "investiments":[
        {
       "id": 1,
-      "tipo": "renda-fixa",
-      "nome": "Tesouro Direto",
-      "valor": "R$ 10.000",
-      "taxaJuros": "5.2%",
-      "dataInicial": "14/01/2023",
-      "dataVencimento": "14/01/2024"
+      "type": 1,
+      "name": "Tesouro Direto",
+      "value": "R$ 10.000",
+      "interest_rate": "5.2%",
+      "start_date": "14/01/2023",
+      "due_date": "14/01/2024"
     },
     {
       "id": 2,
-      "tipo": "renda-fixa",
-      "nome": "CDB Banco XYZ",
-      "valor": "R$ 5.000",
-      "taxaJuros": "4.8%",
-      "dataInicial": "09/02/2023",
-      "dataVencimento": "09/08/2023"
+      "type": "fixed_income",
+      "name": "CDB Banco XYZ",
+      "value": "R$ 5.000",
+      "interest_rate": "4.8%",
+      "start_date": "09/02/2023",
+      "due_date": "09/08/2023"
     },
     {
       "id": 3,
-      "tipo": "renda-fixa",
-      "nome": "LCI",
-      "valor": "R$ 7.500",
-      "taxaJuros": "5.5%",
-      "dataInicial": "19/03/2023",
-      "dataVencimento": "19/03/2024"
+      "type": "fixed_income",
+      "name": "LCI",
+      "value": "R$ 7.500",
+      "interest_rate": "5.5%",
+      "start_date": "19/03/2023",
+      "due_date": "19/03/2024"
+    },
+    {
+      "id": 2,
+      "type": "fixed_income",
+      "name": "CDB Banco XYZ",
+      "value": "R$ 5.000",
+      "interest_rate": "4.8%",
+      "start_date": "09/02/2023",
+      "due_date": "09/08/2023"
+    },
+    {
+      "id": 3,
+      "type": "fixed_income",
+      "name": "LCI",
+      "value": "R$ 7.500",
+      "interest_rate": "5.5%",
+      "start_date": "19/03/2023",
+      "due_date": "19/03/2024"
     },
     {
       "id": 4,
-      "tipo": "renda-variavel",
-      "nome": "Ação XYZ",
-      "valor": "R$ 2.000",
-      "taxaJuros": "-",
-      "dataInicial": "01/03/2023",
-      "dataVencimento": "-"
+      "type": "renda-variavel",
+      "name": "Ação XYZ",
+      "value": "R$ 2.000",
+      "interest_rate": "-",
+      "start_date": "01/03/2023",
+      "due_date": "19/03/2024"
     }
   ]
 }
