@@ -61,10 +61,82 @@
       "name": "Novo Editado",
       "description": "dw",
       "type": "income"
+    }
+  ],
+  "accounts-payable": [
+    {
+      "id": 1,
+      "description": "Pagamento de Aluguel",
+      "amount": 2000,
+      "dueDate": "2023-05-01",
+      "category": "Moradia",
+      "categoryId": "1",
+      "status": "pending",
+      "reminder": true,
+      "recurrence": {
+        "type": "monthly",
+        "endDate": "2023-12-01"
+      }
     },
     {
-      "id": "4ff5",
-      "name": "Teste Criei Voce! 2222222222222222"
+      "id": 2,
+      "description": "Conta de Internet",
+      "amount": 80,
+      "dueDate": "2023-05-05",
+      "category": "Utilidades",
+      "categoryId": "9",
+      "status": "pending",
+      "reminder": true
+    },
+    {
+      "id": 3,
+      "description": "Pagamento de Cartão de Crédito",
+      "amount": 450,
+      "dueDate": "2023-05-10",
+      "category": "Dívidas",
+      "categoryId": "10",
+      "status": "paid",
+      "reminder": false
+    },
+    {
+      "id": 4,
+      "description": "Seguro do Carro",
+      "amount": 120,
+      "dueDate": "2023-05-15",
+      "category": "Seguros",
+      "categoryId": "11",
+      "status": "pending",
+      "reminder": true,
+      "recurrence": {
+        "type": "monthly",
+        "occurrences": 12,
+        "currentOccurrence": 5
+      }
+    },
+    {
+      "id": 5,
+      "description": "Mensalidade da Academia",
+      "amount": 50,
+      "dueDate": "2023-05-20",
+      "category": "Saúde",
+      "categoryId": "5",
+      "status": "paid",
+      "reminder": false,
+      "recurrence": {
+        "type": "monthly",
+        "occurrences": 12,
+        "currentOccurrence": 3
+      }
+    },
+    {
+      "id": 6,
+      "description": "Conta de Telefone",
+      "amount": 65,
+      "dueDate": "2023-05-25",
+      "category": "Utilidades",
+      "categoryId": "9",
+      "status": "pending",
+      "reminder": true
     }
   ],
   "investiments":{
@@ -111,6 +183,5 @@
       "dataInicial": "01/03/2023",
       "dataVencimento": "-"
     }
-    ]
-  }
+  ]
 }
