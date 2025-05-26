@@ -1,7 +1,6 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid";
-// import { type } from "os";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 
@@ -44,58 +43,68 @@ const columns = [
 ];
 
 export function FixedIncome() {
-  const [filteredRows, setFilteredRows] = React.useState([]);
+  const [filterModel, setFilterModel] = React.useState({ items: [] });
 
-  const loadInvestmentsfixedIncomeQuery = useQuery({
-    queryKey: ["investiments-total"],
+  const { data: investmentsData, isLoading } = useQuery({
+    queryKey: ["investiments-fixed-income"],
     queryFn: async () => {
       const response = await axios({
         method: "get",
         baseURL: import.meta.env.VITE_API,
         url: "/investiments",
       });
+      const investmentsArray = response.data.investiments ?? [];
 
-      return response.data.investiments.filter(
+      const filtered = investmentsArray.filter(
         (investment) => investment.type === "fixed_income"
       );
+
+      return filtered;
     },
   });
 
-  const total = (Array.isArray(filteredRows) ? filteredRows : []).reduce((sum, row) => {
+  const filteredRows = React.useMemo(() => {
+    if (!investmentsData) return [];
+    if (filterModel.items.length === 0) return investmentsData;
+
+    return investmentsData.filter((row) => {
+      return filterModel.items.every((filter) => {
+        if (!filter.value) return true;
+        const fieldValue = row[filter.field]?.toString().toLowerCase();
+        return fieldValue?.includes(filter.value.toLowerCase());
+      });
+    });
+  }, [investmentsData, filterModel]);
+
+  const total = filteredRows.reduce((sum, row) => {
     const valor = Number(
       String(row.value)
-        .replace(/[^\d,.-]/g, "")
-        .replace(",", ".")
+        .replace(/\./g, "") // remove separador de milhar
+        .replace(",", ".") // vírgula por ponto
+        .replace(/[^\d.-]/g, "") // remove não numéricos
     );
     return sum + (isNaN(valor) ? 0 : valor);
   }, 0);
 
   return (
-    <div>
-      <Box sx={{ width: "100%" }}>
+    <div className="flex flex-col height-screen h-full w-full overflow-hidden">
+      <Box sx={{ width: "100%", flexGrow: 1 }}>
         <DataGrid
-          rows={loadInvestmentsfixedIncomeQuery.data ?? []}
+          rows={filteredRows ?? []}
           columns={columns}
           initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 5,
-              },
-            },
+            pagination: { paginationModel: { pageSize: 5 } },
           }}
           pageSizeOptions={[5]}
+          loading={isLoading}
           disableRowSelectionOnClick
-          onStateChange={(state) => {
-            // Pega as linhas filtradas pelo DataGrid
-            const visibleRows = state.filter?.visibleRows?.lookup
-              ? Object.values(state.filter.visibleRows.lookup)
-              : [];
-            setFilteredRows(visibleRows.length ? visibleRows : loadInvestmentsfixedIncomeQuery.data ?? []);
-          }}
+          filterModel={filterModel}
+          onFilterModelChange={(newModel) => setFilterModel(newModel)}
         />
       </Box>
       <div className="mt-4 font-bold text-amber-50 text-right">
-        Total filtrado: R$ {total.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+        Total filtrado: R${" "}
+        {total.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
       </div>
     </div>
   );
