@@ -33,7 +33,7 @@ export const InvestmentsPage = () => {
     },
   });
   return (
-    <div className="flex gap-4 flex-col bg-background bg-[#1B2232] height-screen">
+    <div className="flex gap-4 flex-col bg-background bg-[#1B2232] height-screen  h-screen w-full overflow-hidden">
       <Box
         sx={{
           flexGrow: 1,
@@ -108,6 +108,57 @@ export const InvestmentsPage = () => {
               </div>
             </Item>
           </Grid>
+          <Grid size={15}>
+            <Item>
+              <div className="flex flex-col bg-background bg-[#0F1729] h-full w-full border-0 text-amber-50 text-[18px] font-bold text-start ">
+                Detalhes dos Investimentos
+                <div dir="ltr" data-orientation="horizontal" className="flex flex-row gap-4">
+                  <div
+                    role="tablist"
+                    aria-orientation="horizontal"
+                    className="inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground mb-4  bg-[#1B2232]"
+                    tabIndex={0}
+                    data-orientation="horizontal"
+                  >
+                    <button
+                      className="inline-flex h-8 items-center justify-center rounded-md px-3 text-sm  transition-colors bg-[#1B2232]  hover:bg-[#24304A] cursor-pointer"
+                      role="tab"
+                      aria-selected="true"
+                      tabIndex={0}
+                    >
+                      Renda Fixa
+                    </button>
+                    <button
+                      className="inline-flex h-8 items-center justify-center rounded-md px-3 text-sm  transition-colors bg-[#1B2232]  hover:bg-[#24304A] cursor-pointer"
+                      role="tab"
+                      aria-selected="true"
+                      tabIndex={-1}
+                    >
+                      Renda Variável
+                    </button>
+                    <button
+                      className="inline-flex h-8 items-center justify-center rounded-md px-3 text-sm  transition-colors bg-[#1B2232]  hover:bg-[#24304A] cursor-pointer"
+                      role="tab"
+                      aria-selected="true"
+                      tabIndex={-1}
+                    >
+                      Criptomoedas
+                    </button>
+                    <button
+                      className="inline-flex h-8 items-center justify-center rounded-md px-3 text-sm  transition-colors bg-[#1B2232]  hover:bg-[#24304A] cursor-pointer"
+                      role="tab"
+                      aria-selected="true"
+                      tabIndex={-1}
+                    >
+                      Dividendos
+                    </button>
+                    
+                  </div>
+                  {/* Aqui você pode adicionar um gráfico ou outro componente */}
+                </div>
+              </div>
+            </Item>
+          </Grid>            
         </Grid>
       </Box>
     </div>
