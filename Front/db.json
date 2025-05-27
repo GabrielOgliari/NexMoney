@@ -138,5 +138,60 @@
       "status": "pending",
       "reminder": true
     }
+  ],
+  "investiments":{
+    "total":{
+      "grand_total": 1000,
+      "total_fixed_income": 500,
+      "total_variable_income": 500,
+      "dividends": 100
+    },
+    "investiments":[
+    {
+      "id": 2,
+      "type": "fixed_income",
+      "name": "CDB Banco XYZ",
+      "value": "R$ 5.000",
+      "interest_rate": "4.8%",
+      "start_date": "09/02/2023",
+      "due_date": "09/08/2023"
+    },
+    {
+      "id": 3,
+      "type": "fixed_income",
+      "name": "LCI",
+      "value": "R$ 7.500",
+      "interest_rate": "5.5%",
+      "start_date": "19/03/2023",
+      "due_date": "19/03/2024"
+    },
+    {
+      "id": 4,
+      "type": "fixed_income",
+      "name": "CDB Banco XYZ",
+      "value": "R$ 5.000",
+      "interest_rate": "4.8%",
+      "start_date": "09/02/2023",
+      "due_date": "09/08/2023"
+    },
+    {
+      "id": 5,
+      "type": "fixed_income",
+      "name": "LCI",
+      "value": "R$ 7.500",
+      "interest_rate": "5.5%",
+      "start_date": "19/03/2023",
+      "due_date": "19/03/2024"
+    },
+    {
+      "id": 6,
+      "type": "renda-variavel",
+      "name": "Ação XYZ",
+      "value": "R$ 2.000",
+      "interest_rate": "-",
+      "start_date": "01/03/2023",
+      "due_date": "19/03/2024"
+    }
   ]
+}
 }
