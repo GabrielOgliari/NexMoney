@@ -355,7 +355,9 @@ export function FixedIncome() {
                 }
                 if (typeof value === "string") {
                   // Remove qualquer símbolo de % e converte para número
-                  const num = Number(interest_rate.replace("%", "").replace(",", "."));
+                  const num = Number(
+                    interest_rate.replace("%", "").replace(",", ".")
+                  );
                   if (isNaN(num)) return interest_rate;
                   return `${num.toFixed(2)}%`;
                 }
@@ -364,30 +366,38 @@ export function FixedIncome() {
             },
             {
               field: "start_date",
-              headerName: "data inicial",
+              headerName: "Data Inicial",
               type: "string",
               flex: 1,
+              // valueFormatter: (params) => {
+              //   const value = params.value;
+              //   if (!value) return "";
+              //   const parts = value.split("-");
+              //   if (parts.length !== 3) return value;
+              //   const [year, month, day] = parts;
+              //   return `${day}/${month}/${year}`;
+              // },
               valueFormatter: (params) => {
-                const start_date = params.start_date;
-                if (!start_date) return "";
-                const parts = start_date.split("-");
-                if (parts.length !== 3) return start_date;
-                const [year, month, day] = parts;
-                return `${day}/${month}/${year}`;
+                console.log("start_date:", params.value);
+                return params.value;
               },
             },
             {
               field: "due_date",
-              headerName: "data de Vencimento",
+              headerName: "Data de Vencimento",
               type: "string",
               flex: 1,
+              // valueFormatter: (params) => {
+              //   const value = params.value;
+              //   if (!value) return "";
+              //   const parts = value.split("-");
+              //   if (parts.length !== 3) return value;
+              //   const [year, month, day] = parts;
+              //   return `${day}/${month}/${year}`;
+              // },
               valueFormatter: (params) => {
-                const due_date = params.due_date;
-                if (!due_date) return "";
-                const parts = due_date.split("-");
-                if (parts.length !== 3) return due_date;
-                const [year, month, day] = parts;
-                return `${day}/${month}/${year}`;
+                console.log("start_date:", params.value);
+                return params.value;
               },
             },
             {
