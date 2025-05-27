@@ -14,22 +14,28 @@ import { ptBR } from "@mui/x-data-grid/locales";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { useForm, Controller } from "react-hook-form";
-import { FormInputText } from "../../components/ui/form-input-text";
+//import { FormInputText } from "../../components/ui/form-input-text";
 
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import { AccountsPayableAddModal } from "./components/modal_add";
+import { AccountsPayableEditModal } from "./components/modal_edit";
 
 // Importa DatePicker e adapter para dayjs
-import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+//import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
+//import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 
 export const AccountsPayablePage = () => {
-  const [open, setOpen] = useState(false);
+  // Estados para controlar abertura dos modais de adição e edição
+  const [openAdd, setOpenAdd] = useState(false);
+  const [openEdit, setOpenEdit] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
+  // Instância do React Query para gerenciamento de cache
   const queryClient = useQueryClient();
 
+  // Consulta para buscar todas as contas a pagar
   const loadAccountsPayableQuery = useQuery({
     queryKey: ["accounts-payable"],
     queryFn: async () => {
@@ -42,6 +48,7 @@ export const AccountsPayablePage = () => {
     },
   });
 
+  // Mutation para buscar uma conta específica para edição
   const loadOneAccountsPayableMutation = useMutation({
     mutationFn: async (id) => {
       const response = await axios({
@@ -53,6 +60,7 @@ export const AccountsPayablePage = () => {
     },
   });
 
+  // Mutation para salvar (criar ou editar) uma conta a pagar
   const saveAccountsPayableMutation = useMutation({
     mutationFn: async (params) => {
       await axios({
@@ -63,12 +71,15 @@ export const AccountsPayablePage = () => {
       });
     },
     onSuccess: () => {
+      // Atualiza a lista após salvar e fecha os modais
       queryClient.invalidateQueries(["accounts-payable"]);
-      setOpen(false);
+      setOpenAdd(false);
+      setOpenEdit(false);
       reset();
     },
   });
 
+  // Mutation para deletar uma conta a pagar
   const deleteAccountsPayableMutation = useMutation({
     mutationFn: async (id) => {
       await axios({
@@ -78,10 +89,12 @@ export const AccountsPayablePage = () => {
       });
     },
     onSuccess: () => {
+      // Atualiza a lista após deletar
       queryClient.invalidateQueries(["accounts-payable"]);
     },
   });
 
+  // React Hook Form para controle dos campos do formulário
   const { handleSubmit, control, reset, register, watch } = useForm({
     defaultValues: {
       description: "",
@@ -99,6 +112,7 @@ export const AccountsPayablePage = () => {
     },
   });
 
+  // Efeito para preencher o formulário ao editar uma conta
   useEffect(() => {
     if (isEditing && loadOneAccountsPayableMutation.data) {
       const data = loadOneAccountsPayableMutation.data;
@@ -121,7 +135,8 @@ export const AccountsPayablePage = () => {
     }
   }, [isEditing, loadOneAccountsPayableMutation.data, reset]);
 
-  const handleOpenModal = () => {
+  // Função para abrir o modal de adição
+  const handleOpenAddModal = () => {
     reset({
       description: "",
       amount: "",
@@ -137,16 +152,19 @@ export const AccountsPayablePage = () => {
       },
     });
     setIsEditing(false);
-    setOpen(true);
+    setOpenAdd(true);
   };
 
+  // Função para fechar ambos os modais e limpar o formulário
   const handleCloseModal = () => {
-    setOpen(false);
+    setOpenAdd(false);
+    setOpenEdit(false);
     reset();
   };
 
+  // Função chamada ao enviar o formulário (adicionar ou editar)
   const onSubmit = (data) => {
-    // Formatar datas para string ISO antes de enviar
+    // Formata datas para string ISO antes de enviar
     const formattedData = {
       ...data,
       dueDate: data.dueDate ? data.dueDate.format("YYYY-MM-DD") : null,
@@ -159,6 +177,7 @@ export const AccountsPayablePage = () => {
       },
     };
 
+    // Se estiver editando, faz PUT, senão faz POST
     if (isEditing) {
       const id = loadOneAccountsPayableMutation.data?.id;
       if (!id) return;
@@ -176,11 +195,12 @@ export const AccountsPayablePage = () => {
     }
   };
 
+  // Função para carregar dados de uma conta e abrir o modal de edição
   const handleEdit = async (id) => {
     try {
       const data = await loadOneAccountsPayableMutation.mutateAsync(id);
       setIsEditing(true);
-      setOpen(true);
+      setOpenEdit(true);
       reset({
         description: data.description || "",
         amount: data.amount || "",
@@ -203,154 +223,38 @@ export const AccountsPayablePage = () => {
   };
 
   return (
-    <div className="flex flex-col gap-4 bg-background bg-[#1B2232] height-screen  h-screen w-full overflow-hidden">
-      <Dialog open={open} onClose={handleCloseModal} fullWidth maxWidth="sm">
-        <DialogTitle>
-          {isEditing ? "Editar Conta a Pagar" : "Adicionar Nova Conta a Pagar"}
-        </DialogTitle>
+    <div className="flex flex-col gap-4 bg-background bg-[#1B2232] height-screen h-screen w-full overflow-hidden">
+      {/* Modal de adição */}
+      <AccountsPayableAddModal
+        open={openAdd}
+        handleCloseModal={handleCloseModal}
+        control={control}
+        handleSubmit={handleSubmit}
+        onSubmit={onSubmit}
+        register={register}
+        watch={watch}
+      />
+      {/* Modal de edição */}
+      <AccountsPayableEditModal
+        open={openEdit}
+        handleCloseModal={handleCloseModal}
+        control={control}
+        handleSubmit={handleSubmit}
+        onSubmit={onSubmit}
+        register={register}
+        watch={watch}
+      />
 
-        <DialogContent>
-          <DialogContentText className="pb-4">
-            {isEditing
-              ? "Atualize os detalhes da conta a pagar."
-              : "Digite os detalhes da nova conta a pagar."}
-          </DialogContentText>
-
-          <div className="flex flex-col gap-4">
-            <FormInputText
-              label="Descrição"
-              name="description"
-              control={control}
-            />
-
-            <div className="row flex gap-4">
-              <FormInputText
-                className="col-6 flex-1"
-                label="Valor"
-                name="amount"
-                control={control}
-                type="number"
-                step="0.01"
-                inputMode="decimal"
-              />
-
-              {/* DatePicker do MUI integrado ao react-hook-form */}
-              <Controller
-                name="dueDate"
-                control={control}
-                render={({ field }) => (
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DatePicker
-                      {...field}
-                      label="Data de Vencimento"
-                      inputFormat="DD/MM/YYYY"
-                      onChange={(date) => field.onChange(date)}
-                      value={field.value}
-                      renderInput={(params) => (
-                        <TextField {...params} fullWidth />
-                      )}
-                    />
-                  </LocalizationProvider>
-                )}
-              />
-            </div>
-
-            <div className="row flex gap-4">
-              <FormInputText
-                className="col-6 flex-1"
-                label="Categoria"
-                name="category"
-                control={control}
-              />
-              <FormInputText
-                className="col-6 flex-1"
-                label="Status"
-                name="status"
-                control={control}
-              />
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <label>Frequência da Recorrência</label>
-              <select
-                {...register("recurrence.type")}
-                defaultValue="monthly"
-                className="border rounded px-2 py-1"
-              >
-                <option value="daily">Diária</option>
-                <option value="weekly">Semanal</option>
-                <option value="biweekly">Quinzenal</option>
-                <option value="monthly">Mensal</option>
-                <option value="annual">Anual</option>
-              </select>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                {...register("recurrence.hasEndDate")}
-                id="hasEndDate"
-                className="form-checkbox"
-              />
-              <label htmlFor="hasEndDate">Ativar até data específica</label>
-            </div>
-
-            {watch("recurrence.hasEndDate") && (
-              <Controller
-                name="recurrence.endDate"
-                control={control}
-                render={({ field }) => (
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DatePicker
-                      {...field}
-                      label="Data Final da Recorrência"
-                      inputFormat="DD/MM/YYYY"
-                      onChange={(date) => field.onChange(date)}
-                      value={field.value}
-                      renderInput={(params) => (
-                        <TextField {...params} fullWidth />
-                      )}
-                    />
-                  </LocalizationProvider>
-                )}
-              />
-            )}
-
-            <div className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                {...register("reminder")}
-                id="reminder"
-                className="form-checkbox"
-              />
-              <label htmlFor="reminder">
-                Definir lembrete para data de vencimento
-              </label>
-            </div>
-          </div>
-        </DialogContent>
-
-        <DialogActions>
-          <Button onClick={handleCloseModal} color="inherit">
-            Cancelar
-          </Button>
-          <Button
-            onClick={handleSubmit(onSubmit)}
-            color="primary"
-            variant="contained"
-          >
-            {isEditing ? "Salvar" : "Adicionar"}
-          </Button>
-        </DialogActions>
-      </Dialog>
-
+      {/* Área principal com botão de adicionar e tabela */}
       <div className="flex flex-col gap-4 p-8">
         <div className="flex justify-end w-full">
-          <Button variant="contained" onClick={handleOpenModal}>
+          {/* Botão para abrir o modal de adição */}
+          <Button variant="contained" onClick={handleOpenAddModal}>
             Adicionar Novo
           </Button>
         </div>
 
+        {/* DataGrid para exibir as contas a pagar */}
         <DataGrid
           localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
           sx={{
@@ -384,7 +288,9 @@ export const AccountsPayablePage = () => {
             },
           }}
           columns={[
+            // Coluna descrição
             { field: "description", headerName: "Descrição", flex: 1 },
+            // Coluna valor, formata como moeda
             {
               field: "amount",
               headerName: "Valor",
@@ -398,6 +304,7 @@ export const AccountsPayablePage = () => {
                 }).format(amount);
               },
             },
+            // Coluna data de vencimento, formata como dd/mm/yyyy
             {
               field: "dueDate",
               headerName: "Data de Vencimento",
@@ -411,7 +318,9 @@ export const AccountsPayablePage = () => {
                 return `${day}/${month}/${year}`;
               },
             },
+            // Coluna categoria
             { field: "category", headerName: "Categoria", flex: 1 },
+            // Coluna status, mostra "Pago" ou "Pendente" com cor
             {
               field: "status",
               headerName: "Status",
@@ -445,7 +354,9 @@ export const AccountsPayablePage = () => {
                 );
               },
             },
+            // Coluna recorrência (apenas mostra valor)
             { field: "reminder", headerName: "Recorrencia", flex: 1 },
+            // Coluna ações (editar e deletar)
             {
               field: "actions",
               headerName: "Ações",
