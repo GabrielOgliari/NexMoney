@@ -6,10 +6,10 @@ import Grid from "@mui/material/Grid";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { FixedIncome } from "./components/fixed_income";
-import { VariableIncome } from "./components/variable_income";
+import { Button } from "@mui/material";
+// import { VariableIncome } from "./components/variable_income";
 
 const Item = styled(Paper)(({ theme }) => ({
-
   ...theme.components?.MuiPaper?.styleOverrides?.root,
 }));
 
@@ -30,7 +30,8 @@ export const InvestmentsPage = () => {
     },
   });
   return (
-    <div className="flex gap-4 flex-col bg-background bg-[#1B2232] height-screen  h-screen w-full overflow-hidden">
+    <div className="flex gap-0 flex-col bg-background bg-[#1B2232] height-screen  h-screen w-full ">
+      
       <Box
         sx={{
           flexGrow: 1,

@@ -3,42 +3,76 @@ import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
+import { Button } from "@mui/material";
+
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 
 const columns = [
-  { field: "id", headerName: "ID", width: 90 },
+  { field: "id", headerName: "ID", flex: 0.5 },
   {
     field: "name",
     headerName: "nome",
-    width: 150,
+    flex: 2,
     editable: true,
   },
   {
     field: "value",
     headerName: "valor",
     type: "string", // pois vem como "R$ 5.000"
-    width: 150,
+    flex: 1,
     editable: true,
   },
   {
     field: "interest_rate",
     headerName: "taxa de juros",
     type: "string", // pois vem como "5.2%"
-    width: 110,
+    flex: 1,
     editable: true,
   },
   {
     field: "start_date",
     headerName: "data inicial",
     type: "string",
-    width: 110,
+    flex: 1,
     editable: true,
   },
   {
     field: "due_date",
     headerName: "data de Vencimento",
     type: "string",
-    width: 110,
+    flex: 1,
     editable: true,
+  },
+  {
+    field: "actions",
+    headerName: "Ações",
+    flex: 1,
+    disableReorder: true,
+    filterable: false,
+    disableColumnMenu: true,
+    sortable: false,
+    headerAlign: "center",
+    renderCell: () => {
+      return (
+        <div className="flex gap-3 justify-center items-center h-full">
+          <Button
+            color="info"
+            variant="outlined"
+            // onClick={() => handleEdit(row.id)}
+          >
+            <EditOutlinedIcon></EditOutlinedIcon>
+          </Button>
+          <Button
+            color="error"
+            variant="outlined"
+            // onClick={() => deleteCategoryMutation.mutate(row.id)}
+          >
+            <DeleteOutlineOutlinedIcon></DeleteOutlineOutlinedIcon>
+          </Button>
+        </div>
+      );
+    },
   },
 ];
 
@@ -88,7 +122,10 @@ export function FixedIncome() {
 
   return (
     <div className="flex flex-col height-screen h-full w-full overflow-hidden">
-      <Box>
+      <div className="flex justify-end  mr-4 ">
+        <Button variant="contained">Novo Lançamento</Button>
+      </div>
+      <Box sx={{ height: 300, width: "100%", padding: 2 }}>
         <DataGrid
           rows={filteredRows ?? []}
           columns={columns}

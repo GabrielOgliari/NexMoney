@@ -156,46 +156,17 @@ export const CategoryPage = () => {
 
         <DataGrid
           localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
-          sx={{
-            backgroundColor: "#0F1729",
-            color: "#fff",
-            headerBg: "#0F1729",
-            borderColor: "#1E2B45",
-
-            "& .MuiDataGrid-footerContainer": {
-              backgroundColor: "#0F1729",
-              color: "#fff",
-              borderColor: "#1E2B45",
-            },
-            "& .MuiDataGrid-columnHeaders": {
-              backgroundColor: "#0F1729",
-              color: "#111",
-              fontWeight: "bold",
-              borderColor: "#1E2B45",
-            },
-            "& .MuiDataGrid-topContainer": {
-              borderColor: "#1E2B45", // <-- borda do header personalizada
-              backgroundColor: "#0F1729", // <-- fundo do header (opcional)
-            },
-            "& .MuiDataGrid-cell": {
-              borderColor: "#1E2B45",
-            },
-            "& .MuiDataGrid-virtualScroller": {
-              backgroundColor: "#0F1729",
-            },
-            "& .MuiDataGrid-row:hover": {
-              backgroundColor: "#162032",
-            },
-          }}
+          
           columns={[
-            { field: "name", headerName: "Nome", flex: 1 },
-            { field: "description", headerName: "Descrição", flex: 1 },
-            { field: "type", headerName: "Tipo", width: 100 },
-            { field: "count", headerName: "Uso", width: 100 },
+            {field: "id", headerName: "ID", flex: 0.5},
+            { field: "name", headerName: "Nome", flex: 2 },
+            { field: "description", headerName: "Descrição", flex: 2 },
+            { field: "type", headerName: "Tipo", flex: 1 },
+            { field: "count", headerName: "Uso", flex: 0.5 },
             {
               field: "actions",
               headerName: "Ações",
-              width: 240,
+              flex: 1,
               disableReorder: true,
               filterable: false,
               disableColumnMenu: true,
