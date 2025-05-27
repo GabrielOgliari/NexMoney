@@ -203,7 +203,7 @@ export const AccountsPayablePage = () => {
   };
 
   return (
-    <div className="flex flex-col gap-4 bg-background bg-[#1B2232]">
+    <div className="flex flex-col gap-4 bg-background bg-[#1B2232] height-screen  h-screen w-full overflow-hidden">
       <Dialog open={open} onClose={handleCloseModal} fullWidth maxWidth="sm">
         <DialogTitle>
           {isEditing ? "Editar Conta a Pagar" : "Adicionar Nova Conta a Pagar"}
