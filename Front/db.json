@@ -65,7 +65,7 @@
   ],
   "accounts-payable": [
     {
-      "id": 1,
+      "id": "1",
       "description": "Pagamento de Aluguel",
       "amount": 2000,
       "dueDate": "2023-05-01",
@@ -79,7 +79,7 @@
       }
     },
     {
-      "id": 2,
+      "id": "2",
       "description": "Conta de Internet",
       "amount": 80,
       "dueDate": "2023-05-05",
@@ -89,7 +89,7 @@
       "reminder": true
     },
     {
-      "id": 3,
+      "id": "3",
       "description": "Pagamento de Cartão de Crédito",
       "amount": 450,
       "dueDate": "2023-05-10",
@@ -99,7 +99,7 @@
       "reminder": false
     },
     {
-      "id": 4,
+      "id": "4",
       "description": "Seguro do Carro",
       "amount": 120,
       "dueDate": "2023-05-15",
@@ -114,7 +114,7 @@
       }
     },
     {
-      "id": 5,
+      "id": "5",
       "description": "Mensalidade da Academia",
       "amount": 50,
       "dueDate": "2023-05-20",
@@ -129,7 +129,7 @@
       }
     },
     {
-      "id": 6,
+      "id": "6",
       "description": "Conta de Telefone",
       "amount": 65,
       "dueDate": "2023-05-25",
@@ -147,15 +147,7 @@
   },
   "investiments_fixed_income": [
     {
-      "id": 2,
-      "name": "CDB Banco XYZ",
-      "value": "5.000",
-      "interest_rate": "4.8%",
-      "start_date": "2023-02-09",
-      "due_date": "2024-02-09"
-    },
-    {
-      "id": 3,
+      "id": "3",
       "name": "LCI",
       "value": "7.500",
       "interest_rate": "5.5%",
@@ -163,7 +155,7 @@
       "due_date": "2024-03-19"
     },
     {
-      "id": 4,
+      "id": "4",
       "name": "CDB Banco XYZ",
       "value": "5.000",
       "interest_rate": "4.8%",
@@ -171,7 +163,7 @@
       "due_date": "2024-02-09"
     },
     {
-      "id": 5,
+      "id": "5",
       "name": "LCI",
       "value": "7.500",
       "interest_rate": "5.5",

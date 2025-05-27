@@ -148,16 +148,14 @@ export function FixedIncome() {
     });
 
   // Mutation para buscar uma conta específica para edição na tela de edição vai redenrizar os dados
-  const {
-    data: loadOneFixedIncomeMutation,
-    isLoading: isLoadingOneFixedIncome,
-  } = useMutation({
+    const loadOneFixedIncomeMutation = useMutation({
     mutationFn: async (id) => {
       const response = await axios({
         method: "get",
         baseURL: import.meta.env.VITE_API,
         url: `/investiments_fixed_income/${id}`,
       });
+      console.log("response.data", response.data);
       return response.data;
     },
   });
@@ -182,10 +180,7 @@ export function FixedIncome() {
       },
     });
   // Mutation para deletar uma conta a pagar
-  const {
-    data: deleteFixedIncomeMutation,
-    isLoading: isLoadingFixedIncomeMutation,
-  } = useMutation({
+  const deleteFixedIncomeMutation = useMutation({
     mutationFn: async (id) => {
       await axios({
         method: "delete",
@@ -277,7 +272,6 @@ export function FixedIncome() {
       setIsEditing(true);
       setOpenEdit(true);
       reset({
-        description: data.typInvestiment || "",
         name: data.name || "",
         value: data.value || "",
         interest_rate: data.interest_rate || "",
@@ -369,17 +363,13 @@ export function FixedIncome() {
               headerName: "Data Inicial",
               type: "string",
               flex: 1,
-              // valueFormatter: (params) => {
-              //   const value = params.value;
-              //   if (!value) return "";
-              //   const parts = value.split("-");
-              //   if (parts.length !== 3) return value;
-              //   const [year, month, day] = parts;
-              //   return `${day}/${month}/${year}`;
-              // },
               valueFormatter: (params) => {
-                console.log("start_date:", params.value);
-                return params.value;
+                const value = params;
+                if (!value) return "";
+                const parts = value.split("-");
+                if (parts.length !== 3) return value;
+                const [year, month, day] = parts;
+                return `${day}/${month}/${year}`;
               },
             },
             {
@@ -387,17 +377,13 @@ export function FixedIncome() {
               headerName: "Data de Vencimento",
               type: "string",
               flex: 1,
-              // valueFormatter: (params) => {
-              //   const value = params.value;
-              //   if (!value) return "";
-              //   const parts = value.split("-");
-              //   if (parts.length !== 3) return value;
-              //   const [year, month, day] = parts;
-              //   return `${day}/${month}/${year}`;
-              // },
               valueFormatter: (params) => {
-                console.log("start_date:", params.value);
-                return params.value;
+                const value = params;
+                if (!value) return "";
+                const parts = value.split("-");
+                if (parts.length !== 3) return value;
+                const [year, month, day] = parts;
+                return `${day}/${month}/${year}`;
               },
             },
             {
