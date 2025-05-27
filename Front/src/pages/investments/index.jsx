@@ -14,7 +14,7 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export const InvestmentsPage = () => {
-  const [open, setOpen] = React.useState(false);
+  // const [open, setOpen] = React.useState(false);
   const [activeTab, setActiveTab] = React.useState(null);
 
   const loadInvestmentsTotalQuery = useQuery({
@@ -26,7 +26,7 @@ export const InvestmentsPage = () => {
         url: "/investiments",
       });
 
-      return response.data.total;
+      return response.data;
     },
   });
   return (
