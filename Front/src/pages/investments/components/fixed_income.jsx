@@ -100,43 +100,9 @@ export function FixedIncome() {
           disableRowSelectionOnClick
           filterModel={filterModel}
           onFilterModelChange={(newModel) => setFilterModel(newModel)}
-          sx={{
-            backgroundColor: "#0F1729",
-            color: "#fff",
-            headerBg: "#0F1729",
-            borderColor: "#1E2B45",
-
-            "& .MuiDataGrid-footerContainer": {
-              backgroundColor: "#0F1729",
-              color: "#fff",
-              borderColor: "#1E2B45",
-            },
-            "& .MuiDataGrid-columnHeaders": {
-              backgroundColor: "#0F1729 !important", 
-              color: "#111",
-              fontWeight: "bold",
-              borderColor: "#1E2B45",
-            },
-            "& .MuiDataGrid-topContainer": {
-              borderColor: "#1E2B45", // <-- borda do header personalizada
-              backgroundColor: "#0F1729", // <-- fundo do header (opcional)
-            },
-            "& .MuiDataGrid-cell": {
-              borderColor: "#1E2B45",
-            },
-            "& .MuiDataGrid-virtualScroller": {
-              backgroundColor: "#0F1729",
-              borderBlockColor: "#1E2B45",
-            },
-            "& .MuiDataGrid-row:hover": {
-              backgroundColor: "#162032",
-              boxShadow: "#24304A",
-              borderBlockColor: "#1E2B45",
-            },
-          }}
         />
       </Box>
-      <div className="mt-4 font-bold text-amber-50 text-right">
+      <div className="mt-4 text-right">
         Total filtrado: R${" "}
         {total.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
       </div>

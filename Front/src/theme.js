@@ -56,7 +56,9 @@ export const darkTheme = createTheme({
           border: "1px solid #1E2B45", // borda customizada.
           textAlign: "center", // centraliza o texto
           padding: "20px", // espaçamento interno
-          backgroundImage: "none"
+          backgroundImage: "none",
+          fontSize: "16px", // tamanho da fonte
+          font: "Boald", // fonte em negrito
         },
       },
     },
