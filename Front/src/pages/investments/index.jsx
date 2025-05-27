@@ -8,12 +8,13 @@ import axios from "axios";
 import { FixedIncome } from "./components/fixed_income";
 
 const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: "#0F1729",
-  ...theme.typography.body2,
-  padding: theme.spacing(3),
-  textAlign: "center",
-  borderRadius: 3,
-  border: "#1E2B45 solid 0.1px",
+  // backgroundColor: "#0F1729",
+  // ...theme.typography.body2,
+  // padding: theme.spacing(3),
+  // textAlign: "center",
+  // borderRadius: 3,
+  // border: "#1E2B45 solid 0.1px",
+  ...theme.components?.MuiPaper?.styleOverrides?.root,
 }));
 
 export const InvestmentsPage = () => {
@@ -48,7 +49,7 @@ export const InvestmentsPage = () => {
         <Grid container spacing={2}>
           <Grid size={3}>
             <Item>
-              <div className="flex flex-col bg-background bg-[#0F1729] h-full w-full border-0">
+              <div className="flex flex-col bg-background  h-full w-full border-0">
                 <div className="flex flex-col gap-2 font-bold text-[14px] text-amber-50">
                   Total de Investimentos
                 </div>
@@ -62,7 +63,7 @@ export const InvestmentsPage = () => {
           </Grid>
           <Grid size={3}>
             <Item>
-              <div className="flex flex-col bg-background bg-[#0F1729] h-full w-full border-0">
+              <div className="flex flex-col bg-background h-full w-full border-0">
                 <div className="flex flex-col gap-2 font-bold text-[14px] text-amber-50">
                   Renda Fixa
                 </div>
@@ -76,7 +77,7 @@ export const InvestmentsPage = () => {
           </Grid>
           <Grid size={3}>
             <Item>
-              <div className="flex flex-col bg-background bg-[#0F1729] h-full w-full border-0">
+              <div className="flex flex-col bg-background  h-full w-full border-0">
                 <div className="flex flex-col gap-2 font-bold text-[14px] text-amber-50">
                   Renda Variável
                 </div>
@@ -90,7 +91,7 @@ export const InvestmentsPage = () => {
           </Grid>
           <Grid size={3}>
             <Item>
-              <div className="flex flex-col bg-background bg-[#0F1729] h-full w-full border-0">
+              <div className="flex flex-col bg-background  h-full w-full border-0">
                 <div className="flex flex-col gap-2 font-bold text-[14px] text-amber-50">
                   Dividendos
                 </div>
@@ -103,7 +104,7 @@ export const InvestmentsPage = () => {
           </Grid>
           <Grid size={15}>
             <Item>
-              <div className="flex flex-col bg-background bg-[#0F1729] h-full w-full border-0 text-amber-50 text-[18px] font-bold text-start ">
+              <div className="flex flex-col bg-background h-full w-full border-0 text-amber-50 text-[18px] font-bold text-start ">
                 Histórico de Desempenho
                 <div></div>
               </div>
@@ -111,7 +112,7 @@ export const InvestmentsPage = () => {
           </Grid>
           <Grid size={15}>
             <Item>
-              <div className="flex flex-col bg-background bg-[#0F1729] h-full w-full border-0 text-amber-50 text-[18px] font-bold text-start ">
+              <div className="flex flex-col bg-background  h-full w-full border-0 text-amber-50 text-[18px] font-bold text-start ">
                 Detalhes dos Investimentos
                 <div
                   dir="ltr"
@@ -128,10 +129,7 @@ export const InvestmentsPage = () => {
                     <button
                       className="inline-flex h-8 items-center justify-center rounded-md px-3 text-sm  transition-colors bg-[#1B2232]  hover:bg-[#24304A] cursor-pointer"
                       role="tab"
-                      // aria-selected="true"
-                      // tabIndex={0}
                       aria-selected={activeTab === "fixed_income"}
-                      tabIndex={0}
                       onClick={() => setActiveTab("fixed_income")}
                     >
                       Renda Fixa
@@ -140,7 +138,6 @@ export const InvestmentsPage = () => {
                       className="inline-flex h-8 items-center justify-center rounded-md px-3 text-sm  transition-colors bg-[#1B2232]  hover:bg-[#24304A] cursor-pointer"
                       role="tab"
                       aria-selected="true"
-                      tabIndex={-1}
                     >
                       Renda Variável
                     </button>
@@ -148,7 +145,6 @@ export const InvestmentsPage = () => {
                       className="inline-flex h-8 items-center justify-center rounded-md px-3 text-sm  transition-colors bg-[#1B2232]  hover:bg-[#24304A] cursor-pointer"
                       role="tab"
                       aria-selected="true"
-                      tabIndex={-2}
                     >
                       Criptomoedas
                     </button>
@@ -156,7 +152,6 @@ export const InvestmentsPage = () => {
                       className="inline-flex h-8 items-center justify-center rounded-md px-3 text-sm  transition-colors bg-[#1B2232]  hover:bg-[#24304A] cursor-pointer"
                       role="tab"
                       aria-selected="true"
-                      tabIndex={-3}
                     >
                       Dividendos
                     </button>
