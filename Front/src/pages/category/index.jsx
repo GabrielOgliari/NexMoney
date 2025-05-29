@@ -149,7 +149,10 @@ export const CategoryPage = () => {
         open={openAdd}
         onClose={handleCloseModal}
         onSubmit={handleSubmit}
-        initialValues={{ name: "", description: "", type: "" }}
+        initialValues={{ name: "",
+           description: "", 
+           type: categoryFields.find(f => f.name === "type").options[0].value // "expanse"
+          }}
         fields={categoryFields}
         validationSchema={validationSchema}
         title="Nova Categoria"
