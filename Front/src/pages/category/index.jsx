@@ -1,6 +1,4 @@
-import {
-  Button,
-} from "@mui/material";
+import { Button } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { ptBR } from "@mui/x-data-grid/locales";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -10,7 +8,7 @@ import { GenericFormModal } from "../../components/ui/GenericFormModal";
 import * as Yup from "yup";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
-
+// import { useEffect } from "react";
 
 // Campos do formulário
 const categoryFields = [
@@ -28,17 +26,36 @@ const categoryFields = [
   },
 ];
 
-// Validação
+// Novos campos para o modal extra de investimentos
+const investmentFields = [
+  {
+    name: "investmentType",
+    label: "Tipo de Investimento",
+    type: "select",
+    options: [
+      { value: "fixed_income", label: "Renda Fixa" },
+      { value: "variable_income", label: "Renda Variável" },
+      { value: "cripto", label: "Cripto" },
+    ],
+  },
+];
+
 const validationSchema = Yup.object({
   name: Yup.string().required("Nome obrigatório"),
   description: Yup.string(),
   type: Yup.string(),
 });
 
+const investmentValidation = Yup.object({
+  investmentType: Yup.string().required("Selecione o tipo de investimento"),
+});
+
 export const CategoryPage = () => {
   const [openAdd, setOpenAdd] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [editData, setEditData] = useState(null);
+  const [openInvestment, setOpenInvestment] = useState(false);
+  const [investmentData, setInvestmentData] = useState(null);
 
   const queryClient = useQueryClient();
 
@@ -120,21 +137,40 @@ export const CategoryPage = () => {
     setEditData(null);
   };
 
-  // Submit
+  // Detecta seleção de "investment" no modal principal
+  function handleAddFormChange(values) {
+    if (values.type === "investment" && !openInvestment) {
+      setOpenInvestment(true);
+    }
+  }
+
+  // Submit do modal de investimento
+  function handleInvestmentSubmit(values) {
+    setInvestmentData(values);
+    setOpenInvestment(false);
+  }
+
+  // Adapta o submit do formulário principal para incluir dados de investimento
   const handleSubmit = (values) => {
+    let dataToSend = { ...values };
+    if (values.type === "investment" && investmentData) {
+      dataToSend = { ...dataToSend, ...investmentData };
+    }
     if (editData && editData.id) {
       saveCategoryMutation.mutate({
-        data: { ...values, id: editData.id },
+        data: { ...dataToSend, id: editData.id },
         method: "put",
         url: `/categories/${editData.id}`,
       });
     } else {
+      const newId = Math.random().toString(36).substr(2, 8);
       saveCategoryMutation.mutate({
-        data: { ...values },
+        data: { ...dataToSend, id: newId },
         method: "post",
         url: "/categories",
       });
     }
+    setInvestmentData(null); // limpa ao salvar
   };
 
   // Filtra apenas categorias com id definido
@@ -147,23 +183,46 @@ export const CategoryPage = () => {
       {/* Modal Adicionar */}
       <GenericFormModal
         open={openAdd}
-        onClose={handleCloseModal}
+        onClose={() => {
+          handleCloseModal();
+          setInvestmentData(null);
+        }}
         onSubmit={handleSubmit}
-        initialValues={{ name: "",
-           description: "", 
-           type: categoryFields.find(f => f.name === "type").options[0].value // "expanse"
-          }}
+        initialValues={{
+          name: "",
+          description: "",
+          type: categoryFields.find((f) => f.name === "type").options[0].value,
+        }}
         fields={categoryFields}
         validationSchema={validationSchema}
         title="Nova Categoria"
         submitLabel="Adicionar"
+        onChange={handleAddFormChange}
+      />
+      {/* Modal extra para Investimento */}
+      <GenericFormModal
+        open={openInvestment}
+        onClose={() => setOpenInvestment(false)}
+        onSubmit={handleInvestmentSubmit}
+        initialValues={{ investmentType: "" }}
+        fields={investmentFields}
+        validationSchema={investmentValidation}
+        title="Tipo de Investimento"
+        submitLabel="Selecionar"
       />
       {/* Modal Editar */}
       <GenericFormModal
         open={openEdit}
         onClose={handleCloseModal}
         onSubmit={handleSubmit}
-        initialValues={editData || { name: "", description: "", type: "" }}
+        initialValues={
+          editData || {
+            name: "",
+            description: "",
+            type: categoryFields.find((f) => f.name === "type").options[0]
+              .value,
+          }
+        }
         fields={categoryFields}
         validationSchema={validationSchema}
         title="Editar Categoria"
@@ -184,7 +243,13 @@ export const CategoryPage = () => {
             { field: "name", headerName: "Nome", flex: 2 },
             { field: "description", headerName: "Descrição", flex: 2 },
             { field: "type", headerName: "Tipo", flex: 1 },
-            { field: "count", headerName: "Uso", flex: 0.5, valueGetter: (params) => params?.row?.count ?? "" },
+            { field: "investmentType", headerName: "Tipo Investimento", flex: 1 },
+            {
+              field: "count",
+              headerName: "Uso",
+              flex: 0.5,
+              valueGetter: (params) => params?.row?.count ?? "",
+            },
             {
               field: "actions",
               headerName: "Ações",

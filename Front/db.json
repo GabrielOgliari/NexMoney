@@ -49,7 +49,7 @@
       "type": "expanse"
     },
     {
-      "id": "6",
+      "id": "1",
       "name": "Salário",
       "description": "Receitas de salário",
       "type": "income",
@@ -61,6 +61,20 @@
       "name": "Novo Editado",
       "description": "dw",
       "type": "income"
+    },
+    {
+      "id": "rqwhrpeq",
+      "name": "555",
+      "description": "",
+      "type": "investment",
+      "investmentType": "renda-variavel"
+    },
+    {
+      "id": "oemdf5k4",
+      "name": "s",
+      "description": "",
+      "type": "investment",
+      "investmentType": "cripto"
     }
   ],
   "accounts-payable": [
@@ -169,6 +183,42 @@
       "interest_rate": "5.5",
       "start_date": "2023-03-19",
       "due_date": "2024-03-19"
+    },
+    {
+      "id": "sxwuid70",
+      "typInvestiment": "fixed_income",
+      "name": "iiii3",
+      "value": "21",
+      "interest_rate": "12",
+      "start_date": "2023-05-29",
+      "due_date": "2024-05-30"
+    },
+    {
+      "id": "t1dcfp6q",
+      "typInvestiment": "fixed_income",
+      "name": "ssssss",
+      "value": "ss",
+      "interest_rate": "5.5",
+      "start_date": "2025-05-29",
+      "due_date": "2025-05-29"
+    },
+    {
+      "id": "rdfs7hiy",
+      "typInvestiment": "fixed_income",
+      "name": "dd",
+      "value": "2",
+      "interest_rate": "2",
+      "start_date": "2025-05-29",
+      "due_date": "2025-05-29"
+    },
+    {
+      "id": "opq9qy4u",
+      "typInvestiment": "fixed_income",
+      "name": "teste",
+      "value": "10",
+      "interest_rate": "10",
+      "start_date": "2025-05-07",
+      "due_date": "2025-05-23"
     }
   ]
 }
