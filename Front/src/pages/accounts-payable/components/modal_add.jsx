@@ -6,11 +6,15 @@ import {
   DialogTitle,
   Button,
   TextField,
+  MenuItem,
+  Switch,
+  FormControlLabel,
+  Divider,
+  FormLabel,
 } from "@mui/material";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { Controller } from "react-hook-form";
-import { FormInputText } from "../../../components/ui/form-input-text";
 
 export function AccountsPayableAddModal({
   open,
@@ -18,133 +22,194 @@ export function AccountsPayableAddModal({
   control,
   handleSubmit,
   onSubmit,
-  register,
-  watch,
 }) {
+  // Estilo para deixar as bordas mais arredondadas
+  const roundedInput = {
+    "& .MuiOutlinedInput-root": {
+      borderRadius: "12px",
+    },
+    "& .MuiInputBase-root": {
+      borderRadius: "12px",
+    },
+  };
+
   return (
     <Dialog open={open} onClose={handleCloseModal} fullWidth maxWidth="sm">
-      <DialogTitle>Adicionar Nova Conta a Pagar</DialogTitle>
+      <DialogTitle className="flex flex-col items-start">
+        Adicionar Nova Conta a Pagar
+      </DialogTitle>
       <DialogContent>
-        <DialogContentText className="pb-4">
+        <DialogContentText className="pb-4 flex flex-col items-start">
           Digite os detalhes da nova conta a pagar.
         </DialogContentText>
-        <div className="flex flex-col gap-4">
-          <FormInputText
-            label="Descrição"
-            name="description"
-            control={control}
-          />
-          <div className="row flex gap-4">
-            <FormInputText
-              className="col-6 flex-1"
-              label="Valor"
-              name="amount"
-              control={control}
-              type="number"
-              step="0.01"
-              inputMode="decimal"
-            />
-            <Controller
-              name="dueDate"
-              control={control}
-              render={({ field }) => (
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DatePicker
-                    {...field}
-                    label="Data de Vencimento"
-                    inputFormat="DD/MM/YYYY"
-                    onChange={(date) => field.onChange(date)}
-                    value={field.value}
-                    renderInput={(params) => (
-                      <TextField {...params} fullWidth />
-                    )}
-                  />
-                </LocalizationProvider>
-              )}
-            />
-          </div>
-          <div className="row flex gap-4">
-            <FormInputText
-              className="col-6 flex-1"
-              label="Categoria"
-              name="category"
-              control={control}
-            />
-            <FormInputText
-              className="col-6 flex-1"
-              label="Status"
-              name="status"
-              control={control}
-            />
-          </div>
-          <div className="flex flex-col gap-2">
-            <label>Frequência da Recorrência</label>
-            <select
-              {...register("recurrence.type")}
-              defaultValue="monthly"
-              className="border rounded px-2 py-1"
-            >
-              <option value="daily">Diária</option>
-              <option value="weekly">Semanal</option>
-              <option value="biweekly">Quinzenal</option>
-              <option value="monthly">Mensal</option>
-              <option value="annual">Anual</option>
-            </select>
-          </div>
-          <div className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              {...register("recurrence.hasEndDate")}
-              id="hasEndDate"
-              className="form-checkbox"
-            />
-            <label htmlFor="hasEndDate">Ativar até data específica</label>
-          </div>
-          {watch("recurrence.hasEndDate") && (
-            <Controller
-              name="recurrence.endDate"
-              control={control}
-              render={({ field }) => (
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DatePicker
-                    {...field}
-                    label="Data Final da Recorrência"
-                    inputFormat="DD/MM/YYYY"
-                    onChange={(date) => field.onChange(date)}
-                    value={field.value}
-                    renderInput={(params) => (
-                      <TextField {...params} fullWidth />
-                    )}
-                  />
-                </LocalizationProvider>
-              )}
-            />
-          )}
-          <div className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              {...register("reminder")}
-              id="reminder"
-              className="form-checkbox"
-            />
-            <label htmlFor="reminder">
-              Definir lembrete para data de vencimento
-            </label>
-          </div>
-        </div>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={handleCloseModal} color="inherit">
-          Cancelar
-        </Button>
-        <Button
-          onClick={handleSubmit(onSubmit)}
-          color="primary"
-          variant="contained"
+        <form
+          className="flex flex-col gap-4 mt-2 items-start"
+          onSubmit={handleSubmit(onSubmit)}
         >
-          Adicionar
-        </Button>
-      </DialogActions>
+          {/* Descrição */}
+          <div className="w-full flex flex-col items-start">
+            <FormLabel sx={{ mb: 1, color: "text.primary" }}>
+              Descrição
+            </FormLabel>
+            <Controller
+              name="description"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  placeholder="Digite a descrição"
+                  fullWidth
+                  autoFocus
+                  sx={roundedInput}
+                />
+              )}
+            />
+          </div>
+
+          {/* Linha Valor e Data */}
+          <div className="flex gap-4 w-full">
+            <div className="w-1/2 flex flex-col items-start">
+              <FormLabel sx={{ mb: 1, color: "text.primary" }}>Valor</FormLabel>
+              <Controller
+                name="amount"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    placeholder="0,00"
+                    type="number"
+                    fullWidth
+                    inputProps={{ step: "0.01" }}
+                    sx={roundedInput}
+                  />
+                )}
+              />
+            </div>
+            <div className="w-1/2 flex flex-col items-start">
+              <FormLabel sx={{ mb: 1, color: "text.primary" }}>
+                Data de Vencimento
+              </FormLabel>
+              <Controller
+                name="dueDate"
+                control={control}
+                render={({ field }) => (
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                      {...field}
+                      onChange={(date) => field.onChange(date)}
+                      value={field.value}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          fullWidth
+                          placeholder="dd/mm/aaaa"
+                          sx={roundedInput}
+                          variant="outlined"
+                        />
+                      )}
+                    />
+                  </LocalizationProvider>
+                )}
+              />
+            </div>
+          </div>
+
+          {/* Linha Categoria e Status */}
+          <div className="flex gap-4 w-full">
+            <div className="w-1/2 flex flex-col items-start">
+              <FormLabel sx={{ mb: 1, color: "text.primary" }}>
+                Categoria
+              </FormLabel>
+              <Controller
+                name="category"
+                control={control}
+                render={({ field }) => (
+                  <TextField {...field} select fullWidth sx={roundedInput}>
+                    <MenuItem value="">Selecione</MenuItem>
+                    <MenuItem value="Moradia">Moradia</MenuItem>
+                    <MenuItem value="Alimentação">Alimentação</MenuItem>
+                    <MenuItem value="Transporte">Transporte</MenuItem>
+                    <MenuItem value="Educação">Educação</MenuItem>
+                    <MenuItem value="Saúde">Saúde</MenuItem>
+                  </TextField>
+                )}
+              />
+            </div>
+            <div className="w-1/2 flex flex-col items-start">
+              <FormLabel sx={{ mb: 1, color: "text.primary" }}>
+                Status
+              </FormLabel>
+              <Controller
+                name="status"
+                control={control}
+                render={({ field }) => (
+                  <TextField {...field} select fullWidth sx={roundedInput}>
+                    <MenuItem value="">Selecione</MenuItem>
+                    <MenuItem value="pending">Pendente</MenuItem>
+                    <MenuItem value="paid">Pago</MenuItem>
+                  </TextField>
+                )}
+              />
+            </div>
+          </div>
+
+          <Divider sx={{ my: 1 }} />
+
+          {/* Pagamento Recorrente */}
+          <div className="w-full flex flex-col items-start">
+            <Controller
+              name="recurrence.enabled"
+              control={control}
+              defaultValue={false}
+              render={({ field }) => (
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={!!field.value}
+                      onChange={(e) => field.onChange(e.target.checked)}
+                      color="primary"
+                    />
+                  }
+                  label="Pagamento Recorrente"
+                  sx={{ ml: 0 }}
+                />
+              )}
+            />
+          </div>
+
+          {/* Lembrete */}
+          <div className="w-full flex flex-col items-start">
+            <Controller
+              name="reminder"
+              control={control}
+              defaultValue={false}
+              render={({ field }) => (
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={!!field.value}
+                      onChange={(e) => field.onChange(e.target.checked)}
+                      color="primary"
+                    />
+                  }
+                  label="Definir lembrete para data de vencimento"
+                  sx={{ ml: 0 }}
+                />
+              )}
+            />
+          </div>
+
+          {/* Botões */}
+          <DialogActions className="flex justify-end mt-2 px-0 w-full">
+            <Button onClick={handleCloseModal} color="inherit">
+              Cancelar
+            </Button>
+            <Button type="submit" color="primary" variant="contained">
+              Salvar
+            </Button>
+          </DialogActions>
+        </form>
+      </DialogContent>
     </Dialog>
   );
 }
