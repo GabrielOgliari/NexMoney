@@ -7,9 +7,11 @@ import { Button } from "@mui/material";
 import { useState, useMemo } from "react";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import PointOfSaleRoundedIcon from '@mui/icons-material/PointOfSaleRounded';
 import { ptBR } from "@mui/x-data-grid/locales";
 import { GenericFormModal } from "../../../components/ui/GenericFormModal";
 import * as Yup from "yup";
+
 
 // Busca as categorias para montar o select de nome
 const useFixedIncomeCategories = () => {
@@ -236,7 +238,7 @@ export function FixedIncome() {
           Novo Lançamento
         </Button>
       </div>
-      <Box sx={{ height: 300, width: "100%", padding: 2 }}>
+      <Box sx={{ height: 500, width: "100%", padding: 2 }}>
         <DataGrid
           localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
           rows={rows}
@@ -280,7 +282,112 @@ export function FixedIncome() {
             {
               field: "actions",
               headerName: "Ações",
+              flex: 2,
+              disableReorder: true,
+              filterable: false,
+              disableColumnMenu: true,
+              sortable: false,
+              headerAlign: "center",
+              renderCell: ({ row }) => {
+                return (
+                  <div className="flex gap-3 justify-center items-center h-full">
+                    <Button
+                      color="info"
+                      variant="outlined"
+                      onClick={() => handleEdit(row.id)}
+                    >
+                      <EditOutlinedIcon />
+                    </Button>
+                    <Button
+                      color="error"
+                      variant="outlined"
+                      onClick={() => deleteFixedIncomeMutation.mutate(row.id)}
+                    >
+                      <DeleteOutlineOutlinedIcon />
+                    </Button>
+                    <Button
+                      color= "success"
+                      variant="outlined"
+                      onClick={() => console.log("Ação personalizada")}
+                      >
+                        <PointOfSaleRoundedIcon />
+                    </Button>
+                  </div>
+                );
+              },
+            },
+          ]}
+          initialState={{
+            pagination: { paginationModel: { pageSize: 5 } },
+          }}
+          pageSizeOptions={[5]}
+          loading={isLoadingFixedIncome}
+          disableRowSelectionOnClick
+        />
+      </Box>
+      <div className="mt-4 text-right">
+        <span>
+          Total filtrado: R${" "}
+          {(Array.isArray(rows)
+            ? rows.reduce((sum, row) => {
+                const valor = Number(
+                  String(row.value)
+                    .replace(/\./g, "") // remove separador de milhar
+                    .replace(",", ".") // vírgula por ponto
+                    .replace(/[^\d.-]/g, "") // remove não numéricos
+                );
+                return sum + (isNaN(valor) ? 0 : valor);
+              }, 0)
+            : 0
+          ).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+        </span>
+      </div>
+      <div>
+        <Box sx={{ height: 500, width: "100%", padding: 2 }}>
+        <DataGrid
+          localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
+          rows={rows}
+          columns={[
+            { field: "id", headerName: "ID", flex: 0.5 },
+            { field: "name", headerName: "Nome", flex: 2 },
+            { field: "value", headerName: "Valor", flex: 1 },
+            {
+              field: "interest_rate",
+              headerName: "Taxa de Juros (%)",
               flex: 1,
+            },
+            {
+              field: "start_date",
+              headerName: "Data Inicial",
+              type: "string",
+              flex: 1,
+              valueFormatter: (params) => {
+                const value = params;
+                if (!value) return "";
+                const parts = value.split("-");
+                if (parts.length !== 3) return value;
+                const [year, month, day] = parts;
+                return `${day}/${month}/${year}`;
+              },
+            },
+            {
+              field: "due_date",
+              headerName: "Data de Vencimento",
+              type: "string",
+              flex: 1,
+              valueFormatter: (params) => {
+                const value = params;
+                if (!value) return "";
+                const parts = value.split("-");
+                if (parts.length !== 3) return value;
+                const [year, month, day] = parts;
+                return `${day}/${month}/${year}`;
+              },
+            },
+            {
+              field: "actions",
+              headerName: "Ações",
+              flex: 2,
               disableReorder: true,
               filterable: false,
               disableColumnMenu: true,
@@ -316,22 +423,6 @@ export function FixedIncome() {
           disableRowSelectionOnClick
         />
       </Box>
-      <div className="mt-4 text-right">
-        <span>
-          Total filtrado: R${" "}
-          {(Array.isArray(rows)
-            ? rows.reduce((sum, row) => {
-                const valor = Number(
-                  String(row.value)
-                    .replace(/\./g, "") // remove separador de milhar
-                    .replace(",", ".") // vírgula por ponto
-                    .replace(/[^\d.-]/g, "") // remove não numéricos
-                );
-                return sum + (isNaN(valor) ? 0 : valor);
-              }, 0)
-            : 0
-          ).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
-        </span>
       </div>
     </div>
   );
