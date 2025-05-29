@@ -56,7 +56,13 @@ export const darkTheme = createTheme({
           border: "1px solid #1E2B45", // borda customizada.
           textAlign: "center", // centraliza o texto
           padding: "20px", // espaçamento interno
-          backgroundImage: "none"
+          backgroundImage: "none",
+          fontSize: "16px", // tamanho da fonte
+          font: "Boald", // fonte em negrito
+          display: "flex", // <-- flex layout
+          flexDirection: "column", // <-- direção coluna
+          overflowY: "auto", // <-- rolagem vertical automática
+          height: "100%", // <-- ocupa toda a altura do pai
         },
       },
     },
