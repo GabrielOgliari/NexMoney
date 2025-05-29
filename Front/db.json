@@ -75,6 +75,13 @@
       "description": "",
       "type": "investment",
       "investmentType": "cripto"
+    },
+    {
+      "id": "9sdx92u7",
+      "name": "teste",
+      "description": "",
+      "type": "investment",
+      "investmentType": "fixed_income"
     }
   ],
   "accounts-payable": [
@@ -219,6 +226,15 @@
       "interest_rate": "10",
       "start_date": "2025-05-07",
       "due_date": "2025-05-23"
+    },
+    {
+      "id": "bs2heiok",
+      "typInvestiment": "fixed_income",
+      "name": "teste",
+      "value": "5",
+      "interest_rate": "5",
+      "start_date": "2025-05-28",
+      "due_date": "2025-05-30"
     }
   ]
 }

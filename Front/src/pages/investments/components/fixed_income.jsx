@@ -4,23 +4,40 @@ import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@mui/material";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import { ptBR } from "@mui/x-data-grid/locales";
-// import dayjs from "dayjs";
 import { GenericFormModal } from "../../../components/ui/GenericFormModal";
-
-// Campos do formulário
-const fixedIncomeFields = [
-  { name: "name", label: "Nome" },
-  { name: "value", label: "Valor" },
-  { name: "interest_rate", label: "Taxa de Juros (%)" },
-  { name: "start_date", label: "Data Inicial", type: "date" },
-  { name: "due_date", label: "Data de Vencimento", type: "date" },
-];
-
 import * as Yup from "yup";
+
+// Busca as categorias para montar o select de nome
+const useFixedIncomeCategories = () => {
+  const { data: categories = [] } = useQuery({
+    queryKey: ["categories"],
+    queryFn: async () => {
+      const response = await axios({
+        method: "get",
+        baseURL: import.meta.env.VITE_API,
+        url: "/categories",
+      });
+      return response.data;
+    },
+  });
+
+  // Monta as opções do select
+  return useMemo(
+    () =>
+      categories
+        .filter(
+          (cat) =>
+            cat.type === "investment" && cat.investmentType === "fixed_income"
+        )
+        .map((cat) => ({ value: cat.name, label: cat.name })),
+    [categories]
+  );
+};
+
 const validationSchema = Yup.object({
   typInvestiment: Yup.string().required("Tipo obrigatório"),
   name: Yup.string().required("Nome obrigatório"),
@@ -37,7 +54,7 @@ export function FixedIncome() {
 
   const queryClient = useQueryClient();
 
-  // Consulta para buscar todos os lançamentos em Renda Fixa (fixed income)
+  // Busca lançamentos de renda fixa
   const { data: loadFixedIncomeQuery = [], isLoading: isLoadingFixedIncome } =
     useQuery({
       queryKey: ["fixed_income"],
@@ -50,6 +67,23 @@ export function FixedIncome() {
         return response.data;
       },
     });
+
+  // Busca categorias para o select de nome
+  const nameOptions = useFixedIncomeCategories();
+
+  // Campos do formulário
+  const fixedIncomeFields = [
+    {
+      name: "name",
+      label: "Nome",
+      type: "select",
+      options: nameOptions,
+    },
+    { name: "value", label: "Valor" },
+    { name: "interest_rate", label: "Taxa de Juros (%)" },
+    { name: "start_date", label: "Data Inicial", type: "date" },
+    { name: "due_date", label: "Data de Vencimento", type: "date" },
+  ];
 
   // Mutation para buscar um lançamento específico
   const loadOneFixedIncomeMutation = useMutation({
@@ -283,21 +317,20 @@ export function FixedIncome() {
         />
       </Box>
       <div className="mt-4 text-right">
-        <span >
-
-        Total filtrado: R${" "}
-        {(Array.isArray(rows)
-          ? rows.reduce((sum, row) => {
-            const valor = Number(
-              String(row.value)
-              .replace(/\./g, "") // remove separador de milhar
-              .replace(",", ".") // vírgula por ponto
-              .replace(/[^\d.-]/g, "") // remove não numéricos
-            );
-            return sum + (isNaN(valor) ? 0 : valor);
-          }, 0)
-          : 0
-        ).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+        <span>
+          Total filtrado: R${" "}
+          {(Array.isArray(rows)
+            ? rows.reduce((sum, row) => {
+                const valor = Number(
+                  String(row.value)
+                    .replace(/\./g, "") // remove separador de milhar
+                    .replace(",", ".") // vírgula por ponto
+                    .replace(/[^\d.-]/g, "") // remove não numéricos
+                );
+                return sum + (isNaN(valor) ? 0 : valor);
+              }, 0)
+            : 0
+          ).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
         </span>
       </div>
     </div>
