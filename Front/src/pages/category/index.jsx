@@ -242,13 +242,30 @@ export const CategoryPage = () => {
             { field: "id", headerName: "ID", flex: 0.5 },
             { field: "name", headerName: "Nome", flex: 2 },
             { field: "description", headerName: "Descrição", flex: 2 },
-            { field: "type", headerName: "Tipo", flex: 1 },
-            { field: "investmentType", headerName: "Tipo Investimento", flex: 1 },
+            {
+              field: "type",
+              headerName: "Tipo",
+              flex: 1,
+              renderCell: (params) => {
+                const type = params?.row?.type;
+                const map = {
+                  expanse: "Despesas",
+                  income: "Receita",
+                  investment: "Investimentos",
+                };
+                return map[type] || type || "";
+              },
+            },
+            {
+              field: "investmentType",
+              headerName: "Tipo Investimento",
+              flex: 1,
+            },
             {
               field: "count",
               headerName: "Uso",
               flex: 0.5,
-              valueGetter: (params) => params?.row?.count ?? "",
+              valueGetter: (params) => params?.row?.count ?? 0,
             },
             {
               field: "actions",
