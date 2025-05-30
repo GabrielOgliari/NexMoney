@@ -168,17 +168,9 @@
   },
   "investiments_fixed_income": [
     {
-      "id": "3",
-      "name": "LCI",
-      "value": "7.500",
-      "interest_rate": "5.5%",
-      "start_date": "2023-03-19",
-      "due_date": "2024-03-19"
-    },
-    {
       "id": "4",
       "name": "CDB Banco XYZ",
-      "value": "5.000",
+      "value": "5000",
       "interest_rate": "4.8%",
       "start_date": "2023-02-09",
       "due_date": "2024-02-09"
@@ -186,7 +178,7 @@
     {
       "id": "5",
       "name": "LCI",
-      "value": "7.500",
+      "value": "7500",
       "interest_rate": "5.5",
       "start_date": "2023-03-19",
       "due_date": "2024-03-19"
@@ -235,6 +227,29 @@
       "interest_rate": "5",
       "start_date": "2025-05-28",
       "due_date": "2025-05-30"
+    }
+  ],
+  "investiments_fixed_income_exit": [
+    {
+      "id": "1",
+      "name": "LCI",
+      "withdrawal_amount": "7500",
+      "initial_value": "7000",
+      "sell_date": "2024-03-19"
+    },
+    {
+      "id": "g8vfogbm",
+      "name": "LCI",
+      "initial_value": 7500,
+      "withdrawal_amount": 1000,
+      "sell_date": "2025-05-30"
+    },
+    {
+      "id": "lbtg9gmf",
+      "name": "LCI",
+      "initial_value": 6500,
+      "withdrawal_amount": 6500,
+      "sell_date": "2025-05-29"
     }
   ]
 }
