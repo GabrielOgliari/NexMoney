@@ -369,9 +369,32 @@ export const AccountsPayablePage = () => {
                 );
               },
             },
-            // Coluna recorrência (apenas mostra valor)
-            { field: "reminder", headerName: "Recorrencia", flex: 1 },
-            // Coluna ações (editar e deletar)
+
+            {
+              field: "reminder",
+              headerName: "Recorrência",
+              flex: 1,
+              renderCell: ({ row }) => {
+                if (!row.reminder || !row.recurrence) return "-";
+                // Exibe tipo (mensal, semanal, etc) e progresso (current/total) se existir
+                const typeMap = {
+                  monthly: "Mensal",
+                  weekly: "Semanal",
+                  annual: "Anual",
+                  daily: "Diária",
+                };
+                const tipo =
+                  typeMap[row.recurrence.type] || row.recurrence.type || "-";
+                const current = row.recurrence.currentOccurrence ?? null;
+                const total = row.recurrence.occurrences ?? null;
+                // Formata o texto com tipo e progresso
+                if (current !== null && total !== null) {
+                  return `${tipo} (${current}/${total})`;
+                }
+                return tipo;
+              },
+            },
+
             {
               field: "actions",
               headerName: "Ações",
