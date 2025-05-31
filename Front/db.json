@@ -82,6 +82,13 @@
       "description": "",
       "type": "investment",
       "investmentType": "fixed_income"
+    },
+    {
+      "id": "ll8l6btl",
+      "name": "Nubank",
+      "description": "",
+      "type": "investment",
+      "investmentType": "fixed_income"
     }
   ],
   "accounts-payable": [
@@ -168,73 +175,79 @@
   },
   "investiments_fixed_income": [
     {
-      "id": "3",
-      "name": "LCI",
-      "value": "7.500",
-      "interest_rate": "5.5%",
-      "start_date": "2023-03-19",
-      "due_date": "2024-03-19"
-    },
-    {
-      "id": "4",
-      "name": "CDB Banco XYZ",
-      "value": "5.000",
-      "interest_rate": "4.8%",
-      "start_date": "2023-02-09",
-      "due_date": "2024-02-09"
-    },
-    {
-      "id": "5",
-      "name": "LCI",
-      "value": "7.500",
-      "interest_rate": "5.5",
-      "start_date": "2023-03-19",
-      "due_date": "2024-03-19"
-    },
-    {
-      "id": "sxwuid70",
-      "typInvestiment": "fixed_income",
-      "name": "iiii3",
-      "value": "21",
-      "interest_rate": "12",
-      "start_date": "2023-05-29",
-      "due_date": "2024-05-30"
-    },
-    {
-      "id": "t1dcfp6q",
-      "typInvestiment": "fixed_income",
-      "name": "ssssss",
-      "value": "ss",
-      "interest_rate": "5.5",
-      "start_date": "2025-05-29",
-      "due_date": "2025-05-29"
-    },
-    {
-      "id": "rdfs7hiy",
-      "typInvestiment": "fixed_income",
-      "name": "dd",
-      "value": "2",
-      "interest_rate": "2",
-      "start_date": "2025-05-29",
-      "due_date": "2025-05-29"
-    },
-    {
-      "id": "opq9qy4u",
+      "id": "x45v8mkl",
       "typInvestiment": "fixed_income",
       "name": "teste",
-      "value": "10",
-      "interest_rate": "10",
-      "start_date": "2025-05-07",
-      "due_date": "2025-05-23"
+      "value": "1000",
+      "interest_rate": "0",
+      "start_date": "2025-05-06",
+      "due_date": "2026-01-10"
     },
     {
-      "id": "bs2heiok",
+      "id": "om9kuehj",
       "typInvestiment": "fixed_income",
-      "name": "teste",
-      "value": "5",
-      "interest_rate": "5",
-      "start_date": "2025-05-28",
-      "due_date": "2025-05-30"
+      "name": "Nubank",
+      "value": 2750,
+      "interest_rate": "0",
+      "start_date": "2025-05-06",
+      "due_date": "2025-09-26"
+    }
+  ],
+  "investiments_fixed_income_exit": [
+    {
+      "id": "9tbsvxd5",
+      "name": "Nubank",
+      "initial_value": 1000,
+      "withdrawal_amount": 353,
+      "sell_date": "2025-05-31",
+      "start_date": "2025-05-05",
+      "due_date": "2025-06-27",
+      "interest_rate": "0",
+      "inclusion_date": "2025-05-05"
+    },
+    {
+      "id": "z5x25pp0",
+      "name": "Nubank",
+      "initial_value": 647,
+      "withdrawal_amount": 500,
+      "sell_date": "2025-05-30",
+      "start_date": "2025-05-05",
+      "due_date": "2025-06-27",
+      "interest_rate": "0",
+      "inclusion_date": "2025-05-05"
+    },
+    {
+      "id": "84cxovoj",
+      "name": "Nubank",
+      "initial_value": 147,
+      "withdrawal_amount": 147,
+      "sell_date": "2025-05-31",
+      "start_date": "2025-05-05",
+      "due_date": "2025-06-27",
+      "interest_rate": "0",
+      "inclusion_date": "2025-05-05"
+    },
+    {
+      "id": "9hsjia0k",
+      "name": "Nubank",
+      "initial_value": 3353,
+      "withdrawal_amount": 353,
+      "sell_date": "2025-05-31",
+      "start_date": "2025-05-06",
+      "due_date": "2025-09-26",
+      "interest_rate": "0",
+      "inclusion_date": "2025-05-06"
+    },
+    {
+      "id": "gzqhvihb",
+      "name": "Nubank",
+      "initial_value": 3000,
+      "withdrawal_amount": 250,
+      "sell_date": "2025-05-31",
+      "start_date": "2025-05-06",
+      "due_date": "2025-09-26",
+      "interest_rate": "0",
+      "inclusion_date": "2025-05-06"
     }
   ]
 }
