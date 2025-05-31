@@ -267,45 +267,73 @@ export function FixedIncome() {
     },
   });
 
-  const withdrawFields = [
-    { name: "initial_value", label: "Valor Inicial", type: "number" },
-    { name: "withdrawal_amount", label: "Valor de Retirada", type: "number" },
-    { name: "sell_date", label: "Data de venda", type: "date" },
-  ];
-
   const handleOpenWithdraw = (row) => {
     setWithdrawData(row);
     setOpenWithdraw(true);
   };
 
   const handleWithdrawSubmit = (values) => {
-    const valorAtual = Number(withdrawData.value);
-    const valorRetirada = Number(values.withdrawal_amount);
+    const nome = withdrawData.name;
+    let valorRestante = Number(values.withdrawal_amount);
 
-    // Garante que o valor inicial salvo é o valor antes da retirada
-    saveFixedIncomeExitMutation.mutate({
-      id: Math.random().toString(36).substr(2, 8),
-      name: withdrawData.name,
-      initial_value: valorAtual,
-      withdrawal_amount: valorRetirada,
-      sell_date: values.sell_date,
+    // Filtra e ordena os lançamentos daquele nome por data (mais antigos primeiro)
+    const registros = rowsFixedIncome
+      .filter((row) => row.name === nome)
+      .sort((a, b) => new Date(a.start_date) - new Date(b.start_date));
+
+    registros.forEach((registro) => {
+      if (valorRestante <= 0) return;
+
+      const valorAtual = Number(registro.value);
+      const valorParaRetirar = Math.min(valorAtual, valorRestante);
+
+      // Salva a retirada
+      saveFixedIncomeExitMutation.mutate({
+        id: Math.random().toString(36).substr(2, 8),
+        name: registro.name,
+        initial_value: valorAtual,
+        withdrawal_amount: valorParaRetirar,
+        sell_date: values.sell_date,
+        start_date: registro.start_date,
+        due_date: registro.due_date,
+        interest_rate: registro.interest_rate,
+      });
+
+      if (valorParaRetirar === valorAtual) {
+        // Remove o lançamento se retirou tudo
+        deleteFixedIncomeMutation.mutate(registro.id);
+      } else if (valorParaRetirar < valorAtual) {
+        // Atualiza o valor do lançamento se retirou parcialmente
+        saveFixedIncomeMutation.mutate({
+          data: {
+            ...registro,
+            value: valorAtual - valorParaRetirar,
+          },
+          method: "put",
+          url: `/investiments_fixed_income/${registro.id}`,
+        });
+      }
+
+      valorRestante -= valorParaRetirar;
     });
 
-    // Se retirou tudo ou mais, exclui o lançamento
-    if (valorRetirada >= valorAtual) {
-      deleteFixedIncomeMutation.mutate(withdrawData.id);
-    } else {
-      // Se retirada parcial, atualiza valor
-      saveFixedIncomeMutation.mutate({
-        data: {
-          ...withdrawData,
-          value: valorAtual - valorRetirada,
-        },
-        method: "put",
-        url: `/investiments_fixed_income/${withdrawData.id}`,
-      });
-    }
+    setOpenWithdraw(false);
+    setWithdrawData(null);
   };
+
+  // Mutation para deletar
+  const deleteFixedIncomeExitMutation = useMutation({
+    mutationFn: async (id) => {
+      await axios({
+        method: "delete",
+        baseURL: import.meta.env.VITE_API,
+        url: `/investiments_fixed_income_exit/${id}`,
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["fixed_income_exit"]);
+    },
+  });
 
   const rowsFixedIncomeExit = Array.isArray(loadFixedIncomeExitQuery)
     ? loadFixedIncomeExitQuery.filter(
@@ -315,6 +343,8 @@ export function FixedIncome() {
 
   return (
     <div className="flex flex-col height-screen h-full w-full overflow-hidden ">
+      
+      {/* Historico de lançamentos */}
       {/* Modal de adição */}
       <GenericFormModal
         open={openAdd}
@@ -373,7 +403,11 @@ export function FixedIncome() {
         validationSchema={Yup.object({
           withdrawal_amount: Yup.number()
             .required("Obrigatório")
-            .min(0.01, "Valor mínimo 0.01"),
+            .min(0.01, "Valor mínimo 0.01")
+            .max(
+              Number(withdrawData?.value || 0),
+              "Não pode ser maior que o valor total"
+            ),
           sell_date: Yup.string().required("Obrigatório"),
         })}
         title={`Retirada de ${withdrawData?.name || ""}`}
@@ -429,7 +463,7 @@ export function FixedIncome() {
             {
               field: "actions",
               headerName: "Ações",
-              flex: 2,
+              flex: 1,
               disableReorder: true,
               filterable: false,
               disableColumnMenu: true,
@@ -448,16 +482,11 @@ export function FixedIncome() {
                     <Button
                       color="error"
                       variant="outlined"
-                      onClick={() => deleteFixedIncomeMutation.mutate(row.id)}
+                      onClick={() =>
+                        deleteFixedIncomeExitMutation.mutate(row.id)
+                      }
                     >
                       <DeleteOutlineOutlinedIcon />
-                    </Button>
-                    <Button
-                      color="success"
-                      variant="outlined"
-                      onClick={() => handleOpenWithdraw(row)}
-                    >
-                      <PointOfSaleRoundedIcon />
                     </Button>
                   </div>
                 );
@@ -472,6 +501,8 @@ export function FixedIncome() {
           disableRowSelectionOnClick
         />
       </Box>
+
+      {/* Total filtrado */}
       <div className="mt-4 text-right">
         <span>
           Total filtrado: R${" "}
@@ -506,29 +537,28 @@ export function FixedIncome() {
                 flex: 1,
               },
               {
-              field: "actions",
-              headerName: "Ações",
-              flex: 0.5,
-              disableReorder: true,
-              filterable: false,
-              disableColumnMenu: true,
-              sortable: false,
-              headerAlign: "center",
-              renderCell: ({ row }) => {
-                return (
-                  <div className="flex gap-3 justify-center items-center h-full">
-                    <Button
-                      color="success"
-                      variant="outlined"
-                      onClick={() => handleOpenWithdraw(row)}
-                    >
-                      <PointOfSaleRoundedIcon />
-                    </Button>
-                  </div>
-                );
+                field: "actions",
+                headerName: "Ações",
+                flex: 0.5,
+                disableReorder: true,
+                filterable: false,
+                disableColumnMenu: true,
+                sortable: false,
+                headerAlign: "center",
+                renderCell: ({ row }) => {
+                  return (
+                    <div className="flex gap-3 justify-center items-center h-full">
+                      <Button
+                        color="success"
+                        variant="outlined"
+                        onClick={() => handleOpenWithdraw(row)}
+                      >
+                        <PointOfSaleRoundedIcon />
+                      </Button>
+                    </div>
+                  );
+                },
               },
-            },
-              
             ]}
             initialState={{
               pagination: { paginationModel: { pageSize: 5 } },
@@ -539,6 +569,9 @@ export function FixedIncome() {
           />
         </Box>
       </div>
+
+
+      {/* Retiradas de renda fixa */}
       <div>
         <Box sx={{ height: 500, width: "100%", padding: 2, marginTop: 2 }}>
           <div className="flex justify-between items-center mb-4">
@@ -586,14 +619,24 @@ export function FixedIncome() {
                       <Button
                         color="info"
                         variant="outlined"
-                        onClick={() => handleEdit(row.id)}
+                        onClick={() => {
+                          setEditData({
+                            ...row,
+                            // Ajuste os campos conforme o formulário de edição de retirada
+                            withdrawal_amount: row.withdrawal_amount,
+                            sell_date: row.sell_date,
+                          });
+                          setOpenEdit(true);
+                        }}
                       >
                         <EditOutlinedIcon />
                       </Button>
                       <Button
                         color="error"
                         variant="outlined"
-                        onClick={() => deleteFixedIncomeMutation.mutate(row.id)}
+                        onClick={() =>
+                          deleteFixedIncomeExitMutation.mutate(row.id)
+                        }
                       >
                         <DeleteOutlineOutlinedIcon />
                       </Button>

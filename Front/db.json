@@ -175,88 +175,44 @@
   },
   "investiments_fixed_income": [
     {
-      "id": "4",
-      "name": "CDB Banco XYZ",
-      "value": "5000",
-      "interest_rate": "4.8%",
-      "start_date": "2023-02-09",
-      "due_date": "2024-02-09"
-    },
-    {
-      "id": "5",
-      "name": "LCI",
-      "value": "7500",
-      "interest_rate": "5.5",
-      "start_date": "2023-03-19",
-      "due_date": "2024-03-19"
-    },
-    {
-      "id": "sxwuid70",
-      "typInvestiment": "fixed_income",
-      "name": "iiii3",
-      "value": "21",
-      "interest_rate": "12",
-      "start_date": "2023-05-29",
-      "due_date": "2024-05-30"
-    },
-    {
-      "id": "t1dcfp6q",
-      "typInvestiment": "fixed_income",
-      "name": "ssssss",
-      "value": "ss",
-      "interest_rate": "5.5",
-      "start_date": "2025-05-29",
-      "due_date": "2025-05-29"
-    },
-    {
-      "id": "rdfs7hiy",
-      "typInvestiment": "fixed_income",
-      "name": "dd",
-      "value": "2",
-      "interest_rate": "2",
-      "start_date": "2025-05-29",
-      "due_date": "2025-05-29"
-    },
-    {
-      "id": "opq9qy4u",
+      "id": "juve27ok",
       "typInvestiment": "fixed_income",
       "name": "teste",
-      "value": "10",
-      "interest_rate": "10",
-      "start_date": "2025-05-07",
-      "due_date": "2025-05-23"
+      "value": "1500",
+      "interest_rate": "0",
+      "start_date": "2025-05-06",
+      "due_date": "2027-05-28"
     },
     {
-      "id": "bs2heiok",
+      "id": "5wpp2yln",
       "typInvestiment": "fixed_income",
-      "name": "teste",
-      "value": "5",
-      "interest_rate": "5",
-      "start_date": "2025-05-28",
-      "due_date": "2025-05-30"
+      "name": "Nubank",
+      "value": 3000,
+      "interest_rate": "0",
+      "start_date": "2025-05-06",
+      "due_date": "2027-05-20"
     }
   ],
   "investiments_fixed_income_exit": [
     {
-      "id": "1",
-      "name": "LCI",
-      "withdrawal_amount": "7500",
-      "initial_value": "7000",
-      "sell_date": "2024-03-19"
-    },
-    {
-      "id": "g8vfogbm",
-      "name": "LCI",
-      "initial_value": 7500,
+      "id": "kch8wb6c",
+      "name": "Nubank",
+      "initial_value": 1000,
       "withdrawal_amount": 1000,
-      "sell_date": "2025-05-30"
+      "sell_date": "2025-05-30",
+      "start_date": "2025-05-05",
+      "due_date": "2025-08-28",
+      "interest_rate": "0"
     },
     {
-      "id": "lbtg9gmf",
-      "name": "LCI",
-      "initial_value": 6500,
-      "withdrawal_amount": 6500,
-      "sell_date": "2025-05-29"
+      "id": "4kjov7js",
+      "name": "Nubank",
+      "initial_value": 3353,
+      "withdrawal_amount": 353,
+      "sell_date": "2025-05-30",
+      "start_date": "2025-05-06",
+      "due_date": "2027-05-20",
+      "interest_rate": "0"
     }
   ]
 }
