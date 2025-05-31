@@ -35,6 +35,19 @@ export const AccountsPayablePage = () => {
   // Instância do React Query para gerenciamento de cache
   const queryClient = useQueryClient();
 
+  // Carrega as categorias do banco
+  const { data: categoriesData = [] } = useQuery({
+    queryKey: ["categories"],
+    queryFn: async () => {
+      const response = await axios({
+        method: "get",
+        baseURL: import.meta.env.VITE_API,
+        url: "/categories",
+      });
+      return response.data;
+    },
+  });
+
   // Consulta para buscar todas as contas a pagar
   const loadAccountsPayableQuery = useQuery({
     queryKey: ["accounts-payable"],
@@ -233,6 +246,7 @@ export const AccountsPayablePage = () => {
         onSubmit={onSubmit}
         register={register}
         watch={watch}
+        categories={categoriesData}
       />
       {/* Modal de edição */}
       <AccountsPayableEditModal
@@ -243,6 +257,7 @@ export const AccountsPayablePage = () => {
         onSubmit={onSubmit}
         register={register}
         watch={watch}
+        categories={categoriesData}
       />
 
       {/* Área principal com botão de adicionar e tabela */}
