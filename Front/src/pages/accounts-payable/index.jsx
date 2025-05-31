@@ -8,22 +8,22 @@ import {
   DialogContentText,
   DialogTitle,
   TextField,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
 } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
-import { ptBR } from "@mui/x-data-grid/locales";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { useForm, Controller } from "react-hook-form";
-//import { FormInputText } from "../../components/ui/form-input-text";
-
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import { AccountsPayableAddModal } from "./components/modal_add";
 import { AccountsPayableEditModal } from "./components/modal_edit";
 
-// Importa DatePicker e adapter para dayjs
-//import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
-//import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 
 export const AccountsPayablePage = () => {
@@ -269,168 +269,99 @@ export const AccountsPayablePage = () => {
           </Button>
         </div>
 
-        {/* DataGrid para exibir as contas a pagar */}
-        <DataGrid
-          localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
-          sx={{
-            backgroundColor: "#0F1729",
-            color: "#fff",
-            headerBg: "#0F1729",
-            borderColor: "#1E2B45",
-            "& .MuiDataGrid-footerContainer": {
-              backgroundColor: "#0F1729",
-              color: "#fff",
-              borderColor: "#1E2B45",
-            },
-            "& .MuiDataGrid-columnHeaders": {
-              backgroundColor: "#0F1729",
-              color: "#111",
-              fontWeight: "bold",
-              borderColor: "#1E2B45",
-            },
-            "& .MuiDataGrid-topContainer": {
-              borderColor: "#1E2B45",
-              backgroundColor: "#0F1729",
-            },
-            "& .MuiDataGrid-cell": {
-              borderColor: "#1E2B45",
-            },
-            "& .MuiDataGrid-virtualScroller": {
-              backgroundColor: "#0F1729",
-            },
-            "& .MuiDataGrid-row:hover": {
-              backgroundColor: "#162032",
-            },
-          }}
-          columns={[
-            // Coluna descrição
-            { field: "description", headerName: "Descrição", flex: 1 },
-            // Coluna valor, formata como moeda
-            {
-              field: "amount",
-              headerName: "Valor",
-              flex: 1,
-              valueFormatter: (params) => {
-                const amount = params;
-                if (typeof amount !== "number") return amount;
-                return new Intl.NumberFormat("pt-BR", {
-                  style: "currency",
-                  currency: "BRL",
-                }).format(amount);
-              },
-            },
-            // Coluna data de vencimento, formata como dd/mm/yyyy
-            {
-              field: "dueDate",
-              headerName: "Data de Vencimento",
-              flex: 1,
-              valueFormatter: (params) => {
-                const dateStr = params;
-                if (!dateStr) return "";
-                const parts = dateStr.split("-");
-                if (parts.length !== 3) return dateStr;
-                const [year, month, day] = parts;
-                return `${day}/${month}/${year}`;
-              },
-            },
-            // Coluna categoria
-            { field: "category", headerName: "Categoria", flex: 1 },
-            // Coluna status, mostra "Pago" ou "Pendente" com cor
-            {
-              field: "status",
-              headerName: "Status",
-              flex: 1,
-              align: "center",
-              renderCell: (params) => {
-                const status = params.value;
-                let label = "";
-                let color = "";
-                if (status === "paid") {
-                  label = "Pago";
-                  color = "#22c55e";
-                } else {
-                  label = "Pendente";
-                  color = "#f59e42";
-                }
-                return (
-                  <span
-                    style={{
-                      color: "#fff",
-                      background: color,
-                      padding: "4px 12px",
-                      borderRadius: "15px",
-                      fontWeight: "bold",
-                      minWidth: "20px",
-                      textAlign: "center",
-                    }}
-                  >
-                    {label}
-                  </span>
-                );
-              },
-            },
-
-            {
-              field: "reminder",
-              headerName: "Recorrência",
-              flex: 1,
-              renderCell: ({ row }) => {
-                if (!row.reminder || !row.recurrence) return "-";
-                // Exibe tipo (mensal, semanal, etc) e progresso (current/total) se existir
-                const typeMap = {
-                  monthly: "Mensal",
-                  weekly: "Semanal",
-                  annual: "Anual",
-                  daily: "Diária",
-                };
-                const tipo =
-                  typeMap[row.recurrence.type] || row.recurrence.type || "-";
-                const current = row.recurrence.currentOccurrence ?? null;
-                const total = row.recurrence.occurrences ?? null;
-                // Formata o texto com tipo e progresso
-                if (current !== null && total !== null) {
-                  return `${tipo} (${current}/${total})`;
-                }
-                return tipo;
-              },
-            },
-
-            {
-              field: "actions",
-              headerName: "Ações",
-              width: 240,
-              disableReorder: true,
-              filterable: false,
-              disableColumnMenu: true,
-              sortable: false,
-              headerAlign: "center",
-              renderCell: ({ row }) => {
-                return (
-                  <div className="flex gap-3 justify-center items-center h-full">
-                    <Button
-                      color="info"
-                      variant="outlined"
-                      onClick={() => handleEdit(row.id)}
+        {/* Tabela para exibir as contas a pagar */}
+        <TableContainer component={Paper} sx={{ backgroundColor: "#0F1729" }}>
+          <Table>
+            <TableHead>
+              <TableRow sx={{ backgroundColor: "#1E2B45" }}>
+                <TableCell sx={{ color: "white" }}>Descrição</TableCell>
+                <TableCell sx={{ color: "white" }}>Valor</TableCell>
+                <TableCell sx={{ color: "white" }}>
+                  Data de Vencimento
+                </TableCell>
+                <TableCell sx={{ color: "white" }}>Categoria</TableCell>
+                <TableCell sx={{ color: "white" }}>Status</TableCell>
+                <TableCell sx={{ color: "white" }}>Recorrência</TableCell>
+                <TableCell sx={{ color: "white" }}>Ações</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {loadAccountsPayableQuery.isLoading ? (
+                <TableRow>
+                  <TableCell colSpan={7} sx={{ color: "white" }}>
+                    Carregando...
+                  </TableCell>
+                </TableRow>
+              ) : (
+                (loadAccountsPayableQuery.data || []).map((row) => (
+                  <TableRow key={row.id}>
+                    <TableCell sx={{ color: "white" }}>
+                      {row.description}
+                    </TableCell>
+                    <TableCell sx={{ color: "white" }}>
+                      {new Intl.NumberFormat("pt-BR", {
+                        style: "currency",
+                        currency: "BRL",
+                      }).format(row.amount)}
+                    </TableCell>
+                    <TableCell sx={{ color: "white" }}>
+                      {row.dueDate
+                        ? dayjs(row.dueDate).format("DD/MM/YYYY")
+                        : ""}
+                    </TableCell>
+                    <TableCell sx={{ color: "white" }}>
+                      {row.category}
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        color: row.status === "paid" ? "#22c55e" : "#f59e42",
+                      }}
                     >
-                      <EditOutlinedIcon />
-                    </Button>
-                    <Button
-                      color="error"
-                      variant="outlined"
-                      onClick={() =>
-                        deleteAccountsPayableMutation.mutate(row.id)
-                      }
-                    >
-                      <DeleteOutlineOutlinedIcon />
-                    </Button>
-                  </div>
-                );
-              },
-            },
-          ]}
-          rows={loadAccountsPayableQuery.data || []}
-          loading={loadAccountsPayableQuery.isLoading}
-        />
+                      {row.status === "paid" ? "Pago" : "Pendente"}
+                    </TableCell>
+                    <TableCell sx={{ color: "white" }}>
+                      {row.reminder && row.recurrence
+                        ? `${
+                            {
+                              monthly: "Mensal",
+                              weekly: "Semanal",
+                              annual: "Anual",
+                              daily: "Diária",
+                            }[row.recurrence.type] || row.recurrence.type
+                          } ${
+                            row.recurrence.currentOccurrence &&
+                            row.recurrence.occurrences
+                              ? `(${row.recurrence.currentOccurrence}/${row.recurrence.occurrences})`
+                              : ""
+                          }`
+                        : "-"}
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex gap-3 justify-center items-center h-full">
+                        <Button
+                          color="info"
+                          variant="outlined"
+                          onClick={() => handleEdit(row.id)}
+                        >
+                          <EditOutlinedIcon />
+                        </Button>
+                        <Button
+                          color="error"
+                          variant="outlined"
+                          onClick={() =>
+                            deleteAccountsPayableMutation.mutate(row.id)
+                          }
+                        >
+                          <DeleteOutlineOutlinedIcon />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </div>
     </div>
   );
