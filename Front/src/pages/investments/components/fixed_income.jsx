@@ -193,6 +193,45 @@ export function FixedIncome() {
       )
     : [];
 
+  // Parte lógica para a grid de resumo de renda fixa
+
+  // Agrupa os lançamentos por nome e resume os dados
+  const rowsFixedIncomeSummary = Object.values(
+    rowsFixedIncome.reduce((acc, curr) => {
+      if (!acc[curr.name]) {
+        acc[curr.name] = {
+          id: curr.name, // pode usar o nome como id do resumo
+          name: curr.name,
+          value: 0,
+          interest_rate_sum: 0,
+          interest_rate_count: 0,
+          start_date: curr.start_date,
+          due_date: curr.due_date,
+        };
+      }
+      acc[curr.name].value += Number(curr.value || 0);
+      acc[curr.name].interest_rate_sum += Number(curr.interest_rate || 0);
+      acc[curr.name].interest_rate_count += 1;
+      // Se quiser mostrar a menor data inicial e maior data final:
+      if (
+        acc[curr.name].start_date > curr.start_date ||
+        !acc[curr.name].start_date
+      ) {
+        acc[curr.name].start_date = curr.start_date;
+      }
+      if (acc[curr.name].due_date < curr.due_date || !acc[curr.name].due_date) {
+        acc[curr.name].due_date = curr.due_date;
+      }
+      return acc;
+    }, {})
+  ).map((item) => ({
+    ...item,
+    interest_rate:
+      item.interest_rate_count > 0
+        ? (item.interest_rate_sum / item.interest_rate_count).toFixed(2)
+        : "0.00",
+  }));
+
   //Parte logica para o os lançamentos de renda fixa de saida
 
   // Busca lançamentos de renda fixa
@@ -449,6 +488,56 @@ export function FixedIncome() {
             : 0
           ).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
         </span>
+      </div>
+      <div>
+        <Box sx={{ height: 500, width: "100%", padding: 2 }}>
+          <div className="flex justify-between items-center mb-4">
+            <h1 className="text-xl font-semibold">Resumo</h1>
+          </div>
+          <DataGrid
+            localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
+            rows={rowsFixedIncomeSummary}
+            columns={[
+              { field: "name", headerName: "Nome", flex: 2 },
+              { field: "value", headerName: "Valor Total", flex: 1 },
+              {
+                field: "interest_rate",
+                headerName: "Média Taxa de Juros (%)",
+                flex: 1,
+              },
+              {
+              field: "actions",
+              headerName: "Ações",
+              flex: 0.5,
+              disableReorder: true,
+              filterable: false,
+              disableColumnMenu: true,
+              sortable: false,
+              headerAlign: "center",
+              renderCell: ({ row }) => {
+                return (
+                  <div className="flex gap-3 justify-center items-center h-full">
+                    <Button
+                      color="success"
+                      variant="outlined"
+                      onClick={() => handleOpenWithdraw(row)}
+                    >
+                      <PointOfSaleRoundedIcon />
+                    </Button>
+                  </div>
+                );
+              },
+            },
+              
+            ]}
+            initialState={{
+              pagination: { paginationModel: { pageSize: 5 } },
+            }}
+            pageSizeOptions={[5]}
+            loading={isLoadingFixedIncome}
+            disableRowSelectionOnClick
+          />
+        </Box>
       </div>
       <div>
         <Box sx={{ height: 500, width: "100%", padding: 2, marginTop: 2 }}>

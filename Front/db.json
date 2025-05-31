@@ -82,6 +82,13 @@
       "description": "",
       "type": "investment",
       "investmentType": "fixed_income"
+    },
+    {
+      "id": "ll8l6btl",
+      "name": "Nubank",
+      "description": "",
+      "type": "investment",
+      "investmentType": "fixed_income"
     }
   ],
   "accounts-payable": [
