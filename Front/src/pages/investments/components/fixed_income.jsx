@@ -132,6 +132,23 @@ export function FixedIncome() {
     },
   });
 
+  // Adicione esta mutation:
+  const updateFixedIncomeExitMutation = useMutation({
+    mutationFn: async (data) => {
+      await axios({
+        method: "put",
+        baseURL: import.meta.env.VITE_API,
+        url: `/investiments_fixed_income_exit/${data.id}`,
+        data,
+      });
+    },
+    onSuccess: () => {
+      setOpenEdit(false);
+      setEditData(null);
+      queryClient.invalidateQueries(["fixed_income_exit"]);
+    },
+  });
+
   // Abrir modal de adição
   const handleOpenAddModal = () => {
     setEditData(null);
@@ -343,7 +360,6 @@ export function FixedIncome() {
 
   return (
     <div className="flex flex-col height-screen h-full w-full overflow-hidden ">
-      
       {/* Historico de lançamentos */}
       {/* Modal de adição */}
       <GenericFormModal
@@ -367,20 +383,34 @@ export function FixedIncome() {
       <GenericFormModal
         open={openEdit}
         onClose={handleCloseModal}
-        onSubmit={handleSubmit}
+        onSubmit={(values) => {
+          updateFixedIncomeExitMutation.mutate({
+            ...editData,
+            withdrawal_amount: values.withdrawal_amount,
+            sell_date: values.sell_date,
+          });
+        }}
         initialValues={
           editData || {
-            typInvestiment: "fixed_income",
-            name: "",
-            value: "",
-            interest_rate: "",
-            start_date: "",
-            due_date: "",
+            withdrawal_amount: "",
+            sell_date: "",
           }
         }
-        fields={fixedIncomeFields}
-        validationSchema={validationSchema}
-        title="Editar Lançamento"
+        fields={[
+          {
+            name: "withdrawal_amount",
+            label: "Valor de Retirada",
+            type: "number",
+          },
+          { name: "sell_date", label: "Data de venda", type: "date" },
+        ]}
+        validationSchema={Yup.object({
+          withdrawal_amount: Yup.number()
+            .required("Obrigatório")
+            .min(0.01, "Valor mínimo 0.01"),
+          sell_date: Yup.string().required("Obrigatório"),
+        })}
+        title="Editar Retirada"
         submitLabel="Salvar"
       />
       {/* Modal de retirada */}
@@ -569,7 +599,6 @@ export function FixedIncome() {
           />
         </Box>
       </div>
-
 
       {/* Retiradas de renda fixa */}
       <div>

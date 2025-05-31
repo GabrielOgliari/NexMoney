@@ -187,7 +187,7 @@
       "id": "5wpp2yln",
       "typInvestiment": "fixed_income",
       "name": "Nubank",
-      "value": 3000,
+      "value": 2650,
       "interest_rate": "0",
       "start_date": "2025-05-06",
       "due_date": "2027-05-20"
@@ -198,18 +198,18 @@
       "id": "kch8wb6c",
       "name": "Nubank",
       "initial_value": 1000,
-      "withdrawal_amount": 1000,
+      "withdrawal_amount": 10000,
       "sell_date": "2025-05-30",
       "start_date": "2025-05-05",
       "due_date": "2025-08-28",
       "interest_rate": "0"
     },
     {
-      "id": "4kjov7js",
+      "id": "ap075k19",
       "name": "Nubank",
-      "initial_value": 3353,
-      "withdrawal_amount": 353,
-      "sell_date": "2025-05-30",
+      "initial_value": 3000,
+      "withdrawal_amount": 350,
+      "sell_date": "2025-05-31",
       "start_date": "2025-05-06",
       "due_date": "2027-05-20",
       "interest_rate": "0"
