@@ -1,3 +1,12 @@
+import {
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  Typography,
+  Box,
+} from "@mui/material";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
@@ -257,88 +266,134 @@ export const BudgetComparisonPage = () => {
       </DragDropContext>
 
       {/* Tabela Final */}
-      <h3 className="text-lg font-bold mt-6">Resumo do Mapeamento</h3>
-      <table className="w-full border mt-2">
-        <thead className="bg-[#111827] text-white">
-          <tr>
-            <th className="text-left p-2">Categoria</th>
-            <th className="text-left p-2">Planejado</th>
-            <th className="text-left p-2">Atual</th>
-            <th className="text-left p-2">Diferença</th>
-            <th className="text-left p-2">Sobra</th>
-            <th className="text-left p-2">Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {categories.map((cat) => {
-            const actual = getCategoryTotal(cat.id);
-            const diff = actual - cat.planned;
-            const sobra = cat.planned - actual;
-            const status =
-              actual > cat.planned
-                ? "Acima"
-                : actual > 0
-                ? "Dentro"
-                : "Não Mapeado";
-            const statusColor =
-              status === "Acima"
-                ? "bg-red-600"
-                : status === "Dentro"
-                ? "bg-yellow-500"
-                : "bg-gray-500";
-            return (
-              <tr key={cat.id} className="border-b border-gray-700">
-                <td className="p-2">{cat.name}</td>
-                <td className="p-2">
-                  R$ {cat.planned.toLocaleString("pt-BR")}
-                </td>
-                <td className="p-2">R$ {actual.toLocaleString("pt-BR")}</td>
-                <td className="p-2 text-green-500">
-                  R$ {diff.toLocaleString("pt-BR")}
-                </td>
-                <td className="p-2 text-blue-500">
-                  R$ {sobra.toLocaleString("pt-BR")}
-                </td>
-                <td className="p-2">
-                  <span
-                    className={`px-3 py-1 rounded-full text-white ${statusColor}`}
-                  >
-                    {status}
-                  </span>
-                </td>
-              </tr>
-            );
-          })}
-          <tr className="font-bold bg-[#111827] text-white">
-            <td className="p-2">Total</td>
-            <td className="p-2">R$ {totalPlanned.toLocaleString("pt-BR")}</td>
-            <td className="p-2">R$ {totalMapped.toLocaleString("pt-BR")}</td>
-            <td className="p-2 text-green-500">
-              R$ {(totalMapped - totalPlanned).toLocaleString("pt-BR")}
-            </td>
-            <td className="p-2 text-blue-500">
-              R$ {(totalPlanned - totalMapped).toLocaleString("pt-BR")}
-            </td>
-            <td className="p-2">
-              <span
-                className={`px-3 py-1 rounded-full text-white ${
-                  totalMapped > totalPlanned
-                    ? "bg-red-600"
+      <Box sx={{ overflowX: "auto" }}>
+        <Table
+          sx={{
+            minWidth: 650,
+            backgroundColor: "#111827",
+            color: "white",
+            borderCollapse: "collapse",
+          }}
+        >
+          <TableHead>
+            <TableRow sx={{ backgroundColor: "#111827" }}>
+              <TableCell sx={{ color: "white", fontWeight: "bold" }}>
+                Categoria
+              </TableCell>
+              <TableCell sx={{ color: "white", fontWeight: "bold" }}>
+                Planejado
+              </TableCell>
+              <TableCell sx={{ color: "white", fontWeight: "bold" }}>
+                Atual
+              </TableCell>
+              <TableCell sx={{ color: "white", fontWeight: "bold" }}>
+                Diferença
+              </TableCell>
+              <TableCell sx={{ color: "white", fontWeight: "bold" }}>
+                Sobra
+              </TableCell>
+              <TableCell sx={{ color: "white", fontWeight: "bold" }}>
+                Status
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {categories.map((cat) => {
+              const actual = getCategoryTotal(cat.id);
+              const diff = actual - cat.planned;
+              const sobra = cat.planned - actual;
+              const status =
+                actual > cat.planned
+                  ? "Acima"
+                  : actual > 0
+                  ? "Dentro"
+                  : "Não Mapeado";
+              const statusColor =
+                status === "Acima"
+                  ? "#dc2626"
+                  : status === "Dentro"
+                  ? "#facc15"
+                  : "#6b7280";
+              return (
+                <TableRow
+                  key={cat.id}
+                  sx={{ borderBottom: "1px solid #374151" }}
+                >
+                  <TableCell sx={{ color: "white" }}>{cat.name}</TableCell>
+                  <TableCell sx={{ color: "white" }}>
+                    R$ {cat.planned.toLocaleString("pt-BR")}
+                  </TableCell>
+                  <TableCell sx={{ color: "white" }}>
+                    R$ {actual.toLocaleString("pt-BR")}
+                  </TableCell>
+                  <TableCell sx={{ color: "#22c55e" }}>
+                    R$ {diff.toLocaleString("pt-BR")}
+                  </TableCell>
+                  <TableCell sx={{ color: "#3b82f6" }}>
+                    R$ {sobra.toLocaleString("pt-BR")}
+                  </TableCell>
+                  <TableCell>
+                    <Box
+                      sx={{
+                        backgroundColor: statusColor,
+                        color: "white",
+                        px: 2,
+                        py: 0.5,
+                        borderRadius: "999px",
+                        fontWeight: "bold",
+                        textAlign: "center",
+                        display: "inline-block",
+                      }}
+                    >
+                      {status}
+                    </Box>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+            <TableRow sx={{ backgroundColor: "#111827", fontWeight: "bold" }}>
+              <TableCell sx={{ color: "white" }}>Total</TableCell>
+              <TableCell sx={{ color: "white" }}>
+                R$ {totalPlanned.toLocaleString("pt-BR")}
+              </TableCell>
+              <TableCell sx={{ color: "white" }}>
+                R$ {totalMapped.toLocaleString("pt-BR")}
+              </TableCell>
+              <TableCell sx={{ color: "#22c55e" }}>
+                R$ {(totalMapped - totalPlanned).toLocaleString("pt-BR")}
+              </TableCell>
+              <TableCell sx={{ color: "#3b82f6" }}>
+                R$ {(totalPlanned - totalMapped).toLocaleString("pt-BR")}
+              </TableCell>
+              <TableCell>
+                <Box
+                  sx={{
+                    backgroundColor:
+                      totalMapped > totalPlanned
+                        ? "#dc2626"
+                        : totalMapped < totalPlanned
+                        ? "#16a34a"
+                        : "#3b82f6",
+                    color: "white",
+                    px: 2,
+                    py: 0.5,
+                    borderRadius: "999px",
+                    fontWeight: "bold",
+                    textAlign: "center",
+                    display: "inline-block",
+                  }}
+                >
+                  {totalMapped > totalPlanned
+                    ? "Acima do Orçamento"
                     : totalMapped < totalPlanned
-                    ? "bg-green-600"
-                    : "bg-blue-600"
-                }`}
-              >
-                {totalMapped > totalPlanned
-                  ? "Acima do Orçamento"
-                  : totalMapped < totalPlanned
-                  ? "Abaixo do Orçamento"
-                  : "No Orçamento"}
-              </span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+                    ? "Abaixo do Orçamento"
+                    : "No Orçamento"}
+                </Box>
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </Box>
     </div>
   );
 };
