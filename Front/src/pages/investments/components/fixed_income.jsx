@@ -54,6 +54,8 @@ export function FixedIncome() {
   const [openAdd, setOpenAdd] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [editData, setEditData] = useState(null);
+  const [openEditExit, setOpenEditExit] = useState(false);
+  const [editExitData, setEditExitData] = useState(null);
 
   const queryClient = useQueryClient();
 
@@ -89,16 +91,16 @@ export function FixedIncome() {
   ];
 
   // Mutation para buscar um lançamento específico
-  const loadOneFixedIncomeMutation = useMutation({
-    mutationFn: async (id) => {
-      const response = await axios({
-        method: "get",
-        baseURL: import.meta.env.VITE_API,
-        url: `/investiments_fixed_income/${id}`,
-      });
-      return response.data;
-    },
-  });
+  // const loadOneFixedIncomeMutation = useMutation({
+  //   mutationFn: async (id) => {
+  //     const response = await axios({
+  //       method: "get",
+  //       baseURL: import.meta.env.VITE_API,
+  //       url: `/investiments_fixed_income/${id}`,
+  //     });
+  //     return response.data;
+  //   },
+  // });
 
   // Mutation para salvar (criar ou editar)
   const saveFixedIncomeMutation = useMutation({
@@ -143,8 +145,8 @@ export function FixedIncome() {
       });
     },
     onSuccess: () => {
-      setOpenEdit(false);
-      setEditData(null);
+      setOpenEditExit(false);
+      setEditExitData(null);
       queryClient.invalidateQueries(["fixed_income_exit"]);
     },
   });
@@ -155,20 +157,20 @@ export function FixedIncome() {
     setOpenAdd(true);
   };
 
-  // Abrir modal de edição
-  const handleEdit = async (id) => {
-    try {
-      const data = await loadOneFixedIncomeMutation.mutateAsync(id);
-      setEditData({
-        ...data,
-        start_date: data.start_date ? data.start_date : "",
-        due_date: data.due_date ? data.due_date : "",
-      });
-      setOpenEdit(true);
-    } catch (error) {
-      console.error("Erro ao carregar lançamento para edição:", error);
-    }
-  };
+  // // Abrir modal de edição
+  // const handleEdit = async (id) => {
+  //   try {
+  //     const data = await loadOneFixedIncomeMutation.mutateAsync(id);
+  //     setEditData({
+  //       ...data,
+  //       start_date: data.start_date ? data.start_date : "",
+  //       due_date: data.due_date ? data.due_date : "",
+  //     });
+  //     setOpenEdit(true);
+  //   } catch (error) {
+  //     console.error("Erro ao carregar lançamento para edição:", error);
+  //   }
+  // };
 
   // Fechar modais
   const handleCloseModal = () => {
@@ -314,6 +316,7 @@ export function FixedIncome() {
         start_date: registro.start_date,
         due_date: registro.due_date,
         interest_rate: registro.interest_rate,
+        inclusion_date: registro.start_date, // <-- Adiciona aqui a data de inclusão
       });
 
       if (valorParaRetirar === valorAtual) {
@@ -360,6 +363,62 @@ export function FixedIncome() {
 
   return (
     <div className="flex flex-col height-screen h-full w-full overflow-hidden ">
+      <div className="flex justify-end  mr-4 ">
+        <Button variant="contained" onClick={handleOpenAddModal}>
+          Novo Lançamento
+        </Button>
+      </div>
+
+      <div>
+        <Box sx={{ height: 500, width: "100%", padding: 1 }}>
+          <div className="flex justify-between items-center mb-4">
+            <h1 className="text-xl font-semibold">Resumo</h1>
+          </div>
+          <DataGrid
+            localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
+            rows={rowsFixedIncomeSummary}
+            columns={[
+              { field: "name", headerName: "Nome", flex: 2 },
+              { field: "value", headerName: "Valor Total", flex: 1 },
+              {
+                field: "interest_rate",
+                headerName: "Média Taxa de Juros (%)",
+                flex: 1,
+              },
+              {
+                field: "actions",
+                headerName: "Ações",
+                flex: 0.5,
+                disableReorder: true,
+                filterable: false,
+                disableColumnMenu: true,
+                sortable: false,
+                headerAlign: "center",
+                renderCell: ({ row }) => {
+                  return (
+                    <div className="flex gap-3 justify-center items-center h-full">
+                      <Button
+                        color="success"
+                        variant="outlined"
+                        onClick={() => handleOpenWithdraw(row)}
+                      >
+                        <PointOfSaleRoundedIcon />
+                      </Button>
+                    </div>
+                  );
+                },
+              },
+            ]}
+            initialState={{
+              pagination: { paginationModel: { pageSize: 5 } },
+            }}
+            pageSizeOptions={[5]}
+            loading={isLoadingFixedIncome}
+            disableRowSelectionOnClick
+          />
+        </Box>
+      </div>
+
       {/* Historico de lançamentos */}
       {/* Modal de adição */}
       <GenericFormModal
@@ -383,34 +442,20 @@ export function FixedIncome() {
       <GenericFormModal
         open={openEdit}
         onClose={handleCloseModal}
-        onSubmit={(values) => {
-          updateFixedIncomeExitMutation.mutate({
-            ...editData,
-            withdrawal_amount: values.withdrawal_amount,
-            sell_date: values.sell_date,
-          });
-        }}
+        onSubmit={handleSubmit}
         initialValues={
           editData || {
-            withdrawal_amount: "",
-            sell_date: "",
+            typInvestiment: "fixed_income",
+            name: "",
+            value: "",
+            interest_rate: "",
+            start_date: "",
+            due_date: "",
           }
         }
-        fields={[
-          {
-            name: "withdrawal_amount",
-            label: "Valor de Retirada",
-            type: "number",
-          },
-          { name: "sell_date", label: "Data de venda", type: "date" },
-        ]}
-        validationSchema={Yup.object({
-          withdrawal_amount: Yup.number()
-            .required("Obrigatório")
-            .min(0.01, "Valor mínimo 0.01"),
-          sell_date: Yup.string().required("Obrigatório"),
-        })}
-        title="Editar Retirada"
+        fields={fixedIncomeFields}
+        validationSchema={validationSchema}
+        title="Editar Lançamento"
         submitLabel="Salvar"
       />
       {/* Modal de retirada */}
@@ -443,13 +488,50 @@ export function FixedIncome() {
         title={`Retirada de ${withdrawData?.name || ""}`}
         submitLabel="Retirar"
       />
+      {/* Modal de edição de retirada */}
+      <GenericFormModal
+        open={openEditExit}
+        onClose={() => {
+          setOpenEditExit(false);
+          setEditExitData(null);
+        }}
+        onSubmit={(values) => {
+          updateFixedIncomeExitMutation.mutate({
+            ...editExitData,
+            withdrawal_amount: values.withdrawal_amount,
+            sell_date: values.sell_date,
+          });
+        }}
+        initialValues={
+          editExitData || {
+            withdrawal_amount: "",
+            sell_date: "",
+          }
+        }
+        fields={[
+          {
+            name: "withdrawal_amount",
+            label: "Valor de Retirada",
+            type: "number",
+          },
+          { name: "sell_date", label: "Data de venda", type: "date" },
+        ]}
+        validationSchema={Yup.object({
+          withdrawal_amount: Yup.number()
+            .required("Obrigatório")
+            .min(0.01, "Valor mínimo 0.01"),
+          sell_date: Yup.string().required("Obrigatório"),
+        })}
+        title="Editar Retirada"
+        submitLabel="Salvar"
+      />
 
-      <div className="flex justify-end  mr-4 ">
-        <Button variant="contained" onClick={handleOpenAddModal}>
-          Novo Lançamento
-        </Button>
+      {/* Grid de lançamentos de renda fixa */}
+      <div className="flex justify-between items-center p-15">
+        <h1 className="text-xl font-semibold">Lançamentos de Renda Fixa</h1>
       </div>
-      <Box sx={{ height: 500, width: "100%", padding: 2 }}>
+
+      <Box sx={{ height: 500, width: "100%" }}>
         <DataGrid
           localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
           rows={rowsFixedIncome}
@@ -505,7 +587,10 @@ export function FixedIncome() {
                     <Button
                       color="info"
                       variant="outlined"
-                      onClick={() => handleEdit(row.id)}
+                      onClick={() => {
+                        setEditData(row);
+                        setOpenEdit(true);
+                      }}
                     >
                       <EditOutlinedIcon />
                     </Button>
@@ -549,55 +634,6 @@ export function FixedIncome() {
             : 0
           ).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
         </span>
-      </div>
-      <div>
-        <Box sx={{ height: 500, width: "100%", padding: 2 }}>
-          <div className="flex justify-between items-center mb-4">
-            <h1 className="text-xl font-semibold">Resumo</h1>
-          </div>
-          <DataGrid
-            localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
-            rows={rowsFixedIncomeSummary}
-            columns={[
-              { field: "name", headerName: "Nome", flex: 2 },
-              { field: "value", headerName: "Valor Total", flex: 1 },
-              {
-                field: "interest_rate",
-                headerName: "Média Taxa de Juros (%)",
-                flex: 1,
-              },
-              {
-                field: "actions",
-                headerName: "Ações",
-                flex: 0.5,
-                disableReorder: true,
-                filterable: false,
-                disableColumnMenu: true,
-                sortable: false,
-                headerAlign: "center",
-                renderCell: ({ row }) => {
-                  return (
-                    <div className="flex gap-3 justify-center items-center h-full">
-                      <Button
-                        color="success"
-                        variant="outlined"
-                        onClick={() => handleOpenWithdraw(row)}
-                      >
-                        <PointOfSaleRoundedIcon />
-                      </Button>
-                    </div>
-                  );
-                },
-              },
-            ]}
-            initialState={{
-              pagination: { paginationModel: { pageSize: 5 } },
-            }}
-            pageSizeOptions={[5]}
-            loading={isLoadingFixedIncome}
-            disableRowSelectionOnClick
-          />
-        </Box>
       </div>
 
       {/* Retiradas de renda fixa */}
@@ -649,13 +685,12 @@ export function FixedIncome() {
                         color="info"
                         variant="outlined"
                         onClick={() => {
-                          setEditData({
+                          setEditExitData({
                             ...row,
-                            // Ajuste os campos conforme o formulário de edição de retirada
                             withdrawal_amount: row.withdrawal_amount,
                             sell_date: row.sell_date,
                           });
-                          setOpenEdit(true);
+                          setOpenEditExit(true);
                         }}
                       >
                         <EditOutlinedIcon />

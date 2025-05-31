@@ -175,44 +175,79 @@
   },
   "investiments_fixed_income": [
     {
-      "id": "juve27ok",
+      "id": "x45v8mkl",
       "typInvestiment": "fixed_income",
       "name": "teste",
-      "value": "1500",
+      "value": "1000",
       "interest_rate": "0",
       "start_date": "2025-05-06",
-      "due_date": "2027-05-28"
+      "due_date": "2026-01-10"
     },
     {
-      "id": "5wpp2yln",
+      "id": "om9kuehj",
       "typInvestiment": "fixed_income",
       "name": "Nubank",
-      "value": 2650,
+      "value": 2750,
       "interest_rate": "0",
       "start_date": "2025-05-06",
-      "due_date": "2027-05-20"
+      "due_date": "2025-09-26"
     }
   ],
   "investiments_fixed_income_exit": [
     {
-      "id": "kch8wb6c",
+      "id": "9tbsvxd5",
       "name": "Nubank",
       "initial_value": 1000,
-      "withdrawal_amount": 10000,
-      "sell_date": "2025-05-30",
+      "withdrawal_amount": 353,
+      "sell_date": "2025-05-31",
       "start_date": "2025-05-05",
-      "due_date": "2025-08-28",
-      "interest_rate": "0"
+      "due_date": "2025-06-27",
+      "interest_rate": "0",
+      "inclusion_date": "2025-05-05"
     },
     {
-      "id": "ap075k19",
+      "id": "z5x25pp0",
       "name": "Nubank",
-      "initial_value": 3000,
-      "withdrawal_amount": 350,
+      "initial_value": 647,
+      "withdrawal_amount": 500,
+      "sell_date": "2025-05-30",
+      "start_date": "2025-05-05",
+      "due_date": "2025-06-27",
+      "interest_rate": "0",
+      "inclusion_date": "2025-05-05"
+    },
+    {
+      "id": "84cxovoj",
+      "name": "Nubank",
+      "initial_value": 147,
+      "withdrawal_amount": 147,
+      "sell_date": "2025-05-31",
+      "start_date": "2025-05-05",
+      "due_date": "2025-06-27",
+      "interest_rate": "0",
+      "inclusion_date": "2025-05-05"
+    },
+    {
+      "id": "9hsjia0k",
+      "name": "Nubank",
+      "initial_value": 3353,
+      "withdrawal_amount": 353,
       "sell_date": "2025-05-31",
       "start_date": "2025-05-06",
-      "due_date": "2027-05-20",
-      "interest_rate": "0"
+      "due_date": "2025-09-26",
+      "interest_rate": "0",
+      "inclusion_date": "2025-05-06"
+    },
+    {
+      "id": "gzqhvihb",
+      "name": "Nubank",
+      "initial_value": 3000,
+      "withdrawal_amount": 250,
+      "sell_date": "2025-05-31",
+      "start_date": "2025-05-06",
+      "due_date": "2025-09-26",
+      "interest_rate": "0",
+      "inclusion_date": "2025-05-06"
     }
   ]
 }
