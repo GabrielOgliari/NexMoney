@@ -637,7 +637,7 @@ export function FixedIncome() {
       </div>
 
       {/* Retiradas de renda fixa */}
-      <div>
+      <div className="flex flex-col height-screen h-full w-full overflow-hidden ">
         <Box sx={{ height: 500, width: "100%", padding: 2, marginTop: 2 }}>
           <div className="flex justify-between items-center mb-4">
             <h1 className="text-xl font-semibold">Retiradas</h1>

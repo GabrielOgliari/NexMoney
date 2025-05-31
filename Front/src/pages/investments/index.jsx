@@ -30,13 +30,13 @@ export const InvestmentsPage = () => {
     },
   });
   return (
-    <div className="flex gap-0 flex-col bg-background bg-[#1B2232] height-screen  h-screen w-full ">
+    <div className="flex flex-col min-h-screen w-full bg-[#1B2232]">
       
       <Box
         sx={{
           flexGrow: 1,
           padding: 2,
-          backgroundColor: "#1B2232",
+          // backgroundColor: "#1B2232",
           borderRadius: 1,
           borderBlockColor: "#1E2B45",
           margin: 2,
@@ -109,7 +109,7 @@ export const InvestmentsPage = () => {
           </Grid>
           <Grid size={15}>
             <Item>
-              <div className="flex flex-col bg-background  h-full w-full border-0 text-[18px] font-bold text-start ">
+              <div className="flex flex-col bg-background  h-full w-full border-0 text-[18px] font-bold text-start overflow-hidden ">
                 Detalhes dos Investimentos
                 <div
                   dir="ltr"
@@ -155,7 +155,7 @@ export const InvestmentsPage = () => {
                     </button>
                   </div>
                 </div>
-                <div>
+                <div className="flex flex-col overflow-hidden h-full w-full">
                   {activeTab === "fixed_income" && <FixedIncome />}
                   {activeTab === "variable_income" && <VariableIncome />}
                 </div>
