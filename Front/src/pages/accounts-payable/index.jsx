@@ -14,6 +14,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TablePagination,
   Paper,
 } from "@mui/material";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -33,6 +34,9 @@ export const AccountsPayablePage = () => {
   const [isEditing, setIsEditing] = useState(false);
 
   // Instância do React Query para gerenciamento de cache
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(7);
+
   const queryClient = useQueryClient();
 
   // Carrega as categorias do banco
@@ -60,6 +64,13 @@ export const AccountsPayablePage = () => {
       return response.data;
     },
   });
+
+  // Extrai os dados da consulta e aplica paginação
+  const rows = loadAccountsPayableQuery.data || [];
+  const paginatedRows = rows.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
+  );
 
   // Mutation para buscar uma conta específica para edição
   const loadOneAccountsPayableMutation = useMutation({
@@ -178,7 +189,7 @@ export const AccountsPayablePage = () => {
   // Função chamada ao enviar o formulário (adicionar ou editar)
   const onSubmit = (data) => {
     const formattedData = {
-      ...data, 
+      ...data,
       amount:
         typeof data.amount === "string"
           ? parseFloat(data.amount.replace(/\./g, "").replace(",", "."))
@@ -296,7 +307,7 @@ export const AccountsPayablePage = () => {
                   </TableCell>
                 </TableRow>
               ) : (
-                (loadAccountsPayableQuery.data || []).map((row) => (
+                paginatedRows.map((row) => (
                   <TableRow key={row.id}>
                     <TableCell sx={{ color: "white" }}>
                       {row.description}
@@ -364,6 +375,20 @@ export const AccountsPayablePage = () => {
               )}
             </TableBody>
           </Table>
+          <TablePagination
+            component="div"
+            count={rows.length}
+            page={page}
+            onPageChange={(event, newPage) => setPage(newPage)}
+            rowsPerPage={rowsPerPage}
+            onRowsPerPageChange={(event) => {
+              setRowsPerPage(parseInt(event.target.value, 10));
+              setPage(0);
+            }}
+            rowsPerPageOptions={[7, 10, 25]}
+            labelRowsPerPage="Linhas por página"
+            sx={{ color: "white" }}
+          />
         </TableContainer>
       </div>
     </div>
