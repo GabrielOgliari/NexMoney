@@ -1,94 +1,44 @@
 {
   "categories": [
     {
-      "id": "6",
-      "name": "Salário",
-      "description": "Receitas de salário",
-      "type": "income",
-      "color": "#22c55e",
-      "count": 1
+      "id": "moradia",
+      "name": "Moradia",
+      "planned": 2000
     },
     {
-      "id": "7",
-      "name": "Freelance",
-      "description": "Receitas de trabalhos freelance",
-      "type": "income",
-      "color": "#06b6d4",
-      "count": 3
+      "id": "alimentacao",
+      "name": "Alimentação",
+      "planned": 600
     },
     {
-      "id": "8",
-      "name": "Investimentos",
-      "description": "Receitas de investimentos",
-      "type": "income",
-      "color": "#eab308",
-      "count": 4
+      "id": "transporte",
+      "name": "Transporte",
+      "planned": 400
     },
     {
-      "id": "c74f",
-      "name": "Teste",
-      "description": "TEste",
-      "type": "expanse"
+      "id": "utilidades",
+      "name": "Utilidades",
+      "planned": 300
     },
     {
-      "id": "bf10",
-      "name": "dwdWWWWWWW",
-      "description": "dwderewrewrwer",
-      "type": "expanse"
+      "id": "lazer",
+      "name": "Lazer",
+      "planned": 200
     },
     {
-      "id": "c656",
-      "name": "dw",
-      "description": "dwd",
-      "type": "income"
+      "id": "saude",
+      "name": "Saúde",
+      "planned": 150
     },
     {
-      "id": "621a",
-      "name": "Teste Evandro",
-      "description": "Ogliari",
-      "type": "expanse"
+      "id": "poupanca",
+      "name": "Poupança",
+      "planned": 500
     },
     {
-      "id": "1",
-      "name": "Salário",
-      "description": "Receitas de salário",
-      "type": "income",
-      "color": "#22c55e",
-      "count": 1
-    },
-    {
-      "id": "a01d",
-      "name": "Novo Editado",
-      "description": "dw",
-      "type": "income"
-    },
-    {
-      "id": "rqwhrpeq",
-      "name": "555",
-      "description": "",
-      "type": "investment",
-      "investmentType": "renda-variavel"
-    },
-    {
-      "id": "oemdf5k4",
-      "name": "s",
-      "description": "",
-      "type": "investment",
-      "investmentType": "cripto"
-    },
-    {
-      "id": "9sdx92u7",
-      "name": "teste",
-      "description": "",
-      "type": "investment",
-      "investmentType": "fixed_income"
-    },
-    {
-      "id": "ll8l6btl",
-      "name": "Nubank",
-      "description": "",
-      "type": "investment",
-      "investmentType": "fixed_income"
+      "id": "diversos",
+      "name": "Diversos",
+      "planned": 150
     }
   ],
   "accounts-payable": [
@@ -165,15 +115,367 @@
       "categoryId": "9",
       "status": "pending",
       "reminder": true
+    },
+    {
+      "description": "teste evandro",
+      "amount": "1000",
+      "dueDate": "2025-05-07",
+      "category": "Moradia",
+      "categoryId": "",
+      "status": "paid",
+      "reminder": true,
+      "recurrence": {
+        "type": "monthly",
+        "hasEndDate": true,
+        "endDate": "2025-05-28"
+      },
+      "id": "1efe"
     }
   ],
   "investiments": {
-    "grand_total": 1000,
-    "total_fixed_income": 500,
-    "total_variable_income": 500,
-    "dividends": 100
+    "total": {
+      "grand_total": 1000,
+      "total_fixed_income": 500,
+      "total_variable_income": 500,
+      "dividends": 100
+    },
+    "investiments": [
+      {
+        "id": 2,
+        "type": "fixed_income",
+        "name": "CDB Banco XYZ",
+        "value": "R$ 5.000",
+        "interest_rate": "4.8%",
+        "start_date": "09/02/2023",
+        "due_date": "09/08/2023"
+      },
+      {
+        "id": 3,
+        "type": "fixed_income",
+        "name": "LCI",
+        "value": "R$ 7.500",
+        "interest_rate": "5.5%",
+        "start_date": "19/03/2023",
+        "due_date": "19/03/2024"
+      },
+      {
+        "id": 4,
+        "type": "fixed_income",
+        "name": "CDB Banco XYZ",
+        "value": "R$ 5.000",
+        "interest_rate": "4.8%",
+        "start_date": "09/02/2023",
+        "due_date": "09/08/2023"
+      },
+      {
+        "id": 5,
+        "type": "fixed_income",
+        "name": "LCI",
+        "value": "R$ 7.500",
+        "interest_rate": "5.5%",
+        "start_date": "19/03/2023",
+        "due_date": "19/03/2024"
+      },
+      {
+        "id": 6,
+        "type": "renda-variavel",
+        "name": "Ação XYZ",
+        "value": "R$ 2.000",
+        "interest_rate": "-",
+        "start_date": "01/03/2023",
+        "due_date": "19/03/2024"
+      }
+    ]
   },
-  "investiments_fixed_income": [
+  "expenses": [
+    {
+      "id": "uber1",
+      "name": "UBER *TRIP",
+      "amount": 45,
+      "date": "2023-05-04",
+      "category": "transporte"
+    },
+    {
+      "id": "uber2",
+      "name": "UBER *TRIP",
+      "amount": 38,
+      "date": "2023-05-12",
+      "category": "transporte"
+    },
+    {
+      "id": "metro",
+      "name": "METRO SP",
+      "amount": 100,
+      "date": "2023-05-01",
+      "category": "transporte"
+    },
+    {
+      "id": "luz",
+      "name": "ENEL ENERGIA",
+      "amount": 150,
+      "date": "2023-05-10",
+      "category": "utilidades"
+    },
+    {
+      "id": "agua",
+      "name": "SABESP",
+      "amount": 80,
+      "date": "2023-05-15",
+      "category": "utilidades"
+    },
+    {
+      "id": "internet",
+      "name": "VIVO INTERNET",
+      "amount": 90,
+      "date": "2023-05-05",
+      "category": "utilidades"
+    },
+    {
+      "id": "netflix",
+      "name": "NETFLIX.COM",
+      "amount": 40,
+      "date": "2023-05-08",
+      "category": "lazer"
+    },
+    {
+      "id": "spotify",
+      "name": "SPOTIFY",
+      "amount": 20,
+      "date": "2023-05-08",
+      "category": "lazer"
+    },
+    {
+      "id": "cinema",
+      "name": "CINEMARK",
+      "amount": 60,
+      "date": "2023-05-20",
+      "category": "lazer"
+    },
+    {
+      "id": "farmacia",
+      "name": "DROGARIA SAO PAULO",
+      "amount": 100,
+      "date": "2023-05-18",
+      "category": "saude"
+    },
+    {
+      "id": "academia",
+      "name": "SMARTFIT",
+      "amount": 80,
+      "date": "2023-05-05",
+      "category": "saude"
+    }
+  ],
+  "initialCategories": [
+    {
+      "id": "moradia",
+      "name": "Moradia",
+      "planned": 2000,
+      "actual": 0
+    },
+    {
+      "id": "alimentacao",
+      "name": "Alimentação",
+      "planned": 600,
+      "actual": 0
+    },
+    {
+      "id": "transporte",
+      "name": "Transporte",
+      "planned": 400,
+      "actual": 0
+    },
+    {
+      "id": "utilidades",
+      "name": "Utilidades",
+      "planned": 300,
+      "actual": 0
+    },
+    {
+      "id": "lazer",
+      "name": "Lazer",
+      "planned": 200,
+      "actual": 0
+    },
+    {
+      "id": "saude",
+      "name": "Saúde",
+      "planned": 150,
+      "actual": 0
+    },
+    {
+      "id": "poupanca",
+      "name": "Poupança",
+      "planned": 500,
+      "actual": 0
+    },
+    {
+      "id": "diversos",
+      "name": "Diversos",
+      "planned": 150,
+      "actual": 0
+    }
+  ],
+  "bankStatementExpenses": [
+    {
+      "id": "aluguel",
+      "name": "ALUGUEL IMOBILIARIA XYZ",
+      "amount": 1800,
+      "date": "2023-05-01",
+      "mapped": false,
+      "category": "moradia"
+    },
+    {
+      "id": "condominio",
+      "name": "CONDOMINIO EDIFICIO CENTRAL",
+      "amount": 200,
+      "date": "2023-05-05",
+      "mapped": false,
+      "category": "moradia"
+    },
+    {
+      "id": "mercado1",
+      "name": "SUPERMERCADO PAO DE ACUCAR",
+      "amount": 350,
+      "date": "2023-05-03",
+      "mapped": false,
+      "category": "alimentacao"
+    },
+    {
+      "id": "mercado2",
+      "name": "SUPERMERCADO EXTRA",
+      "amount": 180,
+      "date": "2023-05-15",
+      "mapped": false,
+      "category": "alimentacao"
+    },
+    {
+      "id": "restaurante1",
+      "name": "RESTAURANTE SABOR E ARTE",
+      "amount": 120,
+      "date": "2023-05-10",
+      "mapped": false,
+      "category": "alimentacao"
+    },
+    {
+      "id": "uber1",
+      "name": "UBER *TRIP",
+      "amount": 45,
+      "date": "2023-05-04",
+      "mapped": false,
+      "category": "transporte"
+    },
+    {
+      "id": "uber2",
+      "name": "UBER *TRIP",
+      "amount": 38,
+      "date": "2023-05-12",
+      "mapped": false,
+      "category": "transporte"
+    },
+    {
+      "id": "metro",
+      "name": "METRO SP",
+      "amount": 100,
+      "date": "2023-05-01",
+      "mapped": false,
+      "category": "transporte"
+    },
+    {
+      "id": "luz",
+      "name": "ENEL ENERGIA",
+      "amount": 150,
+      "date": "2023-05-10",
+      "mapped": false,
+      "category": "utilidades"
+    },
+    {
+      "id": "agua",
+      "name": "SABESP",
+      "amount": 80,
+      "date": "2023-05-15",
+      "mapped": false,
+      "category": "utilidades"
+    },
+    {
+      "id": "internet",
+      "name": "VIVO INTERNET",
+      "amount": 90,
+      "date": "2023-05-05",
+      "mapped": false,
+      "category": "utilidades"
+    },
+    {
+      "id": "netflix",
+      "name": "NETFLIX.COM",
+      "amount": 40,
+      "date": "2023-05-08",
+      "mapped": false,
+      "category": "lazer"
+    },
+    {
+      "id": "spotify",
+      "name": "SPOTIFY",
+      "amount": 20,
+      "date": "2023-05-08",
+      "mapped": false,
+      "category": "lazer"
+    },
+    {
+      "id": "cinema",
+      "name": "CINEMARK",
+      "amount": 60,
+      "date": "2023-05-20",
+      "mapped": false,
+      "category": "lazer"
+    },
+    {
+      "id": "farmacia",
+      "name": "DROGARIA SAO PAULO",
+      "amount": 100,
+      "date": "2023-05-18",
+      "mapped": false,
+      "category": "saude"
+    },
+    {
+      "id": "academia",
+      "name": "SMARTFIT",
+      "amount": 80,
+      "date": "2023-05-05",
+      "mapped": false,
+      "category": "saude"
+    }
+  ],
+  "mappedExpenses": [
+    {
+      "0": {
+        "expenseId": "aluguel",
+        "expenseName": "ALUGUEL IMOBILIARIA XYZ",
+        "amount": 1800,
+        "date": "2023-05-01",
+        "categoryId": "moradia",
+        "categoryName": "Moradia"
+      },
+      "1": {
+        "expenseId": "mercado1",
+        "expenseName": "SUPERMERCADO PAO DE ACUCAR",
+        "amount": 350,
+        "date": "2023-05-03",
+        "categoryId": "moradia",
+        "categoryName": "Moradia"
+      },
+      "2": {
+        "expenseId": "restaurante1",
+        "expenseName": "RESTAURANTE SABOR E ARTE",
+        "amount": 120,
+        "date": "2023-05-10",
+        "categoryId": "moradia",
+        "categoryName": "Moradia"
+      },
+      "id": "f832"
+    }
+  ],
+  "investiments_fixed_income_exit": [
     {
       "id": "x45v8mkl",
       "typInvestiment": "fixed_income",
@@ -191,9 +493,7 @@
       "interest_rate": "0",
       "start_date": "2025-05-06",
       "due_date": "2025-09-26"
-    }
-  ],
-  "investiments_fixed_income_exit": [
+    },
     {
       "id": "9tbsvxd5",
       "name": "Nubank",

@@ -23,6 +23,7 @@ export function AccountsPayableEditModal({
   handleSubmit,
   onSubmit,
   watch,
+  categories = [], //Recebe a lista de categorias do DB JSON
 }) {
   const roundedInput = {
     "& .MuiOutlinedInput-root": {
@@ -128,11 +129,12 @@ export function AccountsPayableEditModal({
                 render={({ field }) => (
                   <TextField {...field} select fullWidth sx={roundedInput}>
                     <MenuItem value="">Selecione</MenuItem>
-                    <MenuItem value="Moradia">Moradia</MenuItem>
-                    <MenuItem value="Alimentação">Alimentação</MenuItem>
-                    <MenuItem value="Transporte">Transporte</MenuItem>
-                    <MenuItem value="Educação">Educação</MenuItem>
-                    <MenuItem value="Saúde">Saúde</MenuItem>
+                    {/* Mapear as categorias recebidas dinamicamente */}
+                    {categories.map((cat) => (
+                      <MenuItem key={cat.id} value={cat.name}>
+                        {cat.name}
+                      </MenuItem>
+                    ))}
                   </TextField>
                 )}
               />

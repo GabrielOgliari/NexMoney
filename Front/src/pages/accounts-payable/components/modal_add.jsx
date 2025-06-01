@@ -22,8 +22,8 @@ export function AccountsPayableAddModal({
   control,
   handleSubmit,
   onSubmit,
+  categories = [],
 }) {
-  // Estilo para deixar as bordas mais arredondadas
   const roundedInput = {
     "& .MuiOutlinedInput-root": {
       borderRadius: "12px",
@@ -126,11 +126,12 @@ export function AccountsPayableAddModal({
                 render={({ field }) => (
                   <TextField {...field} select fullWidth sx={roundedInput}>
                     <MenuItem value="">Selecione</MenuItem>
-                    <MenuItem value="Moradia">Moradia</MenuItem>
-                    <MenuItem value="Alimentação">Alimentação</MenuItem>
-                    <MenuItem value="Transporte">Transporte</MenuItem>
-                    <MenuItem value="Educação">Educação</MenuItem>
-                    <MenuItem value="Saúde">Saúde</MenuItem>
+                    {/*  Renderiza dinamicamente categorias do JSON */}
+                    {categories.map((cat) => (
+                      <MenuItem key={cat.id} value={cat.name}>
+                        {cat.name}
+                      </MenuItem>
+                    ))}
                   </TextField>
                 )}
               />
