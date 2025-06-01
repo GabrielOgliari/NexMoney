@@ -18,13 +18,12 @@ import {
   Paper,
 } from "@mui/material";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
 import { useForm, Controller } from "react-hook-form";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import { AccountsPayableAddModal } from "./components/modal_add";
 import { AccountsPayableEditModal } from "./components/modal_edit";
-
+import api from "../../services/api";
 import dayjs from "dayjs";
 
 export const AccountsPayablePage = () => {
@@ -38,16 +37,11 @@ export const AccountsPayablePage = () => {
   const [rowsPerPage, setRowsPerPage] = useState(7);
 
   const queryClient = useQueryClient();
-
   // Carrega as categorias do banco
   const { data: categoriesData = [] } = useQuery({
     queryKey: ["categories"],
     queryFn: async () => {
-      const response = await axios({
-        method: "get",
-        baseURL: import.meta.env.VITE_API,
-        url: "/categories",
-      });
+      const response = await api.get("/categories");
       return response.data;
     },
   });
@@ -56,17 +50,17 @@ export const AccountsPayablePage = () => {
   const loadAccountsPayableQuery = useQuery({
     queryKey: ["accounts-payable"],
     queryFn: async () => {
-      const response = await axios({
-        method: "get",
-        baseURL: import.meta.env.VITE_API,
-        url: "/accounts-payable",
-      });
+      const response = await api.get("/accounts-payable");
       return response.data;
     },
   });
 
-  // Extrai os dados da consulta e aplica paginação
-  const rows = loadAccountsPayableQuery.data || [];
+  // Ajuste para rows seguro
+  const rows =
+    loadAccountsPayableQuery.isLoading || loadAccountsPayableQuery.isError
+      ? []
+      : loadAccountsPayableQuery.data || [];
+
   const paginatedRows = rows.slice(
     page * rowsPerPage,
     page * rowsPerPage + rowsPerPage
@@ -75,11 +69,7 @@ export const AccountsPayablePage = () => {
   // Mutation para buscar uma conta específica para edição
   const loadOneAccountsPayableMutation = useMutation({
     mutationFn: async (id) => {
-      const response = await axios({
-        method: "get",
-        baseURL: import.meta.env.VITE_API,
-        url: `/accounts-payable/${id}`,
-      });
+      const response = await api.get(`/accounts-payable/${id}`); // Usando instância api
       return response.data;
     },
   });
@@ -87,15 +77,13 @@ export const AccountsPayablePage = () => {
   // Mutation para salvar (criar ou editar) uma conta a pagar
   const saveAccountsPayableMutation = useMutation({
     mutationFn: async (params) => {
-      await axios({
+      await api({
         method: params.method,
-        baseURL: import.meta.env.VITE_API,
         url: params.url,
         data: params.data,
       });
     },
     onSuccess: () => {
-      // Atualiza a lista após salvar e fecha os modais
       queryClient.invalidateQueries(["accounts-payable"]);
       setOpenAdd(false);
       setOpenEdit(false);
@@ -106,11 +94,7 @@ export const AccountsPayablePage = () => {
   // Mutation para deletar uma conta a pagar
   const deleteAccountsPayableMutation = useMutation({
     mutationFn: async (id) => {
-      await axios({
-        method: "delete",
-        baseURL: import.meta.env.VITE_API,
-        url: `/accounts-payable/${id}`,
-      });
+      await api.delete(`/accounts-payable/${id}`);
     },
     onSuccess: () => {
       // Atualiza a lista após deletar
