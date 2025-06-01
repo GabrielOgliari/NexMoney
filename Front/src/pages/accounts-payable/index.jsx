@@ -177,9 +177,12 @@ export const AccountsPayablePage = () => {
 
   // Função chamada ao enviar o formulário (adicionar ou editar)
   const onSubmit = (data) => {
-    // Formata datas para string ISO antes de enviar
     const formattedData = {
-      ...data,
+      ...data, 
+      amount:
+        typeof data.amount === "string"
+          ? parseFloat(data.amount.replace(/\./g, "").replace(",", "."))
+          : data.amount,
       dueDate: data.dueDate ? data.dueDate.format("YYYY-MM-DD") : null,
       recurrence: {
         ...data.recurrence,
