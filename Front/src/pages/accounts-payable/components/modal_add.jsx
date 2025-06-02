@@ -15,6 +15,7 @@ import {
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { Controller } from "react-hook-form";
+import { NumericFormat } from "react-number-format";
 
 export function AccountsPayableAddModal({
   open,
@@ -73,18 +74,36 @@ export function AccountsPayableAddModal({
               <Controller
                 name="amount"
                 control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
+                render={({ field: { onChange, value } }) => (
+                  <NumericFormat
+                    customInput={TextField}
                     placeholder="0,00"
-                    type="number"
+                    decimalScale={2}
+                    fixedDecimalScale
+                    thousandSeparator="."
+                    decimalSeparator=","
+                    allowNegative={false}
                     fullWidth
-                    inputProps={{ step: "0.01" }}
-                    sx={roundedInput}
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: "10px",
+                      },
+                    }}
+                    value={
+                      value === null || value === ""
+                        ? ""
+                        : typeof value === "string"
+                        ? parseFloat(value.replace(/\./g, "").replace(",", "."))
+                        : value
+                    }
+                    onValueChange={(values) => {
+                      onChange(values.floatValue ?? 0);
+                    }}
                   />
                 )}
               />
             </div>
+
             <div className="w-1/2 flex flex-col items-start">
               <FormLabel sx={{ mb: 1, color: "text.primary" }}>
                 Data de Vencimento
@@ -98,15 +117,22 @@ export function AccountsPayableAddModal({
                       {...field}
                       onChange={(date) => field.onChange(date)}
                       value={field.value}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          fullWidth
-                          placeholder="dd/mm/aaaa"
-                          sx={roundedInput}
-                          variant="outlined"
-                        />
-                      )}
+                      enableAccessibleFieldDOMStructure={false}
+                      slotProps={{
+                        textField: {
+                          fullWidth: true,
+                          placeholder: "dd/mm/aaaa",
+                          variant: "outlined",
+                          sx: {
+                            "& .MuiOutlinedInput-root": {
+                              borderRadius: "10px",
+                            },
+                            "& .MuiOutlinedInput-notchedOutline": {
+                              borderRadius: "10px",
+                            },
+                          },
+                        },
+                      }}
                     />
                   </LocalizationProvider>
                 )}
