@@ -45,7 +45,7 @@ const validationSchema = Yup.object({
   typInvestiment: Yup.string().required("Tipo obrigatório"),
   name: Yup.string().required("Nome obrigatório"),
   value: Yup.number().required("Valor obrigatório"),
-  interest_rate: Yup.number().required("Taxa obrigatória"),
+  interest_rate: Yup.number(),
   start_date: Yup.string().required("Data inicial obrigatória"),
   due_date: Yup.string().required("Data de vencimento obrigatória"),
 });
