@@ -14,16 +14,16 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TablePagination,
   Paper,
 } from "@mui/material";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
 import { useForm, Controller } from "react-hook-form";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import { AccountsPayableAddModal } from "./components/modal_add";
 import { AccountsPayableEditModal } from "./components/modal_edit";
-
+import api from "../../services/api";
 import dayjs from "dayjs";
 
 export const AccountsPayablePage = () => {
@@ -33,17 +33,15 @@ export const AccountsPayablePage = () => {
   const [isEditing, setIsEditing] = useState(false);
 
   // Instância do React Query para gerenciamento de cache
-  const queryClient = useQueryClient();
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(7);
 
+  const queryClient = useQueryClient();
   // Carrega as categorias do banco
   const { data: categoriesData = [] } = useQuery({
     queryKey: ["categories"],
     queryFn: async () => {
-      const response = await axios({
-        method: "get",
-        baseURL: import.meta.env.VITE_API,
-        url: "/categories",
-      });
+      const response = await api.get("/categories");
       return response.data;
     },
   });
@@ -52,23 +50,26 @@ export const AccountsPayablePage = () => {
   const loadAccountsPayableQuery = useQuery({
     queryKey: ["accounts-payable"],
     queryFn: async () => {
-      const response = await axios({
-        method: "get",
-        baseURL: import.meta.env.VITE_API,
-        url: "/accounts-payable",
-      });
+      const response = await api.get("/accounts-payable");
       return response.data;
     },
   });
 
+  // Ajuste para rows seguro
+  const rows =
+    loadAccountsPayableQuery.isLoading || loadAccountsPayableQuery.isError
+      ? []
+      : loadAccountsPayableQuery.data || [];
+
+  const paginatedRows = rows.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
+  );
+
   // Mutation para buscar uma conta específica para edição
   const loadOneAccountsPayableMutation = useMutation({
     mutationFn: async (id) => {
-      const response = await axios({
-        method: "get",
-        baseURL: import.meta.env.VITE_API,
-        url: `/accounts-payable/${id}`,
-      });
+      const response = await api.get(`/accounts-payable/${id}`); // Usando instância api
       return response.data;
     },
   });
@@ -76,15 +77,13 @@ export const AccountsPayablePage = () => {
   // Mutation para salvar (criar ou editar) uma conta a pagar
   const saveAccountsPayableMutation = useMutation({
     mutationFn: async (params) => {
-      await axios({
+      await api({
         method: params.method,
-        baseURL: import.meta.env.VITE_API,
         url: params.url,
         data: params.data,
       });
     },
     onSuccess: () => {
-      // Atualiza a lista após salvar e fecha os modais
       queryClient.invalidateQueries(["accounts-payable"]);
       setOpenAdd(false);
       setOpenEdit(false);
@@ -95,11 +94,7 @@ export const AccountsPayablePage = () => {
   // Mutation para deletar uma conta a pagar
   const deleteAccountsPayableMutation = useMutation({
     mutationFn: async (id) => {
-      await axios({
-        method: "delete",
-        baseURL: import.meta.env.VITE_API,
-        url: `/accounts-payable/${id}`,
-      });
+      await api.delete(`/accounts-payable/${id}`);
     },
     onSuccess: () => {
       // Atualiza a lista após deletar
@@ -177,9 +172,12 @@ export const AccountsPayablePage = () => {
 
   // Função chamada ao enviar o formulário (adicionar ou editar)
   const onSubmit = (data) => {
-    // Formata datas para string ISO antes de enviar
     const formattedData = {
       ...data,
+      amount:
+        typeof data.amount === "string"
+          ? parseFloat(data.amount.replace(/\./g, "").replace(",", "."))
+          : data.amount,
       dueDate: data.dueDate ? data.dueDate.format("YYYY-MM-DD") : null,
       recurrence: {
         ...data.recurrence,
@@ -293,7 +291,7 @@ export const AccountsPayablePage = () => {
                   </TableCell>
                 </TableRow>
               ) : (
-                (loadAccountsPayableQuery.data || []).map((row) => (
+                paginatedRows.map((row) => (
                   <TableRow key={row.id}>
                     <TableCell sx={{ color: "white" }}>
                       {row.description}
@@ -361,6 +359,20 @@ export const AccountsPayablePage = () => {
               )}
             </TableBody>
           </Table>
+          <TablePagination
+            component="div"
+            count={rows.length}
+            page={page}
+            onPageChange={(event, newPage) => setPage(newPage)}
+            rowsPerPage={rowsPerPage}
+            onRowsPerPageChange={(event) => {
+              setRowsPerPage(parseInt(event.target.value, 10));
+              setPage(0);
+            }}
+            rowsPerPageOptions={[7, 10, 25]}
+            labelRowsPerPage="Linhas por página"
+            sx={{ color: "white" }}
+          />
         </TableContainer>
       </div>
     </div>
