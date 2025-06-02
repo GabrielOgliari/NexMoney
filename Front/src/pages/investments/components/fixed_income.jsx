@@ -369,57 +369,6 @@ export function FixedIncome() {
         </Button>
       </div>
 
-      <div>
-        <Box sx={{ height: 500, width: "100%", padding: 1 }}>
-          <div className="flex justify-between items-center mb-4">
-            <h1 className="text-xl font-semibold">Resumo</h1>
-          </div>
-          <DataGrid
-            localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
-            rows={rowsFixedIncomeSummary}
-            columns={[
-              { field: "name", headerName: "Nome", flex: 2 },
-              { field: "value", headerName: "Valor Total", flex: 1 },
-              {
-                field: "interest_rate",
-                headerName: "Média Taxa de Juros (%)",
-                flex: 1,
-              },
-              {
-                field: "actions",
-                headerName: "Ações",
-                flex: 0.5,
-                disableReorder: true,
-                filterable: false,
-                disableColumnMenu: true,
-                sortable: false,
-                headerAlign: "center",
-                renderCell: ({ row }) => {
-                  return (
-                    <div className="flex gap-3 justify-center items-center h-full">
-                      <Button
-                        color="success"
-                        variant="outlined"
-                        onClick={() => handleOpenWithdraw(row)}
-                      >
-                        <PointOfSaleRoundedIcon />
-                      </Button>
-                    </div>
-                  );
-                },
-              },
-            ]}
-            initialState={{
-              pagination: { paginationModel: { pageSize: 5 } },
-            }}
-            pageSizeOptions={[5]}
-            loading={isLoadingFixedIncome}
-            disableRowSelectionOnClick
-          />
-        </Box>
-      </div>
-
-      {/* Historico de lançamentos */}
       {/* Modal de adição */}
       <GenericFormModal
         open={openAdd}
@@ -526,119 +475,172 @@ export function FixedIncome() {
         submitLabel="Salvar"
       />
 
+      <div>
+        <Box sx={{ height: 500, width: "100%"}}>
+          <div className="flex justify-between items-center mb-4">
+            <h1 className="text-xl font-semibold">Resumo</h1>
+          </div>
+          <DataGrid
+            localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
+            rows={rowsFixedIncomeSummary}
+            columns={[
+              { field: "name", headerName: "Nome", flex: 2 },
+              { field: "value", headerName: "Valor Total", flex: 1 },
+              {
+                field: "interest_rate",
+                headerName: "Média Taxa de Juros (%)",
+                flex: 1,
+              },
+              {
+                field: "actions",
+                headerName: "Ações",
+                flex: 0.5,
+                disableReorder: true,
+                filterable: false,
+                disableColumnMenu: true,
+                sortable: false,
+                headerAlign: "center",
+                renderCell: ({ row }) => {
+                  return (
+                    <div className="flex gap-3 justify-center items-center h-full">
+                      <Button
+                        color="success"
+                        variant="outlined"
+                        onClick={() => handleOpenWithdraw(row)}
+                      >
+                        <PointOfSaleRoundedIcon />
+                      </Button>
+                    </div>
+                  );
+                },
+              },
+            ]}
+            initialState={{
+              pagination: { paginationModel: { pageSize: 5 } },
+            }}
+            pageSizeOptions={[5]}
+            loading={isLoadingFixedIncome}
+            disableRowSelectionOnClick
+          />
+        </Box>
+      </div>
+
+      {/* Historico de lançamentos */}
+      
+
       {/* Grid de lançamentos de renda fixa */}
-      <div className="flex justify-between items-center p-15">
-        <h1 className="text-xl font-semibold">Lançamentos de Renda Fixa</h1>
+      <div>
+        <Box sx={{ height: 500, width: "100%", marginTop: 15 }}>
+          <div className="flex justify-between items-center mb-4">
+            <h1 className="text-xl font-semibold">Historico</h1>
+          </div>
+          <DataGrid
+            localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
+            rows={rowsFixedIncome}
+            columns={[
+              { field: "id", headerName: "ID", flex: 0.5 },
+              { field: "name", headerName: "Nome", flex: 2 },
+              { field: "value", headerName: "Valor", flex: 1 },
+              {
+                field: "interest_rate",
+                headerName: "Taxa de Juros (%)",
+                flex: 1,
+              },
+              {
+                field: "start_date",
+                headerName: "Data Inicial",
+                type: "string",
+                flex: 1,
+                valueFormatter: (params) => {
+                  const value = params;
+                  if (!value) return "";
+                  const parts = value.split("-");
+                  if (parts.length !== 3) return value;
+                  const [year, month, day] = parts;
+                  return `${day}/${month}/${year}`;
+                },
+              },
+              {
+                field: "due_date",
+                headerName: "Data de Vencimento",
+                type: "string",
+                flex: 1,
+                valueFormatter: (params) => {
+                  const value = params;
+                  if (!value) return "";
+                  const parts = value.split("-");
+                  if (parts.length !== 3) return value;
+                  const [year, month, day] = parts;
+                  return `${day}/${month}/${year}`;
+                },
+              },
+              {
+                field: "actions",
+                headerName: "Ações",
+                flex: 1,
+                disableReorder: true,
+                filterable: false,
+                disableColumnMenu: true,
+                sortable: false,
+                headerAlign: "center",
+                renderCell: ({ row }) => {
+                  return (
+                    <div className="flex gap-3 justify-center items-center h-full">
+                      <Button
+                        color="info"
+                        variant="outlined"
+                        onClick={() => {
+                          setEditData(row);
+                          setOpenEdit(true);
+                        }}
+                      >
+                        <EditOutlinedIcon />
+                      </Button>
+                      <Button
+                        color="error"
+                        variant="outlined"
+                        onClick={() =>
+                          deleteFixedIncomeExitMutation.mutate(row.id)
+                        }
+                      >
+                        <DeleteOutlineOutlinedIcon />
+                      </Button>
+                    </div>
+                  );
+                },
+              },
+            ]}
+            initialState={{
+              pagination: { paginationModel: { pageSize: 5 } },
+            }}
+            pageSizeOptions={[5]}
+            loading={isLoadingFixedIncome}
+            disableRowSelectionOnClick
+          />
+        </Box>
+
+        {/* Total filtrado */}
+        <div className="mt-15 text-right">
+          <span>
+            Total filtrado: R${" "}
+            {(Array.isArray(rowsFixedIncome)
+              ? rowsFixedIncome.reduce((sum, row) => {
+                  const valor = Number(
+                    String(row.value)
+                      .replace(/\./g, "") // remove separador de milhar
+                      .replace(",", ".") // vírgula por ponto
+                      .replace(/[^\d.-]/g, "") // remove não numéricos
+                  );
+                  return sum + (isNaN(valor) ? 0 : valor);
+                }, 0)
+              : 0
+            ).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+          </span>
+        </div>
       </div>
-
-      <Box sx={{ height: 500, width: "100%" }}>
-        <DataGrid
-          localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
-          rows={rowsFixedIncome}
-          columns={[
-            { field: "id", headerName: "ID", flex: 0.5 },
-            { field: "name", headerName: "Nome", flex: 2 },
-            { field: "value", headerName: "Valor", flex: 1 },
-            {
-              field: "interest_rate",
-              headerName: "Taxa de Juros (%)",
-              flex: 1,
-            },
-            {
-              field: "start_date",
-              headerName: "Data Inicial",
-              type: "string",
-              flex: 1,
-              valueFormatter: (params) => {
-                const value = params;
-                if (!value) return "";
-                const parts = value.split("-");
-                if (parts.length !== 3) return value;
-                const [year, month, day] = parts;
-                return `${day}/${month}/${year}`;
-              },
-            },
-            {
-              field: "due_date",
-              headerName: "Data de Vencimento",
-              type: "string",
-              flex: 1,
-              valueFormatter: (params) => {
-                const value = params;
-                if (!value) return "";
-                const parts = value.split("-");
-                if (parts.length !== 3) return value;
-                const [year, month, day] = parts;
-                return `${day}/${month}/${year}`;
-              },
-            },
-            {
-              field: "actions",
-              headerName: "Ações",
-              flex: 1,
-              disableReorder: true,
-              filterable: false,
-              disableColumnMenu: true,
-              sortable: false,
-              headerAlign: "center",
-              renderCell: ({ row }) => {
-                return (
-                  <div className="flex gap-3 justify-center items-center h-full">
-                    <Button
-                      color="info"
-                      variant="outlined"
-                      onClick={() => {
-                        setEditData(row);
-                        setOpenEdit(true);
-                      }}
-                    >
-                      <EditOutlinedIcon />
-                    </Button>
-                    <Button
-                      color="error"
-                      variant="outlined"
-                      onClick={() =>
-                        deleteFixedIncomeExitMutation.mutate(row.id)
-                      }
-                    >
-                      <DeleteOutlineOutlinedIcon />
-                    </Button>
-                  </div>
-                );
-              },
-            },
-          ]}
-          initialState={{
-            pagination: { paginationModel: { pageSize: 5 } },
-          }}
-          pageSizeOptions={[5]}
-          loading={isLoadingFixedIncome}
-          disableRowSelectionOnClick
-        />
-      </Box>
-
-      {/* Total filtrado */}
-      <div className="mt-4 text-right">
-        <span>
-          Total filtrado: R${" "}
-          {(Array.isArray(rowsFixedIncome)
-            ? rowsFixedIncome.reduce((sum, row) => {
-                const valor = Number(
-                  String(row.value)
-                    .replace(/\./g, "") // remove separador de milhar
-                    .replace(",", ".") // vírgula por ponto
-                    .replace(/[^\d.-]/g, "") // remove não numéricos
-                );
-                return sum + (isNaN(valor) ? 0 : valor);
-              }, 0)
-            : 0
-          ).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
-        </span>
-      </div>
-
       {/* Retiradas de renda fixa */}
-      <div className="flex flex-col height-screen h-full w-full overflow-hidden ">
-        <Box sx={{ height: 500, width: "100%", padding: 2, marginTop: 2 }}>
+      <div>
+        <Box sx={{ height: 500, width: "100%", marginTop: 4 }}>
           <div className="flex justify-between items-center mb-4">
             <h1 className="text-xl font-semibold">Retiradas</h1>
           </div>
