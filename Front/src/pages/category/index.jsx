@@ -2,13 +2,14 @@ import { Button } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { ptBR } from "@mui/x-data-grid/locales";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
+// import axios from "axios";
 import { useState } from "react";
 import { GenericFormModal } from "../../components/ui/GenericFormModal";
 import * as Yup from "yup";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 // import { useEffect } from "react";
+import api from "../../services/api";
 
 // Campos do formulário
 const categoryFields = [
@@ -62,50 +63,37 @@ export const CategoryPage = () => {
   const { data: categories, isPending } = useQuery({
     queryKey: ["categories"],
     queryFn: async () => {
-      const response = await axios({
-        method: "get",
-        baseURL: import.meta.env.VITE_API,
-        url: "/categories",
-      });
+      const response = await api.get("/categories");
       return response.data;
     },
   });
 
   const loadOneCategoryMutation = useMutation({
     mutationFn: async (id) => {
-      const response = await axios({
-        method: "get",
-        baseURL: import.meta.env.VITE_API,
-        url: `/categories/${id}`,
-      });
+      const response = await api.get(`/categories/${id}`); // Usando instância api
       return response.data;
     },
   });
 
   const saveCategoryMutation = useMutation({
     mutationFn: async (params) => {
-      await axios({
+      await api({
         method: params.method,
-        baseURL: import.meta.env.VITE_API,
         url: params.url,
         data: params.data,
       });
     },
     onSuccess: () => {
+      queryClient.invalidateQueries(["categories"]);
       setOpenAdd(false);
       setOpenEdit(false);
-      setEditData(null);
-      queryClient.invalidateQueries(["categories"]);
+      // reset();
     },
   });
 
   const deleteCategoryMutation = useMutation({
     mutationFn: async (id) => {
-      await axios({
-        method: "delete",
-        baseURL: import.meta.env.VITE_API,
-        url: `/categories/${id}`,
-      });
+      await api.delete(`/categories/${id}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["categories"]);

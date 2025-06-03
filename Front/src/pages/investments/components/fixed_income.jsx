@@ -1,7 +1,7 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid";
-import axios from "axios";
+// import axios from "axios";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@mui/material";
 import { useState, useMemo } from "react";
@@ -12,18 +12,27 @@ import { ptBR } from "@mui/x-data-grid/locales";
 import { GenericFormModal } from "../../../components/ui/GenericFormModal";
 import * as Yup from "yup";
 
+import api from "../../../services/api";
+
 //Parte logica para o os lançamentos de renda fixa de entrada
 
 // Busca as categorias para montar o select de nome
+// const useFixedIncomeCategories = () => {
+//   const { data: categories = [] } = useQuery({
+//     queryKey: ["categories"],
+//     queryFn: async () => {
+//       const response = await axios({
+//         method: "get",
+//         baseURL: import.meta.env.VITE_API,
+//         url: "/categories",
+//       });
+//       return response.data;
+//     },
+//   });
 const useFixedIncomeCategories = () => {
   const { data: categories = [] } = useQuery({
-    queryKey: ["categories"],
     queryFn: async () => {
-      const response = await axios({
-        method: "get",
-        baseURL: import.meta.env.VITE_API,
-        url: "/categories",
-      });
+      const response = await api.get("/categories");
       return response.data;
     },
   });
@@ -60,15 +69,23 @@ export function FixedIncome() {
   const queryClient = useQueryClient();
 
   // Busca lançamentos de renda fixa
+  // const { data: loadFixedIncomeQuery = [], isLoading: isLoadingFixedIncome } =
+  //   useQuery({
+  //     queryKey: ["fixed_income"],
+  //     queryFn: async () => {
+  //       const response = await axios({
+  //         method: "get",
+  //         baseURL: import.meta.env.VITE_API,
+  //         url: "/investiments_fixed_income",
+  //       });
+  //       return response.data;
+  //     },
+  //   });
   const { data: loadFixedIncomeQuery = [], isLoading: isLoadingFixedIncome } =
     useQuery({
       queryKey: ["fixed_income"],
       queryFn: async () => {
-        const response = await axios({
-          method: "get",
-          baseURL: import.meta.env.VITE_API,
-          url: "/investiments_fixed_income",
-        });
+        const response = await api.get("/investiments_fixed_income");
         return response.data;
       },
     });
@@ -103,31 +120,38 @@ export function FixedIncome() {
   // });
 
   // Mutation para salvar (criar ou editar)
-  const saveFixedIncomeMutation = useMutation({
-    mutationFn: async (params) => {
-      await axios({
-        method: params.method,
-        baseURL: import.meta.env.VITE_API,
-        url: params.url,
-        data: params.data,
-      });
-    },
-    onSuccess: () => {
-      setOpenAdd(false);
-      setOpenEdit(false);
-      setEditData(null);
-      queryClient.invalidateQueries(["fixed_income"]);
-    },
-  });
+  // const saveFixedIncomeMutation = useMutation({
+  //   mutationFn: async (params) => {
+  //     await api({
+  //       method: params.method,
+  //       url: params.url,
+  //       data: params.data,
+  //     });
+  //   },
+  //   onSuccess: () => {
+  //     setOpenAdd(false);
+  //     setOpenEdit(false);
+  //     setEditData(null);
+  //     queryClient.invalidateQueries(["fixed_income"]);
+  //   },
+  // });
 
   // Mutation para deletar
+  //   const deleteFixedIncomeMutation = useMutation({
+  //   mutationFn: async (id) => {
+  //     await axios({
+  //       method: "delete",
+  //       baseURL: import.meta.env.VITE_API,
+  //       url: `/investiments_fixed_income/${id}`,
+  //     });
+  //   },
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries(["fixed_income"]);
+  //   },
+  // });
   const deleteFixedIncomeMutation = useMutation({
     mutationFn: async (id) => {
-      await axios({
-        method: "delete",
-        baseURL: import.meta.env.VITE_API,
-        url: `/investiments_fixed_income/${id}`,
-      });
+      await api.delete(`/investiments_fixed_income/${id}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["fixed_income"]);
@@ -135,14 +159,24 @@ export function FixedIncome() {
   });
 
   // Adicione esta mutation:
+  // const updateFixedIncomeExitMutation = useMutation({
+  //     mutationFn: async (data) => {
+  //       await axios({
+  //         method: "put",
+  //         baseURL: import.meta.env.VITE_API,
+  //         url: `/investiments_fixed_income_exit/${data.id}`,
+  //         data,
+  //       });
+  //     },
+  //     onSuccess: () => {
+  //       setOpenEditExit(false);
+  //       setEditExitData(null);
+  //       queryClient.invalidateQueries(["fixed_income_exit"]);
+  //     },
+  //   });
   const updateFixedIncomeExitMutation = useMutation({
-    mutationFn: async (data) => {
-      await axios({
-        method: "put",
-        baseURL: import.meta.env.VITE_API,
-        url: `/investiments_fixed_income_exit/${data.id}`,
-        data,
-      });
+    mutationFn: async ({ id, data }) => {
+      await api.put(`/fixed_income_exit/${id}`, data);
     },
     onSuccess: () => {
       setOpenEditExit(false);
@@ -180,8 +214,102 @@ export function FixedIncome() {
   };
 
   // Submit do formulário
+  // const handleSubmit = (values) => {
+  //   // Formata datas para string ISO antes de enviar
+  //   const formattedData = {
+  //     ...values,
+  //     start_date: values.start_date,
+  //     due_date: values.due_date,
+  //   };
+
+  //   if (editData && editData.id) {
+  //     saveFixedIncomeMutation.mutate({
+  //       data: { ...formattedData, id: editData.id },
+  //       method: "put",
+  //       url: `/investiments_fixed_income/${editData.id}`,
+  //     });
+  //   } else {
+  //     // Gera um id string único (caso o backend não gere)
+  //     const newId = Math.random().toString(36).substr(2, 8);
+  //     saveFixedIncomeMutation.mutate({
+  //       data: { ...formattedData, id: newId },
+  //       method: "post",
+  //       url: "/investiments_fixed_income",
+  //     });
+  //   }
+  // };
+
+  // // Filtra apenas lançamentos com id definido
+  // const rowsFixedIncome = Array.isArray(loadFixedIncomeQuery)
+  //   ? loadFixedIncomeQuery.filter(
+  //       (row) => row && row.id !== undefined && row.id !== null
+  //     )
+  //   : [];
+
+  // // Parte lógica para a grid de resumo de renda fixa
+
+  // // Agrupa os lançamentos por nome e resume os dados
+  // const rowsFixedIncomeSummary = Object.values(
+  //   rowsFixedIncome.reduce((acc, curr) => {
+  //     if (!acc[curr.name]) {
+  //       acc[curr.name] = {
+  //         id: curr.name, // pode usar o nome como id do resumo
+  //         name: curr.name,
+  //         value: 0,
+  //         interest_rate_sum: 0,
+  //         interest_rate_count: 0,
+  //         start_date: curr.start_date,
+  //         due_date: curr.due_date,
+  //       };
+  //     }
+  //     acc[curr.name].value += Number(curr.value || 0);
+  //     acc[curr.name].interest_rate_sum += Number(curr.interest_rate || 0);
+  //     acc[curr.name].interest_rate_count += 1;
+  //     // Se quiser mostrar a menor data inicial e maior data final:
+  //     if (
+  //       acc[curr.name].start_date > curr.start_date ||
+  //       !acc[curr.name].start_date
+  //     ) {
+  //       acc[curr.name].start_date = curr.start_date;
+  //     }
+  //     if (acc[curr.name].due_date < curr.due_date || !acc[curr.name].due_date) {
+  //       acc[curr.name].due_date = curr.due_date;
+  //     }
+  //     return acc;
+  //   }, {})
+  // ).map((item) => ({
+  //   ...item,
+  //   interest_rate:
+  //     item.interest_rate_count > 0
+  //       ? (item.interest_rate_sum / item.interest_rate_count).toFixed(2)
+  //       : "0.00",
+  // }));
+  // Mutation para editar (PUT)
+  const updateFixedIncomeMutation = useMutation({
+    mutationFn: async ({ id, data }) => {
+      await api.put(`/investiments_fixed_income/${id}`, data);
+    },
+    onSuccess: () => {
+      setOpenEdit(false);
+      setEditData(null);
+      queryClient.invalidateQueries(["fixed_income"]);
+    },
+  });
+
+  // Mutation para criar (POST)
+  const createFixedIncomeMutation = useMutation({
+    mutationFn: async (data) => {
+      await api.post("/investiments_fixed_income", data);
+    },
+    onSuccess: () => {
+      setOpenAdd(false);
+      setEditData(null);
+      queryClient.invalidateQueries(["fixed_income"]);
+    },
+  });
+
+  // Submit do formulário
   const handleSubmit = (values) => {
-    // Formata datas para string ISO antes de enviar
     const formattedData = {
       ...values,
       start_date: values.start_date,
@@ -189,19 +317,14 @@ export function FixedIncome() {
     };
 
     if (editData && editData.id) {
-      saveFixedIncomeMutation.mutate({
-        data: { ...formattedData, id: editData.id },
-        method: "put",
-        url: `/investiments_fixed_income/${editData.id}`,
+      updateFixedIncomeMutation.mutate({
+        id: editData.id,
+        data: formattedData,
       });
     } else {
       // Gera um id string único (caso o backend não gere)
       const newId = Math.random().toString(36).substr(2, 8);
-      saveFixedIncomeMutation.mutate({
-        data: { ...formattedData, id: newId },
-        method: "post",
-        url: "/investiments_fixed_income",
-      });
+      createFixedIncomeMutation.mutate({ ...formattedData, id: newId });
     }
   };
 
@@ -213,8 +336,8 @@ export function FixedIncome() {
     : [];
 
   // Parte lógica para a grid de resumo de renda fixa
-
   // Agrupa os lançamentos por nome e resume os dados
+  // 
   const rowsFixedIncomeSummary = Object.values(
     rowsFixedIncome.reduce((acc, curr) => {
       if (!acc[curr.name]) {
@@ -251,32 +374,51 @@ export function FixedIncome() {
         : "0.00",
   }));
 
+
   //Parte logica para o os lançamentos de renda fixa de saida
 
   // Busca lançamentos de renda fixa
   const [openWithdraw, setOpenWithdraw] = useState(false);
   const [withdrawData, setWithdrawData] = useState(null);
 
-  const { data: loadFixedIncomeExitQuery = [] } = useQuery({
-    queryKey: ["fixed_income_exit"],
-    queryFn: async () => {
-      const response = await axios({
-        method: "get",
-        baseURL: import.meta.env.VITE_API,
-        url: "/investiments_fixed_income_exit",
-      });
-      return response.data;
-    },
-  });
+  // const { data: loadFixedIncomeExitQuery = [] } = useQuery({
+  //   queryKey: ["fixed_income_exit"],
+  //   queryFn: async () => {
+  //     const response = await axios({
+  //       method: "get",
+  //       baseURL: import.meta.env.VITE_API,
+  //       url: "/investiments_fixed_income_exit",
+  //     });
+  //     return response.data;
+  //   },
+  // });
+const { data: loadFixedIncomeExitQuery = [] } = useQuery({
+  queryKey: ["fixed_income_exit"],
+  queryFn: async () => {
+    const response = await api.get("/investiments_fixed_income_exit");
+    return response.data;
+  },
+});
 
+  // const saveFixedIncomeExitMutation = useMutation({
+  //   mutationFn: async (data) => {
+  //     await axios({
+  //       method: "post",
+  //       baseURL: import.meta.env.VITE_API,
+  //       url: "/investiments_fixed_income_exit",
+  //       data,
+  //     });
+  //   },
+  //   onSuccess: () => {
+  //     setOpenWithdraw(false);
+  //     setWithdrawData(null);
+  //     queryClient.invalidateQueries(["fixed_income_exit"]);
+  //     queryClient.invalidateQueries(["fixed_income"]);
+  //   },
+  // });
   const saveFixedIncomeExitMutation = useMutation({
     mutationFn: async (data) => {
-      await axios({
-        method: "post",
-        baseURL: import.meta.env.VITE_API,
-        url: "/investiments_fixed_income_exit",
-        data,
-      });
+      await api.post("/investiments_fixed_income_exit", data);
     },
     onSuccess: () => {
       setOpenWithdraw(false);
@@ -290,6 +432,56 @@ export function FixedIncome() {
     setWithdrawData(row);
     setOpenWithdraw(true);
   };
+
+  // const handleWithdrawSubmit = (values) => {
+  //   const nome = withdrawData.name;
+  //   let valorRestante = Number(values.withdrawal_amount);
+
+  //   // Filtra e ordena os lançamentos daquele nome por data (mais antigos primeiro)
+  //   const registros = rowsFixedIncome
+  //     .filter((row) => row.name === nome)
+  //     .sort((a, b) => new Date(a.start_date) - new Date(b.start_date));
+
+  //   registros.forEach((registro) => {
+  //     if (valorRestante <= 0) return;
+
+  //     const valorAtual = Number(registro.value);
+  //     const valorParaRetirar = Math.min(valorAtual, valorRestante);
+
+  //     // Salva a retirada
+  //     saveFixedIncomeExitMutation.mutate({
+  //       id: Math.random().toString(36).substr(2, 8),
+  //       name: registro.name,
+  //       initial_value: valorAtual,
+  //       withdrawal_amount: valorParaRetirar,
+  //       sell_date: values.sell_date,
+  //       start_date: registro.start_date,
+  //       due_date: registro.due_date,
+  //       interest_rate: registro.interest_rate,
+  //       inclusion_date: registro.start_date, // <-- Adiciona aqui a data de inclusão
+  //     });
+
+  //     if (valorParaRetirar === valorAtual) {
+  //       // Remove o lançamento se retirou tudo
+  //       deleteFixedIncomeMutation.mutate(registro.id);
+  //     } else if (valorParaRetirar < valorAtual) {
+  //       // Atualiza o valor do lançamento se retirou parcialmente
+  //       saveFixedIncomeMutation.mutate({
+  //         data: {
+  //           ...registro,
+  //           value: valorAtual - valorParaRetirar,
+  //         },
+  //         method: "put",
+  //         url: `/investiments_fixed_income/${registro.id}`,
+  //       });
+  //     }
+
+  //     valorRestante -= valorParaRetirar;
+  //   });
+
+  //   setOpenWithdraw(false);
+  //   setWithdrawData(null);
+  // };
 
   const handleWithdrawSubmit = (values) => {
     const nome = withdrawData.name;
@@ -306,7 +498,7 @@ export function FixedIncome() {
       const valorAtual = Number(registro.value);
       const valorParaRetirar = Math.min(valorAtual, valorRestante);
 
-      // Salva a retirada
+      // Salva a retirada (POST)
       saveFixedIncomeExitMutation.mutate({
         id: Math.random().toString(36).substr(2, 8),
         name: registro.name,
@@ -316,21 +508,20 @@ export function FixedIncome() {
         start_date: registro.start_date,
         due_date: registro.due_date,
         interest_rate: registro.interest_rate,
-        inclusion_date: registro.start_date, // <-- Adiciona aqui a data de inclusão
+        inclusion_date: registro.start_date,
       });
 
       if (valorParaRetirar === valorAtual) {
-        // Remove o lançamento se retirou tudo
+        // Remove o lançamento se retirou tudo (DELETE)
         deleteFixedIncomeMutation.mutate(registro.id);
       } else if (valorParaRetirar < valorAtual) {
-        // Atualiza o valor do lançamento se retirou parcialmente
-        saveFixedIncomeMutation.mutate({
+        // Atualiza o valor do lançamento se retirou parcialmente (PUT)
+        updateFixedIncomeMutation.mutate({
+          id: registro.id,
           data: {
             ...registro,
             value: valorAtual - valorParaRetirar,
           },
-          method: "put",
-          url: `/investiments_fixed_income/${registro.id}`,
         });
       }
 
@@ -342,13 +533,21 @@ export function FixedIncome() {
   };
 
   // Mutation para deletar
+  // const deleteFixedIncomeExitMutation = useMutation({
+  //   mutationFn: async (id) => {
+  //     await axios({
+  //       method: "delete",
+  //       baseURL: import.meta.env.VITE_API,
+  //       url: `/investiments_fixed_income_exit/${id}`,
+  //     });
+  //   },
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries(["fixed_income_exit"]);
+  //   },
+  // });
   const deleteFixedIncomeExitMutation = useMutation({
     mutationFn: async (id) => {
-      await axios({
-        method: "delete",
-        baseURL: import.meta.env.VITE_API,
-        url: `/investiments_fixed_income_exit/${id}`,
-      });
+      await api.delete(`/fixed_income_exit/${id}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["fixed_income_exit"]);
@@ -446,9 +645,12 @@ export function FixedIncome() {
         }}
         onSubmit={(values) => {
           updateFixedIncomeExitMutation.mutate({
-            ...editExitData,
-            withdrawal_amount: values.withdrawal_amount,
-            sell_date: values.sell_date,
+            id: editExitData.id,
+            data: {
+              ...editExitData,
+              withdrawal_amount: values.withdrawal_amount,
+              sell_date: values.sell_date,
+            },
           });
         }}
         initialValues={
@@ -476,7 +678,7 @@ export function FixedIncome() {
       />
 
       <div>
-        <Box sx={{ height: 500, width: "100%"}}>
+        <Box sx={{ height: 500, width: "100%" }}>
           <div className="flex justify-between items-center mb-4">
             <h1 className="text-xl font-semibold">Resumo</h1>
           </div>
@@ -526,7 +728,6 @@ export function FixedIncome() {
       </div>
 
       {/* Historico de lançamentos */}
-      
 
       {/* Grid de lançamentos de renda fixa */}
       <div>
@@ -619,7 +820,7 @@ export function FixedIncome() {
           />
         </Box>
 
-        {/* Total filtrado */}
+        {/* Total filtrado
         <div className="mt-15 text-right">
           <span>
             Total filtrado: R${" "}
@@ -636,11 +837,11 @@ export function FixedIncome() {
               : 0
             ).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
           </span>
-        </div>
+        </div> */}
       </div>
       {/* Retiradas de renda fixa */}
       <div>
-        <Box sx={{ height: 500, width: "100%", marginTop: 4 }}>
+        <Box sx={{ height: 500, width: "100%", marginTop: 9 }}>
           <div className="flex justify-between items-center mb-4">
             <h1 className="text-xl font-semibold">Retiradas</h1>
           </div>

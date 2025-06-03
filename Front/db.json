@@ -46,6 +46,19 @@
       "description": "",
       "type": "investment",
       "investmentType": "fixed_income"
+    },
+    {
+      "id": "98w3yogh",
+      "name": "lci",
+      "description": "",
+      "type": "investment",
+      "investmentType": "fixed_income"
+    },
+    {
+      "id": "a7dk5x3f",
+      "name": "teste",
+      "description": "",
+      "type": "expanse"
     }
   ],
   "accounts-payable": [
@@ -442,6 +455,42 @@
       "interest_rate": "0",
       "start_date": "2025-06-01",
       "due_date": "2025-06-30"
+    },
+    {
+      "id": "wwsa6nwx",
+      "typInvestiment": "fixed_income",
+      "name": "cdb",
+      "value": 800,
+      "interest_rate": "",
+      "start_date": "2025-05-02",
+      "due_date": "2025-06-27"
+    },
+    {
+      "id": "hwsr7dtj",
+      "typInvestiment": "fixed_income",
+      "name": "lci",
+      "value": "2000",
+      "interest_rate": "",
+      "start_date": "2025-04-01",
+      "due_date": "2025-07-31"
+    },
+    {
+      "id": "4kesrwgn",
+      "typInvestiment": "fixed_income",
+      "name": "cdb",
+      "value": "550",
+      "interest_rate": "",
+      "start_date": "2025-05-05",
+      "due_date": "2025-06-28"
+    },
+    {
+      "id": "rb77xy59",
+      "typInvestiment": "fixed_income",
+      "name": "cdb",
+      "value": "50",
+      "interest_rate": "",
+      "start_date": "2025-06-12",
+      "due_date": "2025-06-27"
     }
   ],
   "investiments_fixed_income_exit": [
@@ -466,6 +515,17 @@
       "due_date": "2025-06-30",
       "interest_rate": "0",
       "inclusion_date": "2025-06-01"
+    },
+    {
+      "id": "yl8dclmw",
+      "name": "cdb",
+      "initial_value": 1000,
+      "withdrawal_amount": 200,
+      "sell_date": "2025-06-02",
+      "start_date": "2025-05-02",
+      "due_date": "2025-06-27",
+      "interest_rate": "",
+      "inclusion_date": "2025-05-02"
     }
   ]
 }
