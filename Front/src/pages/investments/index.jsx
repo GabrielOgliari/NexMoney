@@ -6,19 +6,15 @@ import Grid from "@mui/material/Grid";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { FixedIncome } from "./components/fixed_income";
+import { Button } from "@mui/material";
+// import { VariableIncome } from "./components/variable_income";
 
 const Item = styled(Paper)(({ theme }) => ({
-  // backgroundColor: "#0F1729",
-  // ...theme.typography.body2,
-  // padding: theme.spacing(3),
-  // textAlign: "center",
-  // borderRadius: 3,
-  // border: "#1E2B45 solid 0.1px",
   ...theme.components?.MuiPaper?.styleOverrides?.root,
 }));
 
 export const InvestmentsPage = () => {
-  const [open, setOpen] = React.useState(false);
+  // const [open, setOpen] = React.useState(false);
   const [activeTab, setActiveTab] = React.useState(null);
 
   const loadInvestmentsTotalQuery = useQuery({
@@ -30,16 +26,17 @@ export const InvestmentsPage = () => {
         url: "/investiments",
       });
 
-      return response.data.total;
+      return response.data;
     },
   });
   return (
-    <div className="flex gap-4 flex-col bg-background bg-[#1B2232] height-screen  h-screen w-full overflow-hidden">
+    <div className="flex flex-col min-h-screen w-full bg-[#1B2232]">
+      
       <Box
         sx={{
           flexGrow: 1,
           padding: 2,
-          backgroundColor: "#1B2232",
+          // backgroundColor: "#1B2232",
           borderRadius: 1,
           borderBlockColor: "#1E2B45",
           margin: 2,
@@ -50,10 +47,10 @@ export const InvestmentsPage = () => {
           <Grid size={3}>
             <Item>
               <div className="flex flex-col bg-background  h-full w-full border-0">
-                <div className="flex flex-col gap-2 font-bold text-[14px] text-amber-50">
+                <div className="flex flex-col gap-2 font-bold text-[14px]">
                   Total de Investimentos
                 </div>
-                <div className="flex flex-col gap-2 font-bold text-[20px] text-amber-50">
+                <div className="flex flex-col gap-2 font-bold text-[20px]">
                   R$
                   {loadInvestmentsTotalQuery.data?.grand_total ??
                     "Carregando..."}
@@ -64,10 +61,10 @@ export const InvestmentsPage = () => {
           <Grid size={3}>
             <Item>
               <div className="flex flex-col bg-background h-full w-full border-0">
-                <div className="flex flex-col gap-2 font-bold text-[14px] text-amber-50">
+                <div className="flex flex-col gap-2 font-bold text-[14px]">
                   Renda Fixa
                 </div>
-                <div className="flex flex-col gap-2 font-bold text-[20px] text-amber-50">
+                <div className="flex flex-col gap-2 font-bold text-[20px]">
                   R${" "}
                   {loadInvestmentsTotalQuery.data?.total_fixed_income ??
                     "Carregando..."}
@@ -78,10 +75,10 @@ export const InvestmentsPage = () => {
           <Grid size={3}>
             <Item>
               <div className="flex flex-col bg-background  h-full w-full border-0">
-                <div className="flex flex-col gap-2 font-bold text-[14px] text-amber-50">
+                <div className="flex flex-col gap-2 font-bold text-[14px]">
                   Renda Variável
                 </div>
-                <div className="flex flex-col gap-2 font-bold text-[20px] text-amber-50">
+                <div className="flex flex-col gap-2 font-bold text-[20px]">
                   R$
                   {loadInvestmentsTotalQuery.data?.total_variable_income ??
                     "Carregando..."}
@@ -92,10 +89,10 @@ export const InvestmentsPage = () => {
           <Grid size={3}>
             <Item>
               <div className="flex flex-col bg-background  h-full w-full border-0">
-                <div className="flex flex-col gap-2 font-bold text-[14px] text-amber-50">
+                <div className="flex flex-col gap-2 font-bold text-[14px]">
                   Dividendos
                 </div>
-                <div className="flex flex-col gap-2 font-bold text-[20px] text-amber-50">
+                <div className="flex flex-col gap-2 font-bold text-[20px]">
                   R$
                   {loadInvestmentsTotalQuery.data?.dividends ?? "Carregando..."}
                 </div>
@@ -104,7 +101,7 @@ export const InvestmentsPage = () => {
           </Grid>
           <Grid size={15}>
             <Item>
-              <div className="flex flex-col bg-background h-full w-full border-0 text-amber-50 text-[18px] font-bold text-start ">
+              <div className="flex flex-col bg-background h-full w-full border-0 text-[18px] font-bold text-start ">
                 Histórico de Desempenho
                 <div></div>
               </div>
@@ -112,7 +109,7 @@ export const InvestmentsPage = () => {
           </Grid>
           <Grid size={15}>
             <Item>
-              <div className="flex flex-col bg-background  h-full w-full border-0 text-amber-50 text-[18px] font-bold text-start ">
+              <div className="flex flex-col bg-background  h-full w-full border-0 text-[18px] font-bold text-start overflow-hidden ">
                 Detalhes dos Investimentos
                 <div
                   dir="ltr"
@@ -137,7 +134,8 @@ export const InvestmentsPage = () => {
                     <button
                       className="inline-flex h-8 items-center justify-center rounded-md px-3 text-sm  transition-colors bg-[#1B2232]  hover:bg-[#24304A] cursor-pointer"
                       role="tab"
-                      aria-selected="true"
+                      aria-selected={activeTab === "variable_income"}
+                      onClick={() => setActiveTab("variable_income")}
                     >
                       Renda Variável
                     </button>
@@ -157,7 +155,10 @@ export const InvestmentsPage = () => {
                     </button>
                   </div>
                 </div>
-                <div>{activeTab === "fixed_income" && <FixedIncome />}</div>
+                <div className="flex flex-col overflow-hidden h-full w-full">
+                  {activeTab === "fixed_income" && <FixedIncome />}
+                  {activeTab === "variable_income" && <VariableIncome />}
+                </div>
               </div>
             </Item>
           </Grid>
