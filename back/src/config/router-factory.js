@@ -33,7 +33,7 @@ routes.forEach((file) => {
   }
 });
 
-// Rota principal simples para testes
+// rota principal simples para testes
 app.get("/", (_, res) => res.send("<h1>API NexMoney</h1>"));
 
 module.exports = app;
