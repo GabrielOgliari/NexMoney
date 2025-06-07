@@ -23,15 +23,13 @@ export function AccountsPayableAddModal({
   control,
   handleSubmit,
   onSubmit,
+  watch,
   categories = [],
 }) {
   const roundedInput = {
-    "& .MuiOutlinedInput-root": {
-      borderRadius: "12px",
-    },
-    "& .MuiInputBase-root": {
-      borderRadius: "12px",
-    },
+    "& .MuiOutlinedInput-root": { borderRadius: "12px" },
+    "& .MuiInputBase-root": { borderRadius: "12px" },
+    "& fieldset": { borderRadius: "12px" },
   };
 
   return (
@@ -49,9 +47,7 @@ export function AccountsPayableAddModal({
         >
           {/* Descrição */}
           <div className="w-full flex flex-col items-start">
-            <FormLabel sx={{ mb: 1, color: "text.primary" }}>
-              Descrição
-            </FormLabel>
+            <FormLabel sx={{ mb: 1 }}>Descrição</FormLabel>
             <Controller
               name="description"
               control={control}
@@ -67,15 +63,16 @@ export function AccountsPayableAddModal({
             />
           </div>
 
-          {/* Linha Valor e Data */}
+          {/* Valor e Data */}
           <div className="flex gap-4 w-full">
             <div className="w-1/2 flex flex-col items-start">
-              <FormLabel sx={{ mb: 1, color: "text.primary" }}>Valor</FormLabel>
+              <FormLabel sx={{ mb: 1 }}>Valor</FormLabel>
               <Controller
                 name="amount"
                 control={control}
-                render={({ field: { onChange, value } }) => (
+                render={({ field }) => (
                   <NumericFormat
+                    {...field}
                     customInput={TextField}
                     placeholder="0,00"
                     decimalScale={2}
@@ -85,25 +82,16 @@ export function AccountsPayableAddModal({
                     allowNegative={false}
                     fullWidth
                     sx={{
-                      "& .MuiOutlinedInput-root": {
-                        borderRadius: "10px",
-                      },
+                      "& .MuiOutlinedInput-root": { borderRadius: "10px" },
                     }}
-                    value={
-                      value === null || value === ""
-                        ? ""
-                        : typeof value === "string"
-                        ? parseFloat(value.replace(/\./g, "").replace(",", "."))
-                        : value
-                    }
                     onValueChange={(values) => {
-                      onChange(values.floatValue ?? 0);
+                      field.onChange(values.floatValue ?? 0);
                     }}
+                    value={field.value || ""}
                   />
                 )}
               />
             </div>
-
             <div className="w-1/2 flex flex-col items-start">
               <FormLabel sx={{ mb: 1, color: "text.primary" }}>
                 Data de Vencimento
@@ -117,18 +105,19 @@ export function AccountsPayableAddModal({
                       {...field}
                       onChange={(date) => field.onChange(date)}
                       value={field.value}
+                      format="DD/MM/YYYY" // Define o formato de data como "dd/mm/aaaa"
                       enableAccessibleFieldDOMStructure={false}
                       slotProps={{
                         textField: {
                           fullWidth: true,
-                          placeholder: "dd/mm/aaaa",
+                          placeholder: "dd/mm/aaaa", // Consistência no placeholder
                           variant: "outlined",
                           sx: {
                             "& .MuiOutlinedInput-root": {
-                              borderRadius: "10px",
+                              borderRadius: "10px", // Consistência no arredondamento
                             },
                             "& .MuiOutlinedInput-notchedOutline": {
-                              borderRadius: "10px",
+                              borderRadius: "10px", // Consistência no arredondamento
                             },
                           },
                         },
@@ -140,19 +129,16 @@ export function AccountsPayableAddModal({
             </div>
           </div>
 
-          {/* Linha Categoria e Status */}
+          {/* Categoria e Status */}
           <div className="flex gap-4 w-full">
             <div className="w-1/2 flex flex-col items-start">
-              <FormLabel sx={{ mb: 1, color: "text.primary" }}>
-                Categoria
-              </FormLabel>
+              <FormLabel sx={{ mb: 1 }}>Categoria</FormLabel>
               <Controller
                 name="category"
                 control={control}
                 render={({ field }) => (
                   <TextField {...field} select fullWidth sx={roundedInput}>
                     <MenuItem value="">Selecione</MenuItem>
-                    {/*  Renderiza dinamicamente categorias do JSON */}
                     {categories.map((cat) => (
                       <MenuItem key={cat.id} value={cat.name}>
                         {cat.name}
@@ -163,9 +149,7 @@ export function AccountsPayableAddModal({
               />
             </div>
             <div className="w-1/2 flex flex-col items-start">
-              <FormLabel sx={{ mb: 1, color: "text.primary" }}>
-                Status
-              </FormLabel>
+              <FormLabel sx={{ mb: 1 }}>Status</FormLabel>
               <Controller
                 name="status"
                 control={control}
@@ -182,45 +166,96 @@ export function AccountsPayableAddModal({
 
           <Divider sx={{ my: 1 }} />
 
-          {/* Pagamento Recorrente */}
+          {/* Frequência da Recorrência */}
+          <div className="w-full flex flex-col items-start">
+            <FormLabel sx={{ mb: 1 }}>Frequência da Recorrência</FormLabel>
+            <Controller
+              name="recurrence.type"
+              control={control}
+              render={({ field }) => (
+                <TextField {...field} select fullWidth sx={roundedInput}>
+                  <MenuItem value="daily">Diária</MenuItem>
+                  <MenuItem value="weekly">Semanal</MenuItem>
+                  <MenuItem value="biweekly">Quinzenal</MenuItem>
+                  <MenuItem value="monthly">Mensal</MenuItem>
+                  <MenuItem value="annual">Anual</MenuItem>
+                </TextField>
+              )}
+            />
+          </div>
+
+          {/* Checkbox: Ativar até data específica */}
           <div className="w-full flex flex-col items-start">
             <Controller
-              name="recurrence.enabled"
+              name="recurrence.hasEndDate"
               control={control}
-              defaultValue={false}
               render={({ field }) => (
                 <FormControlLabel
                   control={
                     <Switch
                       checked={!!field.value}
                       onChange={(e) => field.onChange(e.target.checked)}
-                      color="primary"
                     />
                   }
-                  label="Pagamento Recorrente"
-                  sx={{ ml: 0 }}
+                  label="Ativar até data específica"
                 />
               )}
             />
           </div>
+
+          {/* Data Final da Recorrência */}
+          {watch("recurrence.hasEndDate") && (
+            <div className="w-1/2 flex flex-col items-start">
+              <FormLabel sx={{ mb: 1, color: "text.primary" }}>
+                Data Final da Recorrência
+              </FormLabel>
+              <Controller
+                name="recurrence.endDate"
+                control={control}
+                render={({ field }) => (
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                      {...field}
+                      onChange={(date) => field.onChange(date)}
+                      value={field.value}
+                      format="DD/MM/YYYY" // Define o formato de data como "dd/mm/aaaa"
+                      enableAccessibleFieldDOMStructure={false}
+                      slotProps={{
+                        textField: {
+                          fullWidth: true,
+                          placeholder: "dd/mm/aaaa", // Mantém o placeholder consistente
+                          variant: "outlined",
+                          sx: {
+                            "& .MuiOutlinedInput-root": {
+                              borderRadius: "10px", // Consistência no arredondamento
+                            },
+                            "& .MuiOutlinedInput-notchedOutline": {
+                              borderRadius: "10px", // Consistência no arredondamento
+                            },
+                          },
+                        },
+                      }}
+                    />
+                  </LocalizationProvider>
+                )}
+              />
+            </div>
+          )}
 
           {/* Lembrete */}
           <div className="w-full flex flex-col items-start">
             <Controller
               name="reminder"
               control={control}
-              defaultValue={false}
               render={({ field }) => (
                 <FormControlLabel
                   control={
                     <Switch
                       checked={!!field.value}
                       onChange={(e) => field.onChange(e.target.checked)}
-                      color="primary"
                     />
                   }
                   label="Definir lembrete para data de vencimento"
-                  sx={{ ml: 0 }}
                 />
               )}
             />

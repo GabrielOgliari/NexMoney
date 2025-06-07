@@ -324,6 +324,7 @@ export const AccountsPayablePage = () => {
                               monthly: "Mensal",
                               weekly: "Semanal",
                               annual: "Anual",
+                              biweekly: "Quinzenal",
                               daily: "Diária",
                             }[row.recurrence.type] || row.recurrence.type
                           } ${
