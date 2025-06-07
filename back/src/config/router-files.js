@@ -5,6 +5,7 @@ const filenames = {
     "mapped_expense-resource",
     "bank_statement_expense-resource",
     "ofx-upload-resource",
+    "account_receivable-resource",
     // Descomente os recursos adicionais quando forem implementados
     // "post-resource",
     // "reply-resource",
