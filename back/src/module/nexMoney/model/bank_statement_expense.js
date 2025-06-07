@@ -17,24 +17,28 @@ module.exports = (sequelize, DataTypes) => {
       },
       name: {
         type: DataTypes.STRING,
-        allowNull: false,
       },
       amount: {
-        type: DataTypes.NUMERIC,
-        allowNull: false,
+        type: DataTypes.DECIMAL(10, 2),
       },
       date: {
         type: DataTypes.DATEONLY,
-        allowNull: false,
+      },
+      type: {
+        type: DataTypes.STRING,
+      },
+      memo: {
+        type: DataTypes.STRING,
+      },
+      category: {
+        type: DataTypes.STRING,
       },
       mapped: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
-        defaultValue: false,
       },
-      category: {
+      fitid: {
         type: DataTypes.STRING,
-        allowNull: true,
       },
     },
     {
