@@ -2,13 +2,13 @@
 const { Model } = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
-  class AccountPayable extends Model {
+  class AccountReceivable extends Model {
     static associate(models) {
       // associações se necessário
     }
   }
 
-  AccountPayable.init(
+  AccountReceivable.init(
     {
       id: {
         type: DataTypes.INTEGER,
@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.NUMERIC,
         allowNull: false,
       },
-      dueDate: {
+      receiptDate: {
         type: DataTypes.DATEONLY,
         allowNull: false,
       },
@@ -50,10 +50,10 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: "accountPayable",
-      tableName: "accounts_payable",
+      modelName: "accountReceivable",
+      tableName: "accounts_receivable",
     }
   );
 
-  return AccountPayable;
+  return AccountReceivable;
 };

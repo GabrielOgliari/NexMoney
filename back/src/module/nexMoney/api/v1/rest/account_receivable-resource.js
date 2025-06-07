@@ -1,12 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const model = require("../../../model");
-const AccountPayable = model.accountPayable;
+const AccountReceivable = model.accountReceivable;
 
 // GET todas as contas a pagar
-router.get("/api/v1/rest/accounts-payable", async (req, res) => {
+router.get("/api/v1/rest/accounts-receivable", async (req, res) => {
   try {
-    const data = await AccountPayable.findAll();
+    const data = await AccountReceivable.findAll();
     res.json(data);
   } catch (error) {
     console.error(error);
@@ -15,9 +15,9 @@ router.get("/api/v1/rest/accounts-payable", async (req, res) => {
 });
 
 // GET por ID
-router.get("/api/v1/rest/accounts-payable/:id", async (req, res) => {
+router.get("/api/v1/rest/accounts-receivable/:id", async (req, res) => {
   try {
-    const data = await AccountPayable.findByPk(req.params.id);
+    const data = await AccountReceivable.findByPk(req.params.id);
     if (!data) return res.status(404).json({ error: "Conta não encontrada" });
     res.json(data);
   } catch (error) {
@@ -27,13 +27,13 @@ router.get("/api/v1/rest/accounts-payable/:id", async (req, res) => {
 });
 
 // POST nova conta
-router.post("/api/v1/rest/accounts-payable", async (req, res) => {
+router.post("/api/v1/rest/accounts-receivable", async (req, res) => {
   try {
     if (req.body.categoryId === "") {
       delete req.body.categoryId;
     }
 
-    const created = await AccountPayable.create(req.body);
+    const created = await AccountReceivable.create(req.body);
     res.status(201).json({ success: true, data: created });
   } catch (error) {
     console.error(error);
@@ -42,13 +42,13 @@ router.post("/api/v1/rest/accounts-payable", async (req, res) => {
 });
 
 // PUT atualizar conta
-router.put("/api/v1/rest/accounts-payable/:id", async (req, res) => {
+router.put("/api/v1/rest/accounts-receivable/:id", async (req, res) => {
   try {
     if (req.body.categoryId === "") {
       delete req.body.categoryId;
     }
 
-    const data = await AccountPayable.findByPk(req.params.id);
+    const data = await AccountReceivable.findByPk(req.params.id);
     if (!data) return res.status(404).json({ error: "Conta não encontrada" });
 
     await data.update(req.body);
@@ -60,9 +60,9 @@ router.put("/api/v1/rest/accounts-payable/:id", async (req, res) => {
 });
 
 // DELETE remover conta
-router.delete("/api/v1/rest/accounts-payable/:id", async (req, res) => {
+router.delete("/api/v1/rest/accounts-receivable/:id", async (req, res) => {
   try {
-    const data = await AccountPayable.findByPk(req.params.id);
+    const data = await AccountReceivable.findByPk(req.params.id);
     if (!data) return res.status(404).json({ error: "Conta não encontrada" });
 
     await data.destroy();
