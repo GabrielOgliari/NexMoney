@@ -22,3 +22,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# ignorar todas as imagens dentro de
+public/icons/
+
+# ignorar todas as imagens dentro  de
+public/banner/
