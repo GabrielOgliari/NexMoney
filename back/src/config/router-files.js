@@ -1,7 +1,4 @@
 const filenames = {
-  /**
-   * nexMoney REST.
-   */
   "nexMoney/api/v1/rest": [
     "category-resource",
     "account_payable-resource",
@@ -13,13 +10,8 @@ const filenames = {
     // "initial_category-resource",
     // "bank_statement_expense-resource",
     // "mapped_expense-resource",
-    // "investiment_exit-resource",
+    // "investiment_exit-resource"
   ],
-  /**
-   * nexMoney RPC (se existir no futuro).
-   */
-  // "nexMoney/api/v1/rpc": [
-  // ],
 };
 
 function toFilesList(imports, folder) {
@@ -28,8 +20,9 @@ function toFilesList(imports, folder) {
 
 function toRelativePaths(folder) {
   return (filename) => {
-    return `../src/module/${folder}/${filename}`; // Caminho relativo para cada rota
+    return path.resolve(__dirname, `../module/${folder}/${filename}.js`);
   };
 }
 
+const path = require("path");
 module.exports = Object.keys(filenames).reduce(toFilesList, []);

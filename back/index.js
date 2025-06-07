@@ -2,7 +2,7 @@
 const { createServer } = require("http");
 const dotenv = require("dotenv");
 dotenv.config();
-const app = require("./config/router-factory");
+const app = require("./src/config/router-factory");
 const { sequelize } = require("./src/module/nexMoney/model");
 
 sequelize
@@ -20,7 +20,7 @@ sequelize
 
     const PORT = process.env.PORT || 8080;
     http.listen(PORT, () => {
-      console.log(`Servidor rodando na porta ${PORT} 🚀`);
+      console.log(`Servidor rodando na porta ${PORT}`);
       console.log(`Ambiente: ${process.env.NODE_ENV || "development"}`);
     });
   })

@@ -8,7 +8,7 @@ import {
   Box,
 } from "@mui/material";
 import { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../../services/api";
 import { useQuery } from "@tanstack/react-query";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 
@@ -16,14 +16,11 @@ import { Draggable as DraggableItem } from "./components/draggable";
 
 // Página principal de comparação orçamentária
 export const BudgetComparisonPage = () => {
+  // Carrega as categorias do banco
   const { data: categories = [], isSuccess: categoriesLoaded } = useQuery({
     queryKey: ["categories"],
     queryFn: async () => {
-      const response = await axios({
-        method: "get",
-        baseURL: import.meta.env.VITE_API,
-        url: "/categories",
-      });
+      const response = await api.get("/categories");
       return response.data;
     },
   });
@@ -32,11 +29,7 @@ export const BudgetComparisonPage = () => {
   const { data: expenses = [], isSuccess: expensesLoaded } = useQuery({
     queryKey: ["bankStatementExpenses"],
     queryFn: async () => {
-      const response = await axios({
-        method: "get",
-        baseURL: import.meta.env.VITE_API,
-        url: "/bankStatementExpenses",
-      });
+      const response = await api.get("/bankStatementExpenses");
       return response.data;
     },
   });
@@ -116,12 +109,7 @@ export const BudgetComparisonPage = () => {
     });
 
     try {
-      await axios({
-        method: "post",
-        baseURL: import.meta.env.VITE_API,
-        url: "/mappedExpenses",
-        data: mappedExpenses,
-      });
+      await api.post("/mappedExpenses", mappedExpenses);
       alert("Mapeamento salvo com sucesso!");
     } catch (error) {
       console.error("Erro ao salvar mapeamento:", error);
