@@ -2,7 +2,7 @@ import React, { useCallback, useState } from "react";
 import { Box, Button, Typography, LinearProgress } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { useDropzone } from "react-dropzone";
-import axios from "axios";
+import api from "../../../services/api";
 
 export const FileUpload = () => {
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -18,9 +18,9 @@ export const FileUpload = () => {
     const formData = new FormData();
     formData.append("file", file);
 
-    // Enviar o arquivo com axios para o backend
-    axios
-      .post(`${import.meta.env.VITE_API}/upload`, formData, {
+    // Enviar o arquivo com api para o backend
+    api
+      .post("/upload", formData, {
         headers: { "Content-Type": "multipart/form-data" }, // ajustar depois
         onUploadProgress: (progressEvent) => {
           const percentCompleted = Math.round(

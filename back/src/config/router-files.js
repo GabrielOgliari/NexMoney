@@ -2,6 +2,9 @@ const filenames = {
   "nexMoney/api/v1/rest": [
     "category-resource",
     "account_payable-resource",
+    "mapped_expense-resource",
+    "bank_statement_expense-resource",
+    "ofx-upload-resource",
     "account_receivable-resource",
     // Descomente os recursos adicionais quando forem implementados
     // "post-resource",
@@ -9,8 +12,6 @@ const filenames = {
     // "expense-resource",
     // "investiment-resource",
     // "initial_category-resource",
-    // "bank_statement_expense-resource",
-    // "mapped_expense-resource",
     // "investiment_exit-resource"
   ],
 };

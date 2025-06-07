@@ -31,9 +31,8 @@ router.get("/api/v1/rest/categories/:id", async (req, res) => {
 // Criar uma nova categoria
 router.post("/api/v1/rest/categories", async (req, res) => {
   try {
-    // Remover id do body (o banco deve gerar automaticamente)
-    const { id, ...categoryData } = req.body;
-    const newCategory = await Category.create(categoryData);
+    delete req.body.id; // força ignorar id
+    const newCategory = await Category.create(req.body);
     res.status(201).json({ success: true, data: newCategory });
   } catch (error) {
     console.error("Erro ao criar categoria:", error);
