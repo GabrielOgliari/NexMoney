@@ -12,6 +12,22 @@ const accountPayable = require("./account_payable")(
   sequelize,
   Sequelize.DataTypes
 );
+const mappedExpense = require("./mapped_expense")(
+  sequelize,
+  Sequelize.DataTypes
+);
 
-const db = { category, accountPayable, sequelize, Sequelize };
+const bankStatementExpense = require("./bank_statement_expense")(
+  sequelize,
+  Sequelize.DataTypes
+);
+
+const db = {
+  category,
+  accountPayable,
+  mappedExpense,
+  bankStatementExpense,
+  sequelize,
+  Sequelize,
+};
 module.exports = db;

@@ -109,7 +109,7 @@ export const BudgetComparisonPage = () => {
     });
 
     try {
-      await api.post("/mappedExpenses", mappedExpenses);
+      await api.post("/mapped-expenses", mappedExpenses);
       alert("Mapeamento salvo com sucesso!");
     } catch (error) {
       console.error("Erro ao salvar mapeamento:", error);
@@ -167,7 +167,7 @@ export const BudgetComparisonPage = () => {
           <div>
             <h3 className="text-lg font-bold mb-2">De Para</h3>
             {categories.map((cat) => (
-              <Droppable droppableId={cat.id} key={cat.id}>
+              <Droppable droppableId={String(cat.id)} key={cat.id}>
                 {(provided) => (
                   <div
                     ref={provided.innerRef}
@@ -177,7 +177,7 @@ export const BudgetComparisonPage = () => {
                     <h4 className="font-semibold">{cat.name}</h4>
                     {(columns[cat.id] || []).map((item, index) => (
                       <Draggable
-                        draggableId={item.id}
+                        draggableId={String(item.id)}
                         index={index}
                         key={item.id}
                       >
@@ -213,7 +213,7 @@ export const BudgetComparisonPage = () => {
                   {columns.extrato?.length > 0 ? (
                     columns.extrato.map((item, index) => (
                       <Draggable
-                        draggableId={item.id}
+                        draggableId={String(item.id)}
                         index={index}
                         key={item.id}
                       >
