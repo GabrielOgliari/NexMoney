@@ -2,6 +2,7 @@ const filenames = {
   "nexMoney/api/v1/rest": [
     "category-resource",
     "account_payable-resource",
+    "account_receivable-resource",
     // Descomente os recursos adicionais quando forem implementados
     // "post-resource",
     // "reply-resource",
