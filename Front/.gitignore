@@ -28,3 +28,7 @@ public/icons/
 
 # ignorar todas as imagens dentro  de
 public/banner/
+
+*.png
+*.jpg
+*.jpeg
