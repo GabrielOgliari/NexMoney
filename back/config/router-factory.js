@@ -1,5 +1,5 @@
 const express = require("express");
-const routes = require("./router-files.js"); // Ajustado o caminho
+const routes = require("./router-files.js");
 const path = require("path");
 
 const app = express();
@@ -9,8 +9,8 @@ const cors = require("cors");
 const corsOptions = {
   origin:
     process.env.NODE_ENV === "production"
-      ? "https://seusite.com" // Substitua pelo domínio real de produção
-      : "http://localhost:5173", // Domínio do frontend local
+      ? "https://seusite.com" // produção
+      : "http://localhost:5173", // frontend local
   methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
@@ -34,6 +34,6 @@ routes.forEach((file) => {
 });
 
 // Rota principal simples para testes
-app.get("/", (_, res) => res.send("<h1>API NexMoney 🚀</h1>"));
+app.get("/", (_, res) => res.send("<h1>API NexMoney</h1>"));
 
 module.exports = app;
