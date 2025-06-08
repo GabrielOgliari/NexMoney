@@ -28,7 +28,7 @@ export const CategoryPage = () => {
   const [rowsPerPage, setRowsPerPage] = useState(7);
 
   // React Hook Form para gerenciamento de formulários
-  const { control, handleSubmit, reset } = useForm(); 
+  const { control, handleSubmit, reset } = useForm();
 
   // Carrega todas as categorias da API
   const { data: categoriesData = [] } = useQuery({
@@ -98,15 +98,27 @@ export const CategoryPage = () => {
 
   // Função chamada ao enviar o formulário (adicionar ou editar)
   const onSubmit = (data) => {
+    const formattedData = {
+      ...data,
+      amount:
+        typeof data.amount === "string"
+          ? parseFloat(data.amount.replace(/\./g, "").replace(",", "."))
+          : data.amount,
+      planned:
+        typeof data.planned === "string"
+          ? parseFloat(data.planned.replace(/\./g, "").replace(",", "."))
+          : data.planned,
+    };
+
     if (editData) {
       saveCategoryMutation.mutate({
-        data: { ...data, id: editData.id },
+        data: { ...formattedData, id: editData.id },
         method: "put",
         url: `/categories/${editData.id}`,
       });
     } else {
       saveCategoryMutation.mutate({
-        data: { ...data, id: new Date().getTime() },
+        data: formattedData,
         method: "post",
         url: "/categories",
       });
