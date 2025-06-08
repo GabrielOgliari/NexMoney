@@ -178,7 +178,20 @@ export const CategoryPage = () => {
                   <TableCell sx={{ color: "white" }}>
                     {row.description}
                   </TableCell>
-                  <TableCell sx={{ color: "white" }}>{row.type}</TableCell>
+
+                  {/* Alteração de Cor de Tipo */}
+                  <TableCell sx={{ color: "white" }}>
+                    {row.type === "expanse" && (
+                      <span style={{ color: "red" }}>Despesa</span>
+                    )}
+                    {row.type === "income" && (
+                      <span style={{ color: "green" }}>Receita</span>
+                    )}
+                    {row.type === "investment" && (
+                      <span style={{ color: "yellow" }}>Investimento</span>
+                    )}
+                  </TableCell>
+
                   <TableCell>
                     <div className="flex gap-3 justify-center items-center">
                       <Button
