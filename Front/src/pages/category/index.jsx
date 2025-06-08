@@ -97,7 +97,9 @@ export const CategoryPage = () => {
   };
 
   // Função chamada ao enviar o formulário (adicionar ou editar)
-  const onSubmit = (data) => {
+  const onSubmit = (data, e) => {
+    e.preventDefault();
+
     const formattedData = {
       ...data,
       amount:
