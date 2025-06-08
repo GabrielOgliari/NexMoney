@@ -11,8 +11,8 @@ import { useState, useEffect } from "react";
 import api from "../../services/api";
 import { useQuery } from "@tanstack/react-query";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
-
 import { Draggable as DraggableItem } from "./components/draggable";
+import { NumericFormat } from "react-number-format";
 
 // Página principal de comparação orçamentária
 export const BudgetComparisonPage = () => {
@@ -73,20 +73,33 @@ export const BudgetComparisonPage = () => {
     }
   };
 
-  // Função para calcular o total de uma categoria
+  // Função para calcular o total de uma categoria (usando valor absoluto das despesas)
   const getCategoryTotal = (categoryId) => {
-    return (columns[categoryId] || []).reduce(
-      (sum, item) => sum + item.amount,
-      0
-    );
+    return (columns[categoryId] || []).reduce((sum, item) => {
+      const value = Number(item.amount) || 0;
+      return value < 0 ? sum + Math.abs(value) : sum;
+    }, 0);
   };
 
-  const totalPlanned = categories.reduce((sum, c) => sum + c.planned, 0);
+  // Total planejado: soma dos valores definidos nas categorias
+  const totalPlanned = categories.reduce(
+    (sum, c) => sum + (Number(c.planned) || 0),
+    0
+  );
+
+  // Total mapeado: soma das despesas alocadas nas categorias
   const totalMapped = categories.reduce(
     (sum, c) => sum + getCategoryTotal(c.id),
     0
   );
-  const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0);
+
+  // Total de despesas no extrato (ignora receitas)
+  const totalExpenses = expenses.reduce((sum, e) => {
+    const value = Number(e.amount) || 0;
+    return value < 0 ? sum + Math.abs(value) : sum;
+  }, 0);
+
+  // Sobra total entre o planejado e o que foi mapeado
   const sobraTotal = totalPlanned - totalMapped;
   const mappedPct =
     totalExpenses > 0 ? Math.round((totalMapped / totalExpenses) * 100) : 0;
