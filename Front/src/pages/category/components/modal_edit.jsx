@@ -11,6 +11,7 @@ import {
   FormLabel,
 } from "@mui/material"; // Certifique-se de importar o Dialog aqui
 import { Controller } from "react-hook-form"; // Importando Controller
+import { NumericFormat } from "react-number-format";
 
 export function CategoryEditModal({
   open,
@@ -77,6 +78,34 @@ export function CategoryEditModal({
                   <MenuItem value="income">Receita</MenuItem>
                   <MenuItem value="investment">Investimentos</MenuItem>
                 </TextField>
+              )}
+            />
+          </div>
+
+          {/* Campo Valor Planejado */}
+          <div className="w-full flex flex-col items-start">
+            <FormLabel sx={{ mb: 1 }}>Valor Planejado</FormLabel>
+            <Controller
+              name="planned"
+              defaultValue={initialValues.planned}
+              control={control}
+              render={({ field }) => (
+                <NumericFormat
+                  {...field}
+                  customInput={TextField}
+                  placeholder="0,00"
+                  decimalScale={2}
+                  fixedDecimalScale
+                  thousandSeparator="."
+                  decimalSeparator=","
+                  allowNegative={false}
+                  fullWidth
+                  sx={roundedInput}
+                  onValueChange={(values) =>
+                    field.onChange(values.floatValue ?? 0)
+                  }
+                  value={field.value || ""}
+                />
               )}
             />
           </div>
