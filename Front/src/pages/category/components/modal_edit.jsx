@@ -9,8 +9,8 @@ import {
   TextField,
   MenuItem,
   FormLabel,
-} from "@mui/material"; // Certifique-se de importar o Dialog aqui
-import { Controller } from "react-hook-form"; // Importando Controller
+} from "@mui/material";
+import { Controller } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
 
 export function CategoryEditModal({
@@ -40,7 +40,7 @@ export function CategoryEditModal({
           className="flex flex-col gap-4 mt-2 items-start"
         >
           {/* Campo Nome */}
-          <div className="w-full flex flex-col gap-4 items-start">
+          <div className="w-full flex flex-col items-start">
             <FormLabel sx={{ mb: 1 }}>Nome</FormLabel>
             <Controller
               name="name"
@@ -53,7 +53,7 @@ export function CategoryEditModal({
           </div>
 
           {/* Campo Descrição */}
-          <div className="w-full flex flex-col gap-4 items-start">
+          <div className="w-full flex flex-col items-start">
             <FormLabel sx={{ mb: 1 }}>Descrição</FormLabel>
             <Controller
               name="description"
@@ -65,49 +65,52 @@ export function CategoryEditModal({
             />
           </div>
 
-          {/* Campo Tipo */}
-          <div className="w-full flex flex-col gap-4 items-start">
-            <FormLabel sx={{ mb: 1 }}>Tipo</FormLabel>
-            <Controller
-              name="type"
-              control={control} // Passando o 'control' aqui
-              defaultValue={initialValues.type}
-              render={({ field }) => (
-                <TextField {...field} select fullWidth sx={roundedInput}>
-                  <MenuItem value="expanse">Despesas</MenuItem>
-                  <MenuItem value="income">Receita</MenuItem>
-                  <MenuItem value="investment">Investimentos</MenuItem>
-                </TextField>
-              )}
-            />
-          </div>
+          {/* Flexbox para os campos de Valor Planejado e Tipo */}
+          <div className="flex gap-4 w-full">
+            {/* Campo Tipo */}
+            <div className="w-1/2 flex flex-col items-start">
+              <FormLabel sx={{ mb: 1 }}>Tipo</FormLabel>
+              <Controller
+                name="type"
+                control={control} // Passando o 'control' aqui
+                defaultValue={initialValues.type}
+                render={({ field }) => (
+                  <TextField {...field} select fullWidth sx={roundedInput}>
+                    <MenuItem value="expanse">Despesas</MenuItem>
+                    <MenuItem value="income">Receita</MenuItem>
+                    <MenuItem value="investment">Investimentos</MenuItem>
+                  </TextField>
+                )}
+              />
+            </div>
 
-          {/* Campo Valor Planejado */}
-          <div className="w-full flex flex-col items-start">
-            <FormLabel sx={{ mb: 1 }}>Valor Planejado</FormLabel>
-            <Controller
-              name="planned"
-              defaultValue={initialValues.planned}
-              control={control}
-              render={({ field }) => (
-                <NumericFormat
-                  {...field}
-                  customInput={TextField}
-                  placeholder="0,00"
-                  decimalScale={2}
-                  fixedDecimalScale
-                  thousandSeparator="."
-                  decimalSeparator=","
-                  allowNegative={false}
-                  fullWidth
-                  sx={roundedInput}
-                  onValueChange={(values) =>
-                    field.onChange(values.floatValue ?? 0)
-                  }
-                  value={field.value || ""}
-                />
-              )}
-            />
+            {/* Campo Valor Planejado */}
+            <div className="w-1/2 flex flex-col items-start">
+              <FormLabel sx={{ mb: 1 }}>Valor Planejado</FormLabel>
+              <Controller
+                name="planned"
+                defaultValue={initialValues.planned}
+                control={control}
+                render={({ field }) => (
+                  <NumericFormat
+                    {...field}
+                    customInput={TextField}
+                    placeholder="0,00"
+                    decimalScale={2}
+                    fixedDecimalScale
+                    thousandSeparator="."
+                    decimalSeparator=","
+                    allowNegative={false}
+                    fullWidth
+                    sx={roundedInput}
+                    onValueChange={(values) =>
+                      field.onChange(values.floatValue ?? 0)
+                    }
+                    value={field.value || ""}
+                  />
+                )}
+              />
+            </div>
           </div>
 
           {/* Botões de Ação */}
