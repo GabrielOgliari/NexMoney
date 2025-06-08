@@ -47,7 +47,12 @@ export function CategoryEditModal({
               control={control} // Passando o 'control' aqui
               defaultValue={initialValues.name}
               render={({ field }) => (
-                <TextField {...field} fullWidth sx={roundedInput} />
+                <TextField
+                  {...field}
+                  fullWidth
+                  sx={roundedInput}
+                  inputProps={{ maxLength: 50 }}
+                />
               )}
             />
           </div>
@@ -60,7 +65,12 @@ export function CategoryEditModal({
               control={control} // Passando o 'control' aqui
               defaultValue={initialValues.description}
               render={({ field }) => (
-                <TextField {...field} fullWidth sx={roundedInput} />
+                <TextField
+                  {...field}
+                  fullWidth
+                  sx={roundedInput}
+                  inputProps={{ maxLength: 100 }}
+                />
               )}
             />
           </div>

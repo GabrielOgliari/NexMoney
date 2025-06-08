@@ -45,6 +45,7 @@ export function CategoryAddModal({ open, handleClose, onSubmit, control }) {
                   placeholder="Digite o nome da categoria"
                   fullWidth
                   sx={roundedInput}
+                  inputProps={{ maxLength: 50 }}
                 />
               )}
             />
@@ -63,6 +64,7 @@ export function CategoryAddModal({ open, handleClose, onSubmit, control }) {
                   fullWidth
                   autoFocus
                   sx={roundedInput}
+                  inputProps={{ maxLength: 100 }}
                 />
               )}
             />
