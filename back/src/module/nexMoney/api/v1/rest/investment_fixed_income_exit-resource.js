@@ -1,12 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const model = require("../../../model");
-const investimentFixedIncome = model.investmentFixedIncome;
+const investimentFixedIncomeExit = model.investimentFixedIncomeExit;
 
 // Listar todos os investimentos de renda fixa
-router.get("/api/v1/rest/investiments-fixed-income", async (req, res) => {
+router.get("/api/v1/rest/investiments-fixed-income-exit", async (req, res) => {
   try {
-    const data = await investimentFixedIncome.findAll();
+    const data = await investimentFixedIncomeExit.findAll();
     res.json(data);
   } catch (error) {
     console.error(error);
@@ -15,9 +15,9 @@ router.get("/api/v1/rest/investiments-fixed-income", async (req, res) => {
 });
 
 // Obter um investimento específico por ID
-router.get("/api/v1/rest/investiments-fixed-income/:id", async (req, res) => {
+router.get("/api/v1/rest/investiments-fixed-income-exit/:id", async (req, res) => {
   try {
-    const data = await investimentFixedIncome.findByPk(req.params.id);
+    const data = await investimentFixedIncomeExit.findByPk(req.params.id);
     if (!data) return res.status(404).json({ error: "não encontrado" });
     res.json(data);
   } catch (error) {
@@ -27,29 +27,43 @@ router.get("/api/v1/rest/investiments-fixed-income/:id", async (req, res) => {
 });
 
 // Criar um novo investimento de renda fixa
-router.post("/api/v1/rest/investiments-fixed-income", async (req, res) => {
+router.post("/api/v1/rest/investiments-fixed-income-exit", async (req, res) => {
   try {
     const {
       typeInvestment,
       name,
-      value,
+      initialValue,
+      withdrawalAmount,
       interestRate,
+      sellDate,
       startDate,
-      dueDate
+      dueDate,
+      inclusionDate
     } = req.body;
 
     // Apenas os campos obrigatórios do model são validados
-    if (!typeInvestment || !name || value === undefined || !startDate || !dueDate) {
+    if (
+      !typeInvestment ||
+      !name ||
+      initialValue === undefined ||
+      withdrawalAmount === undefined ||
+      !startDate ||
+      !dueDate ||
+      !inclusionDate
+    ) {
       return res.status(400).json({ error: "Campos obrigatórios não preenchidos" });
     }
 
-    const created = await investimentFixedIncome.create({
+    const created = await investimentFixedIncomeExit.create({
       typeInvestment,
       name,
-      value,
+      initialValue,
+      withdrawalAmount,
       interestRate: interestRate ?? null,
+      sellDate: sellDate ?? null,
       startDate,
-      dueDate
+      dueDate,
+      inclusionDate
     });
     res.status(201).json({ success: true, data: created });
   } catch (error) {
@@ -59,27 +73,33 @@ router.post("/api/v1/rest/investiments-fixed-income", async (req, res) => {
 });
 
 // Atualizar um investimento de renda fixa
-router.put("/api/v1/rest/investiments-fixed-income/:id", async (req, res) => {
+router.put("/api/v1/rest/investiments-fixed-income-exit/:id", async (req, res) => {
   try {
-    const data = await investimentFixedIncome.findByPk(req.params.id);
+    const data = await investimentFixedIncomeExit.findByPk(req.params.id);
     if (!data) return res.status(404).json({ error: "não encontrado" });
 
     const {
       typeInvestment,
       name,
-      value,
+      initialValue,
+      withdrawalAmount,
       interestRate,
+      sellDate,
       startDate,
-      dueDate
+      dueDate,
+      inclusionDate
     } = req.body;
 
     await data.update({
       typeInvestment: typeInvestment ?? data.typeInvestment,
       name: name ?? data.name,
-      value: value ?? data.value,
+      initialValue: initialValue ?? data.initialValue,
+      withdrawalAmount: withdrawalAmount ?? data.withdrawalAmount,
       interestRate: interestRate ?? data.interestRate,
+      sellDate: sellDate ?? data.sellDate,
       startDate: startDate ?? data.startDate,
-      dueDate: dueDate ?? data.dueDate
+      dueDate: dueDate ?? data.dueDate,
+      inclusionDate: inclusionDate ?? data.inclusionDate
     });
 
     res.json({ success: true, data });
@@ -90,9 +110,9 @@ router.put("/api/v1/rest/investiments-fixed-income/:id", async (req, res) => {
 });
 
 // Deletar um investimento de renda fixa
-router.delete("/api/v1/rest/investiments-fixed-income/:id", async (req, res) => {
+router.delete("/api/v1/rest/investiments-fixed-income-exit/:id", async (req, res) => {
   try {
-    const data = await investimentFixedIncome.findByPk(req.params.id);
+    const data = await investimentFixedIncomeExit.findByPk(req.params.id);
     if (!data) return res.status(404).json({ error: "não encontrado" });
     await data.destroy();
     res.json({ success: true, msg: `Conta ${data.id} deletada com sucesso!` });

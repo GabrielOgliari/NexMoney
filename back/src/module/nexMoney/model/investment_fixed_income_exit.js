@@ -10,12 +10,12 @@ module.exports = (sequelize, DataTypes) => {
   investimentFixedIncomeExit.init(
     {
       id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-      typeInvestiment: { type: DataTypes.STRING, allowNull: false },
+      typeInvestment: { type: DataTypes.STRING, allowNull: false },
       name: { type: DataTypes.STRING, allowNull: false },
       initialValue: { type: DataTypes.NUMERIC, allowNull: false },
       withdrawalAmount: { type: DataTypes.NUMERIC, allowNull: false },
-      interestRate: { type: DataTypes.NUMERIC, allowNull: true },
-      sellDate: { type: DataTypes.NUMERIC, allowNull: true },
+
+      sellDate: { type: DataTypes.DATEONLY, allowNull: true },
       interestRate: { type: DataTypes.NUMERIC, allowNull: true },
       startDate: { type: DataTypes.DATEONLY, allowNull: false },
       dueDate: { type: DataTypes.DATEONLY, allowNull: false },
@@ -24,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "investimentFixedIncomeExit",
-      tableName: "fixed_incomes_exit",
+      tableName: "investment_fixed_income_exit",
     }
   );
   return investimentFixedIncomeExit;

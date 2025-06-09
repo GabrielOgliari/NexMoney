@@ -51,7 +51,7 @@ const useFixedIncomeCategories = () => {
 };
 
 const validationSchema = Yup.object({
-  typInvestiment: Yup.string().required("Tipo obrigatório"),
+  typeInvestment: Yup.string().required("Tipo obrigatório"),
   name: Yup.string().required("Nome obrigatório"),
   value: Yup.number().required("Valor obrigatório"),
   interestRate: Yup.number(),
@@ -310,23 +310,31 @@ export function FixedIncome() {
 
   // Submit do formulário
   const handleSubmit = (values) => {
-    const formattedData = {
-      ...values,
-      startDate: values.startDate,
-      dueDate: values.dueDate,
-    };
-
-    if (editData && editData.id) {
-      updateFixedIncomeMutation.mutate({
-        id: editData.id,
-        data: formattedData,
-      });
-    } else {
-      // Gera um id string único (caso o backend não gere)
-      const newId = Math.random().toString(36).substr(2, 8);
-      createFixedIncomeMutation.mutate({ ...formattedData, id: newId });
-    }
+  const formattedData = {
+    ...values,
+    value: Number(values.value), // Garante que value é número
+    startDate: values.startDate,
+    dueDate: values.dueDate,
   };
+
+  // Remove interestRate se estiver vazio, nulo ou undefined
+  if (
+    formattedData.interestRate === "" ||
+    formattedData.interestRate === null ||
+    typeof formattedData.interestRate === "undefined"
+  ) {
+    delete formattedData.interestRate;
+  }
+
+  if (editData && editData.id) {
+    updateFixedIncomeMutation.mutate({
+      id: editData.id,
+      data: formattedData,
+    });
+  } else {
+    createFixedIncomeMutation.mutate(formattedData);
+  }
+};
 
   // Filtra apenas lançamentos com id definido
   const rowsFixedIncome = Array.isArray(loadFixedIncomeQuery)
@@ -499,7 +507,6 @@ export function FixedIncome() {
 
       // Salva a retirada (POST)
       saveFixedIncomeExitMutation.mutate({
-        id: Math.random().toString(36).substr(2, 8),
         name: registro.name,
         initialValue: valorAtual,
         withdrawalAmount: valorParaRetirar,
@@ -508,6 +515,7 @@ export function FixedIncome() {
         dueDate: registro.dueDate,
         interestRate: registro.interestRate,
         inclusionDate: registro.startDate,
+        typeInvestment: "fixed_income",
       });
 
       if (valorParaRetirar === valorAtual) {
@@ -573,7 +581,7 @@ export function FixedIncome() {
         onClose={handleCloseModal}
         onSubmit={handleSubmit}
         initialValues={{
-          typInvestiment: "fixed_income", // valor padrão aqui
+          typeInvestment: "fixed_income", // valor padrão aqui
           name: "",
           value: "",
           interestRate: "",
@@ -592,7 +600,7 @@ export function FixedIncome() {
         onSubmit={handleSubmit}
         initialValues={
           editData || {
-            typInvestiment: "fixed_income",
+            typeInvestment: "fixed_income",
             name: "",
             value: "",
             interestRate: "",

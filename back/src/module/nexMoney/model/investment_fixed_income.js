@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
   investmentFixedIncome.init(
     {
       id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-      typeinvestment: { type: DataTypes.STRING, allowNull: false },
+      typeInvestment: { type: DataTypes.STRING, allowNull: false },
       name: { type: DataTypes.STRING, allowNull: false },
       value: { type: DataTypes.NUMERIC, allowNull: false },
       interestRate: { type: DataTypes.NUMERIC, allowNull: true },
