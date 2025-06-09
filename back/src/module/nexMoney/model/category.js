@@ -7,6 +7,7 @@ module.exports = (sequelize, DataTypes) => {
       // associações se necessário
     }
   }
+
   Category.init(
     {
       id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
@@ -22,5 +23,6 @@ module.exports = (sequelize, DataTypes) => {
       tableName: "categories",
     }
   );
+
   return Category;
 };
