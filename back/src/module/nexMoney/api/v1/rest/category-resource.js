@@ -39,20 +39,20 @@ router.get("/api/v1/rest/categories/:id", async (req, res) => {
 // Criar uma nova categoria
 router.post("/api/v1/rest/categories", async (req, res) => {
   try {
-    const { name, description, type, planned } = req.body;
+    const { name, type, description, planned, investmentType } = req.body;
 
-    if (!name || !type || planned === undefined) {
+    if (!name || !type) {
       return res
         .status(400)
         .json({ error: "Campos obrigatórios não preenchidos" });
     }
 
-    // Criação da nova categoria
     const newCategory = await Category.create({
       name,
-      description,
       type,
-      planned,
+      description: description ?? null,
+      planned: planned ?? null,
+      investmentType: investmentType ?? null,
     });
 
     res.status(201).json({ success: true, data: newCategory });
@@ -69,14 +69,15 @@ router.put("/api/v1/rest/categories/:id", async (req, res) => {
     if (!category)
       return res.status(404).json({ error: "Categoria não encontrada" });
 
-    const { name, description, type, planned } = req.body;
+    const { name, type, description, planned, investmentType } = req.body;
 
-    // Atualiza apenas os campos que foram enviados
+    // Atualiza apenas os campos enviados
     await category.update({
-      name: name || category.name,
-      description: description || category.description,
-      type: type || category.type,
-      planned: planned !== undefined ? planned : category.planned,
+      name: name ?? category.name,
+      type: type ?? category.type,
+      description: description ?? category.description,
+      planned: planned ?? category.planned,
+      investmentType: investmentType ?? category.investmentType,
     });
 
     res.json({ success: true, data: category });

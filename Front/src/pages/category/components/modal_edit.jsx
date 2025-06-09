@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Dialog,
   DialogActions,
@@ -18,8 +18,14 @@ export function CategoryEditModal({
   handleClose,
   onSubmit,
   initialValues,
-  control, // Adicionando o 'control' aqui
+  control,
 }) {
+  const [selectedType, setSelectedType] = useState(initialValues.type || "");
+
+  useEffect(() => {
+    setSelectedType(initialValues.type || "");
+  }, [initialValues.type, open]);
+
   const roundedInput = {
     "& .MuiOutlinedInput-root": { borderRadius: "12px" },
     "& .MuiInputBase-root": { borderRadius: "12px" },
@@ -44,7 +50,7 @@ export function CategoryEditModal({
             <FormLabel sx={{ mb: 1 }}>Nome</FormLabel>
             <Controller
               name="name"
-              control={control} // Passando o 'control' aqui
+              control={control}
               defaultValue={initialValues.name}
               render={({ field }) => (
                 <TextField
@@ -62,7 +68,7 @@ export function CategoryEditModal({
             <FormLabel sx={{ mb: 1 }}>Descrição</FormLabel>
             <Controller
               name="description"
-              control={control} // Passando o 'control' aqui
+              control={control}
               defaultValue={initialValues.description}
               render={({ field }) => (
                 <TextField
@@ -82,10 +88,19 @@ export function CategoryEditModal({
               <FormLabel sx={{ mb: 1 }}>Tipo</FormLabel>
               <Controller
                 name="type"
-                control={control} // Passando o 'control' aqui
+                control={control}
                 defaultValue={initialValues.type}
                 render={({ field }) => (
-                  <TextField {...field} select fullWidth sx={roundedInput}>
+                  <TextField
+                    {...field}
+                    select
+                    fullWidth
+                    sx={roundedInput}
+                    onChange={(e) => {
+                      field.onChange(e);
+                      setSelectedType(e.target.value);
+                    }}
+                  >
                     <MenuItem value="expanse">Despesas</MenuItem>
                     <MenuItem value="income">Receita</MenuItem>
                     <MenuItem value="investment">Investimentos</MenuItem>
@@ -122,6 +137,31 @@ export function CategoryEditModal({
               />
             </div>
           </div>
+
+          {/* Campo Tipo de Investimento (aparece só se for investimento) */}
+          {selectedType === "investment" && (
+            <div className="w-full flex flex-col items-start">
+              <FormLabel sx={{ mb: 1 }}>Tipo de Investimento</FormLabel>
+              <Controller
+                name="investmentType"
+                control={control}
+                defaultValue={initialValues.investmentType}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    select
+                    fullWidth
+                    sx={roundedInput}
+                    placeholder="Selecione o tipo de investimento"
+                  >
+                    <MenuItem value="fixed_income">Renda Fixa</MenuItem>
+                    <MenuItem value="variable_income">Renda Variável</MenuItem>
+                    <MenuItem value="cripto">Cripto</MenuItem>
+                  </TextField>
+                )}
+              />
+            </div>
+          )}
 
           {/* Botões de Ação */}
           <DialogActions className="flex justify-end mt-2 px-0 w-full">
