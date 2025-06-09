@@ -111,7 +111,6 @@ export function FixedIncome() {
     setOpenAdd(true);
   };
 
-
   // Fechar modais
   const handleCloseModal = () => {
     setOpenAdd(false);
@@ -145,31 +144,31 @@ export function FixedIncome() {
 
   // Submit do formulário
   const handleSubmit = (values) => {
-  const formattedData = {
-    ...values,
-    value: Number(values.value), // Garante que value é número
-    startDate: values.startDate,
-    dueDate: values.dueDate,
+    const formattedData = {
+      ...values,
+      value: Number(values.value), // Garante que value é número
+      startDate: values.startDate,
+      dueDate: values.dueDate,
+    };
+
+    // Remove interestRate se estiver vazio, nulo ou undefined
+    if (
+      formattedData.interestRate === "" ||
+      formattedData.interestRate === null ||
+      typeof formattedData.interestRate === "undefined"
+    ) {
+      delete formattedData.interestRate;
+    }
+
+    if (editData && editData.id) {
+      updateFixedIncomeMutation.mutate({
+        id: editData.id,
+        data: formattedData,
+      });
+    } else {
+      createFixedIncomeMutation.mutate(formattedData);
+    }
   };
-
-  // Remove interestRate se estiver vazio, nulo ou undefined
-  if (
-    formattedData.interestRate === "" ||
-    formattedData.interestRate === null ||
-    typeof formattedData.interestRate === "undefined"
-  ) {
-    delete formattedData.interestRate;
-  }
-
-  if (editData && editData.id) {
-    updateFixedIncomeMutation.mutate({
-      id: editData.id,
-      data: formattedData,
-    });
-  } else {
-    createFixedIncomeMutation.mutate(formattedData);
-  }
-};
 
   // Filtra apenas lançamentos com id definido
   const rowsFixedIncome = Array.isArray(loadFixedIncomeQuery)
@@ -315,6 +314,15 @@ export function FixedIncome() {
       )
     : [];
 
+  // Função utilitária para formatar valores como moeda brasileira
+  const formatCurrency = (value) => {
+    if (value === undefined || value === null || value === "") return "";
+    return Number(value).toLocaleString("pt-BR", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  };
+
   return (
     <div className="flex flex-col height-screen h-full w-full overflow-hidden ">
       <div className="flex justify-end  mr-4 ">
@@ -442,7 +450,12 @@ export function FixedIncome() {
             rows={rowsFixedIncomeSummary}
             columns={[
               { field: "name", headerName: "Nome", flex: 2 },
-              { field: "value", headerName: "Valor Total", flex: 1 },
+              {
+                field: "value",
+                headerName: "Valor Total",
+                flex: 1,
+                valueFormatter: (params) => `R$ ${formatCurrency(params)}`,
+              },
               {
                 field: "interestRate",
                 headerName: "Média Taxa de Juros (%)",
@@ -496,7 +509,12 @@ export function FixedIncome() {
             columns={[
               { field: "id", headerName: "ID", flex: 0.5 },
               { field: "name", headerName: "Nome", flex: 2 },
-              { field: "value", headerName: "Valor", flex: 1 },
+              {
+                field: "value",
+                headerName: "Valor",
+                flex: 1,
+                valueFormatter: (params) => `R$ ${formatCurrency(params)}`,
+              },
               {
                 field: "interestRate",
                 headerName: "Taxa de Juros (%)",
@@ -555,9 +573,7 @@ export function FixedIncome() {
                       <Button
                         color="error"
                         variant="outlined"
-                        onClick={() =>
-                          deleteFixedIncomeMutation.mutate(row.id)
-                        }
+                        onClick={() => deleteFixedIncomeMutation.mutate(row.id)}
                       >
                         <DeleteOutlineOutlinedIcon />
                       </Button>
@@ -607,11 +623,17 @@ export function FixedIncome() {
             columns={[
               { field: "id", headerName: "ID", flex: 0.5 },
               { field: "name", headerName: "Nome", flex: 2 },
-              { field: "initialValue", headerName: "Valor Inicial", flex: 1 },
+              {
+                field: "initialValue",
+                headerName: "Valor Inicial",
+                flex: 1,
+                valueFormatter: (params) => `R$ ${formatCurrency(params)}`,
+              },
               {
                 field: "withdrawalAmount",
                 headerName: "Valor de Retirada",
                 flex: 1,
+                valueFormatter: (params) => `R$ ${formatCurrency(params)}`,
               },
               {
                 field: "sellDate",
