@@ -44,7 +44,6 @@ export const AccountsReceivablePage = () => {
       const response = await api.get("/categories", {
         params: { type: "income" },
       });
-      console.log("Categorias carregadas:", response.data);
       return response.data;
     },
   });

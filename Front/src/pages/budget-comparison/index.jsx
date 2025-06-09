@@ -29,7 +29,6 @@ export const BudgetComparisonPage = () => {
         },
       });
 
-      console.log("Categorias carregadas:", response.data);
       return response.data;
     },
   });
@@ -173,18 +172,82 @@ export const BudgetComparisonPage = () => {
                 {categories.map((cat) => (
                   <div key={cat.id} className="mb-2 p-2 rounded bg-[#111827]">
                     <p className="font-semibold">{cat.name}</p>
-                    <p>Meta: R$ {cat.planned}</p>
-                    <p>Atual: R$ {getCategoryTotal(cat.id)}</p>
-                    <p>Sobra: R$ {cat.planned - getCategoryTotal(cat.id)}</p>
+                    <p>
+                      Meta:{" "}
+                      <NumericFormat
+                        value={cat.planned}
+                        displayType="text"
+                        thousandSeparator="."
+                        decimalSeparator=","
+                        prefix="R$ "
+                        decimalScale={2}
+                        fixedDecimalScale
+                      />
+                    </p>
+                    <p>
+                      Atual:{" "}
+                      <NumericFormat
+                        value={getCategoryTotal(cat.id)}
+                        displayType="text"
+                        thousandSeparator="."
+                        decimalSeparator=","
+                        prefix="R$ "
+                        decimalScale={2}
+                        fixedDecimalScale
+                      />
+                    </p>
+                    <p>
+                      Sobra:{" "}
+                      <NumericFormat
+                        value={cat.planned - getCategoryTotal(cat.id)}
+                        displayType="text"
+                        thousandSeparator="."
+                        decimalSeparator=","
+                        prefix="R$ "
+                        decimalScale={2}
+                        fixedDecimalScale
+                      />
+                    </p>
                   </div>
                 ))}
                 {provided.placeholder}
                 <div className="bg-[#111827] p-4 rounded mt-4 font-bold">
                   <p>
-                    Total Planejado: R$ {totalPlanned.toLocaleString("pt-BR")}
+                    Total Planejado:{" "}
+                    <NumericFormat
+                      value={totalPlanned}
+                      displayType="text"
+                      thousandSeparator="."
+                      decimalSeparator=","
+                      prefix="R$ "
+                      decimalScale={2}
+                      fixedDecimalScale
+                    />
                   </p>
-                  <p>Total Atual: R$ {totalMapped.toLocaleString("pt-BR")}</p>
-                  <p>Total Sobra: R$ {sobraTotal.toLocaleString("pt-BR")}</p>
+                  <p>
+                    Total Atual:{" "}
+                    <NumericFormat
+                      value={totalMapped}
+                      displayType="text"
+                      thousandSeparator="."
+                      decimalSeparator=","
+                      prefix="R$ "
+                      decimalScale={2}
+                      fixedDecimalScale
+                    />
+                  </p>
+                  <p>
+                    Total Sobra:{" "}
+                    <NumericFormat
+                      value={sobraTotal}
+                      displayType="text"
+                      thousandSeparator="."
+                      decimalSeparator=","
+                      prefix="R$ "
+                      decimalScale={2}
+                      fixedDecimalScale
+                    />
+                  </p>
                 </div>
               </div>
             )}
@@ -346,8 +409,17 @@ export const BudgetComparisonPage = () => {
                 >
                   <TableCell sx={{ color: "white" }}>{cat.name}</TableCell>
                   <TableCell sx={{ color: "white" }}>
-                    R$ {cat.planned.toLocaleString("pt-BR")}
+                    <NumericFormat
+                      value={cat.planned}
+                      displayType="text"
+                      thousandSeparator="."
+                      decimalSeparator=","
+                      prefix="R$ "
+                      decimalScale={2}
+                      fixedDecimalScale
+                    />
                   </TableCell>
+
                   <TableCell sx={{ color: "white" }}>
                     R$ {actual.toLocaleString("pt-BR")}
                   </TableCell>
