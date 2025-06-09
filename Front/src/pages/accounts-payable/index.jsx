@@ -37,11 +37,14 @@ export const AccountsPayablePage = () => {
   const [rowsPerPage, setRowsPerPage] = useState(7);
 
   const queryClient = useQueryClient();
-  // Carrega as categorias do banco
+
+  // Carrega as categorias do tipo "expanse" (Despesas)
   const { data: categoriesData = [] } = useQuery({
-    queryKey: ["categories"],
+    queryKey: ["categories", "expanse"],
     queryFn: async () => {
-      const response = await api.get("/categories");
+      const response = await api.get("/categories", {
+        params: { type: "expanse" },
+      });
       return response.data;
     },
   });
@@ -171,7 +174,8 @@ export const AccountsPayablePage = () => {
   };
 
   // Função chamada ao enviar o formulário (adicionar ou editar)
-  const onSubmit = (data) => {
+  const onSubmit = (data, e) => {
+    e.preventDefault();
     const formattedData = {
       ...data,
       amount:

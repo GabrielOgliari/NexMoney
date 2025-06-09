@@ -16,11 +16,20 @@ import { NumericFormat } from "react-number-format";
 
 // Página principal de comparação orçamentária
 export const BudgetComparisonPage = () => {
-  // Carrega as categorias do banco
+  // Carrega categorias dos tipos "income" e "expanse"
   const { data: categories = [], isSuccess: categoriesLoaded } = useQuery({
-    queryKey: ["categories"],
+    queryKey: ["categories", "income+expanse"],
     queryFn: async () => {
-      const response = await api.get("/categories");
+      const response = await api.get("/categories", {
+        params: {
+          type: ["income", "expanse"],
+        },
+        paramsSerializer: {
+          indexes: null, // força Axios a gerar múltiplos type=... e não type[0]=...
+        },
+      });
+
+      console.log("Categorias carregadas:", response.data);
       return response.data;
     },
   });

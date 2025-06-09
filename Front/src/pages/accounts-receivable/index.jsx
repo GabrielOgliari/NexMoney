@@ -37,11 +37,14 @@ export const AccountsReceivablePage = () => {
   const [rowsPerPage, setRowsPerPage] = useState(7);
 
   const queryClient = useQueryClient();
-  // Carrega as categorias do banco
+  // Carrega as categorias do tipo "income" (Receitas)
   const { data: categoriesData = [] } = useQuery({
-    queryKey: ["categories"],
+    queryKey: ["categories", "income"],
     queryFn: async () => {
-      const response = await api.get("/categories");
+      const response = await api.get("/categories", {
+        params: { type: "income" },
+      });
+      console.log("Categorias carregadas:", response.data);
       return response.data;
     },
   });
