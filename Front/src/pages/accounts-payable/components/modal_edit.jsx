@@ -65,6 +65,7 @@ export function AccountsPayableEditModal({
                   placeholder="Digite a descrição"
                   fullWidth
                   sx={roundedInput}
+                  inputProps={{ maxLength: 50 }}
                 />
               )}
             />
@@ -238,23 +239,23 @@ export function AccountsPayableEditModal({
                       {...field}
                       onChange={(date) => field.onChange(date)}
                       value={field.value}
+                      format="DD/MM/YYYY"
                       enableAccessibleFieldDOMStructure={false}
                       slotProps={{
                         textField: {
                           fullWidth: true,
-                          placeholder: "dd/mm/aaaa", // Mantendo o placeholder consistente
+                          placeholder: "dd/mm/aaaa",
                           variant: "outlined",
                           sx: {
                             "& .MuiOutlinedInput-root": {
-                              borderRadius: "12px", // Arredondamento consistente
+                              borderRadius: "10px",
                             },
                             "& .MuiOutlinedInput-notchedOutline": {
-                              borderRadius: "12px", // Consistência no arredondamento
+                              borderRadius: "10px",
                             },
                           },
                         },
                       }}
-                      format="DD/MM/YYYY" // Mantendo o formato de dia/mês/ano
                     />
                   </LocalizationProvider>
                 )}
@@ -262,7 +263,7 @@ export function AccountsPayableEditModal({
             </div>
           )}
 
-          {/* Checkbox: Lembrete */}
+          {/* Lembrete */}
           <div className="w-full flex flex-col items-start">
             <Controller
               name="reminder"

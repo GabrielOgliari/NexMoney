@@ -58,6 +58,7 @@ export function AccountsPayableAddModal({
                   fullWidth
                   autoFocus
                   sx={roundedInput}
+                  inputProps={{ maxLength: 50 }}
                 />
               )}
             />
@@ -105,19 +106,19 @@ export function AccountsPayableAddModal({
                       {...field}
                       onChange={(date) => field.onChange(date)}
                       value={field.value}
-                      format="DD/MM/YYYY" // Define o formato de data como "dd/mm/aaaa"
+                      format="DD/MM/YYYY"
                       enableAccessibleFieldDOMStructure={false}
                       slotProps={{
                         textField: {
                           fullWidth: true,
-                          placeholder: "dd/mm/aaaa", // Consistência no placeholder
+                          placeholder: "dd/mm/aaaa",
                           variant: "outlined",
                           sx: {
                             "& .MuiOutlinedInput-root": {
-                              borderRadius: "10px", // Consistência no arredondamento
+                              borderRadius: "10px",
                             },
                             "& .MuiOutlinedInput-notchedOutline": {
-                              borderRadius: "10px", // Consistência no arredondamento
+                              borderRadius: "10px",
                             },
                           },
                         },
@@ -218,19 +219,19 @@ export function AccountsPayableAddModal({
                       {...field}
                       onChange={(date) => field.onChange(date)}
                       value={field.value}
-                      format="DD/MM/YYYY" // Define o formato de data como "dd/mm/aaaa"
+                      format="DD/MM/YYYY"
                       enableAccessibleFieldDOMStructure={false}
                       slotProps={{
                         textField: {
                           fullWidth: true,
-                          placeholder: "dd/mm/aaaa", // Mantém o placeholder consistente
+                          placeholder: "dd/mm/aaaa",
                           variant: "outlined",
                           sx: {
                             "& .MuiOutlinedInput-root": {
-                              borderRadius: "10px", // Consistência no arredondamento
+                              borderRadius: "10px",
                             },
                             "& .MuiOutlinedInput-notchedOutline": {
-                              borderRadius: "10px", // Consistência no arredondamento
+                              borderRadius: "10px",
                             },
                           },
                         },
