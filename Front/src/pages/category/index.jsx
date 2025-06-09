@@ -11,53 +11,12 @@ import {
   Paper,
 } from "@mui/material";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
-import { useState } from "react";
-import { GenericFormModal } from "../../components/ui/GenericFormModal";
-import * as Yup from "yup";
-import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
-// import { useEffect } from "react";
-
-// Campos do formulário
-const categoryFields = [
-  { name: "name", label: "Nome" },
-  { name: "description", label: "Descrição" },
-  {
-    name: "type",
-    label: "Tipo",
-    type: "select",
-    options: [
-      { value: "expanse", label: "Despesas" },
-      { value: "income", label: "Receita" },
-      { value: "investment", label: "Investimentos" },
-    ],
-  },
-];
-
-// Novos campos para o modal extra de investimentos
-const investmentFields = [
-  {
-    name: "investmentType",
-    label: "Tipo de Investimento",
-    type: "select",
-    options: [
-      { value: "fixed_income", label: "Renda Fixa" },
-      { value: "variable_income", label: "Renda Variável" },
-      { value: "cripto", label: "Cripto" },
-    ],
-  },
-];
-
-const validationSchema = Yup.object({
-  name: Yup.string().required("Nome obrigatório"),
-  description: Yup.string(),
-  type: Yup.string(),
-});
-
-const investmentValidation = Yup.object({
-  investmentType: Yup.string().required("Selecione o tipo de investimento"),
-});
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import { useForm } from "react-hook-form";
+import { CategoryAddModal } from "./components/modal_add";
+import { CategoryEditModal } from "./components/modal_edit";
+import api from "../../services/api";
 
 export const CategoryPage = () => {
   const [openAdd, setOpenAdd] = useState(false);
@@ -83,11 +42,7 @@ export const CategoryPage = () => {
   // Carrega uma categoria específica para edição
   const loadOneCategoryMutation = useMutation({
     mutationFn: async (id) => {
-      const response = await axios({
-        method: "get",
-        baseURL: import.meta.env.VITE_API,
-        url: `/categories/${id}`,
-      });
+      const response = await api.get(`/categories/${id}`);
       return response.data;
     },
   });
@@ -106,7 +61,6 @@ export const CategoryPage = () => {
       setOpenAdd(false);
       setOpenEdit(false);
       setEditData(null);
-      queryClient.invalidateQueries(["categories"]);
     },
   });
 
