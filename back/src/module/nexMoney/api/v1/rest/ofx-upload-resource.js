@@ -11,7 +11,7 @@ const BankStatementExpense = model.bankStatementExpense;
 // Configura o multer para salvar temporariamente em /uploads
 const upload = multer({ dest: "uploads/" });
 
-// POST
+// POST - Upload e processamento de arquivo OFX
 router.post("/api/v1/rest/upload", upload.single("file"), async (req, res) => {
   try {
     const filePath = req.file.path;
@@ -33,26 +33,39 @@ router.post("/api/v1/rest/upload", upload.single("file"), async (req, res) => {
 
     const transactions = bankMsg.STMTTRNRS.STMTRS.BANKTRANLIST.STMTTRN;
 
-    //processa transações
-    const payload = transactions.map((transacao, index) => {
-      const item = {
-        name: transacao.NAME || transacao.MEMO || "Transação",
+    const payload = transactions.map((transacao) => {
+      const memo = transacao.MEMO || "";
+      const memoRegex = /^(\d{2}\/\d{2}) (\d{2}:\d{2}) (.+)$/;
+      const match = memo.match(memoRegex);
+
+      let memo_info = null;
+      let person_name = null;
+
+      const dtPostedRaw = transacao.DTPOSTED?.substring(0, 8);
+      const year = dtPostedRaw?.substring(0, 4);
+
+      if (match && year) {
+        const [_, dateStr, timeStr, nameStr] = match;
+        const [day, month] = dateStr.split("/");
+        const isoDateStr = `${year}-${month}-${day}T${timeStr}:00-03:00`;
+        memo_info = new Date(isoDateStr);
+        person_name = nameStr.trim();
+      }
+
+      return {
+        name: transacao.NAME || person_name || "Transação",
         amount: parseFloat(transacao.TRNAMT),
         date: new Date(
-          transacao.DTPOSTED?.substring(0, 8).replace(
-            /(\d{4})(\d{2})(\d{2})/,
-            "$1-$2-$3"
-          )
+          dtPostedRaw.replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3")
         ),
         type: transacao.TRNTYPE || null,
-        memo: transacao.MEMO || null,
         fitid: transacao.FITID || null,
         mapped: false,
         category: null,
+        memo_info: memo_info || null,
+        person_name: person_name || null,
       };
-
       //console.log(`transação ${index + 1}:`, item);
-      return item;
     });
 
     if (payload.length > 0) {

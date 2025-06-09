@@ -111,22 +111,18 @@ export const BudgetComparisonPage = () => {
     categories.forEach((cat) => {
       (columns[cat.id] || []).forEach((item) => {
         mappedExpenses.push({
-          expenseId: item.id,
-          expenseName: item.name,
-          amount: item.amount,
-          date: item.date,
+          id: item.id,
           categoryId: cat.id,
-          categoryName: cat.name,
+          mapped: true,
+          category: cat.name,
         });
       });
     });
 
     try {
-      await api.post("/mapped-expenses", mappedExpenses);
-      alert("Mapeamento salvo com sucesso!");
+      await api.put("/bankStatementExpenses", mappedExpenses);
     } catch (error) {
       console.error("Erro ao salvar mapeamento:", error);
-      alert("Erro ao salvar mapeamento.");
     }
   };
 
@@ -135,14 +131,23 @@ export const BudgetComparisonPage = () => {
       <h2 className="text-2xl font-bold">Comparação Financeira</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div className="bg-[#111827] p-4 rounded">
-          <h3>Total Planejado</h3>
-          <p>R$ {totalPlanned.toLocaleString("pt-BR")}</p>
-        </div>
-        <div className="bg-[#111827] p-4 rounded">
-          <h3>Total do Extrato</h3>
-          <p>R$ {totalExpenses.toLocaleString("pt-BR")}</p>
-        </div>
+        {[
+          { title: "Total Planejado", value: totalPlanned },
+          { title: "Total do Extrato", value: totalExpenses },
+        ].map((card, i) => (
+          <div key={i} className="bg-[#111827] p-4 rounded">
+            <h3>{card.title}</h3>
+            <NumericFormat
+              value={card.value}
+              displayType="text"
+              thousandSeparator="."
+              decimalSeparator=","
+              prefix="R$ "
+              decimalScale={2}
+              fixedDecimalScale
+            />
+          </div>
+        ))}
         <div className="bg-[#111827] p-4 rounded">
           <h3>Progresso de Mapeamento</h3>
           <p>{mappedPct}%</p>
@@ -248,11 +253,21 @@ export const BudgetComparisonPage = () => {
                   )}
                   {provided.placeholder}
                   <p className="mt-4 font-bold text-yellow-400">
-                    Total não mapeado: R${" "}
-                    {columns.extrato
-                      ?.reduce((s, i) => s + i.amount, 0)
-                      ?.toLocaleString("pt-BR") || 0}
+                    Total não mapeado:{" "}
+                    <NumericFormat
+                      value={columns.extrato?.reduce(
+                        (s, i) => s + (parseFloat(i.amount) || 0),
+                        0
+                      )}
+                      displayType="text"
+                      thousandSeparator="."
+                      decimalSeparator=","
+                      prefix="R$ "
+                      decimalScale={2}
+                      fixedDecimalScale
+                    />
                   </p>
+
                   <button
                     onClick={handleSaveMapping}
                     className="bg-green-600 hover:bg-green-700 text-white px-2 py-1 rounded text-sm mt-2"
