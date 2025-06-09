@@ -133,7 +133,7 @@ export const CategoryPage = () => {
   );
 
   return (
-    <div className="flex flex-col gap-4 bg-background bg-[#1B2232] height-screen h-screen w-full overflow-hidden">
+    <div className="flex flex-col gap-4 bg-background bg-[#1B2232] height-screen h-screen w-full overflow-hidden min-h-screen ">
       {/* Modal de Adição */}
       <CategoryAddModal
         open={openAdd}
@@ -153,7 +153,7 @@ export const CategoryPage = () => {
       />
 
       {/* Área principal com botão de adicionar e tabela */}
-      <div className="flex flex-col gap-4 p-8">
+      <div className="flex flex-col gap-4 p-8 w-full h-full overflow-y-auto">
         <div className="flex justify-end w-full">
           {/* Botão para abrir o modal de adição */}
           <Button variant="contained" onClick={handleOpenAddModal}>
