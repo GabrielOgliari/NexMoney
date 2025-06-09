@@ -10,12 +10,17 @@ module.exports = (sequelize, DataTypes) => {
 
   Category.init(
     {
-      id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-      name: { type: DataTypes.STRING, allowNull: false },
-      descrption : { type: DataTypes.STRING, allowNull: true },
-      planned: { type: DataTypes.NUMERIC, allowNull: false },
-      type: { type: DataTypes.STRING, allowNull: false },
-      investiment: { type: DataTypes.STRING, defaultValue: true }, 
+      id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+      },
+      name: {
+        type: DataTypes.STRING,
+      },
+      planned: {
+        type: DataTypes.NUMERIC,
+      },
     },
     {
       sequelize,

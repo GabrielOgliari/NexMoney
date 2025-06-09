@@ -27,7 +27,10 @@ module.exports = (sequelize, DataTypes) => {
       type: {
         type: DataTypes.STRING,
       },
-      memo: {
+      memo_info: {
+        type: DataTypes.DATE,
+      },
+      person_name: {
         type: DataTypes.STRING,
       },
       category: {
