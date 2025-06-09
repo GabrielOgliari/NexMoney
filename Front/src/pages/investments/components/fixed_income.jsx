@@ -176,7 +176,7 @@ export function FixedIncome() {
   //   });
   const updateFixedIncomeExitMutation = useMutation({
     mutationFn: async ({ id, data }) => {
-      await api.put(`/fixed-income-exit/${id}`, data);
+      await api.put(`/investiments-fixed-income-exit/${id}`, data);
     },
     onSuccess: () => {
       setOpenEditExit(false);
@@ -554,7 +554,7 @@ export function FixedIncome() {
   // });
   const deleteFixedIncomeExitMutation = useMutation({
     mutationFn: async (id) => {
-      await api.delete(`/fixed-income-exit/${id}`);
+      await api.delete(`/investiments-fixed-income-exit/${id}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["fixed-income-exit"]);
@@ -808,7 +808,7 @@ export function FixedIncome() {
                         color="error"
                         variant="outlined"
                         onClick={() =>
-                          deleteFixedIncomeExitMutation.mutate(row.id)
+                          deleteFixedIncomeMutation.mutate(row.id)
                         }
                       >
                         <DeleteOutlineOutlinedIcon />
