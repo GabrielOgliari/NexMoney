@@ -16,6 +16,19 @@ import api from "../../../services/api";
 
 //Parte logica para o os lançamentos de renda fixa de entrada
 
+// Busca as categorias para montar o select de nome
+// const useFixedIncomeCategories = () => {
+//   const { data: categories = [] } = useQuery({
+//     queryKey: ["categories"],
+//     queryFn: async () => {
+//       const response = await axios({
+//         method: "get",
+//         baseURL: import.meta.env.VITE_API,
+//         url: "/categories",
+//       });
+//       return response.data;
+//     },
+//   });
 const useFixedIncomeCategories = () => {
   const { data: categories = [] } = useQuery({
     queryFn: async () => {
@@ -30,7 +43,7 @@ const useFixedIncomeCategories = () => {
       categories
         .filter(
           (cat) =>
-            cat.type === "investment" && cat.investmentType === "fixed_income"
+            cat.type === "investment" && cat.investmentType === "variable_income"
         )
         .map((cat) => ({ value: cat.name, label: cat.name })),
     [categories]
@@ -38,7 +51,7 @@ const useFixedIncomeCategories = () => {
 };
 
 const validationSchema = Yup.object({
-  typeInvestment: Yup.string().required("Tipo obrigatório"),
+  typInvestiment: Yup.string().required("Tipo obrigatório"),
   name: Yup.string().required("Nome obrigatório"),
   value: Yup.number().required("Valor obrigatório"),
   interestRate: Yup.number(),
@@ -46,7 +59,7 @@ const validationSchema = Yup.object({
   dueDate: Yup.string().required("Data de vencimento obrigatória"),
 });
 
-export function FixedIncome() {
+export function VariableIncome() {
   const [openAdd, setOpenAdd] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [editData, setEditData] = useState(null);
@@ -55,12 +68,11 @@ export function FixedIncome() {
 
   const queryClient = useQueryClient();
 
-  // Busca lançamentos de renda fixa
   const { data: loadFixedIncomeQuery = [], isLoading: isLoadingFixedIncome } =
     useQuery({
-      queryKey: ["fixed_income"],
+      queryKey: ["variable_income"],
       queryFn: async () => {
-        const response = await api.get("/investiments-fixed-income");
+        const response = await api.get("/investiments_variable_income");
         return response.data;
       },
     });
@@ -82,26 +94,24 @@ export function FixedIncome() {
     { name: "dueDate", label: "Data de Vencimento", type: "date" },
   ];
 
-  // Mutation para deletar
-
   const deleteFixedIncomeMutation = useMutation({
     mutationFn: async (id) => {
-      await api.delete(`/investiments-fixed-income/${id}`);
+      await api.delete(`/investiments_variable_income/${id}`);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(["fixed_income"]);
+      queryClient.invalidateQueries(["variable_income"]);
     },
   });
 
-  // Adicione esta mutation:
+  // Mutation para editar (PUT) os lançamentos de renda fixa de saída
   const updateFixedIncomeExitMutation = useMutation({
     mutationFn: async ({ id, data }) => {
-      await api.put(`/investiments-fixed-income-exit/${id}`, data);
+      await api.put(`/variable_income_exit/${id}`, data);
     },
     onSuccess: () => {
       setOpenEditExit(false);
       setEditExitData(null);
-      queryClient.invalidateQueries(["fixed-income-exit"]);
+      queryClient.invalidateQueries(["variable_income_exit"]);
     },
   });
 
@@ -111,6 +121,8 @@ export function FixedIncome() {
     setOpenAdd(true);
   };
 
+
+
   // Fechar modais
   const handleCloseModal = () => {
     setOpenAdd(false);
@@ -118,27 +130,28 @@ export function FixedIncome() {
     setEditData(null);
   };
 
+
   // Mutation para editar (PUT)
   const updateFixedIncomeMutation = useMutation({
     mutationFn: async ({ id, data }) => {
-      await api.put(`/investiments-fixed-income/${id}`, data);
+      await api.put(`/investiments_variable_income/${id}`, data);
     },
     onSuccess: () => {
       setOpenEdit(false);
       setEditData(null);
-      queryClient.invalidateQueries(["fixed_income"]);
+      queryClient.invalidateQueries(["variable_income"]);
     },
   });
 
   // Mutation para criar (POST)
   const createFixedIncomeMutation = useMutation({
     mutationFn: async (data) => {
-      await api.post("/investiments-fixed-income", data);
+      await api.post("/investiments_variable_income", data);
     },
     onSuccess: () => {
       setOpenAdd(false);
       setEditData(null);
-      queryClient.invalidateQueries(["fixed_income"]);
+      queryClient.invalidateQueries(["variable_income"]);
     },
   });
 
@@ -146,19 +159,9 @@ export function FixedIncome() {
   const handleSubmit = (values) => {
     const formattedData = {
       ...values,
-      value: Number(values.value), // Garante que value é número
       startDate: values.startDate,
       dueDate: values.dueDate,
     };
-
-    // Remove interestRate se estiver vazio, nulo ou undefined
-    if (
-      formattedData.interestRate === "" ||
-      formattedData.interestRate === null ||
-      typeof formattedData.interestRate === "undefined"
-    ) {
-      delete formattedData.interestRate;
-    }
 
     if (editData && editData.id) {
       updateFixedIncomeMutation.mutate({
@@ -166,7 +169,9 @@ export function FixedIncome() {
         data: formattedData,
       });
     } else {
-      createFixedIncomeMutation.mutate(formattedData);
+      // Gera um id string único (caso o backend não gere)
+      const newId = Math.random().toString(36).substr(2, 8);
+      createFixedIncomeMutation.mutate({ ...formattedData, id: newId });
     }
   };
 
@@ -179,7 +184,7 @@ export function FixedIncome() {
 
   // Parte lógica para a grid de resumo de renda fixa
   // Agrupa os lançamentos por nome e resume os dados
-  //
+  // 
   const rowsFixedIncomeSummary = Object.values(
     rowsFixedIncome.reduce((acc, curr) => {
       if (!acc[curr.name]) {
@@ -187,15 +192,15 @@ export function FixedIncome() {
           id: curr.name, // pode usar o nome como id do resumo
           name: curr.name,
           value: 0,
-          interestRateSum: 0,
-          interestRateCount: 0,
+          interestRate_sum: 0,
+          interestRate_count: 0,
           startDate: curr.startDate,
           dueDate: curr.dueDate,
         };
       }
       acc[curr.name].value += Number(curr.value || 0);
-      acc[curr.name].interestRateSum += Number(curr.interestRate || 0);
-      acc[curr.name].interestRateCount += 1;
+      acc[curr.name].interestRate_sum += Number(curr.interestRate || 0);
+      acc[curr.name].interestRate_count += 1;
       // Se quiser mostrar a menor data inicial e maior data final:
       if (
         acc[curr.name].startDate > curr.startDate ||
@@ -211,10 +216,11 @@ export function FixedIncome() {
   ).map((item) => ({
     ...item,
     interestRate:
-      item.interestRateCount > 0
-        ? (item.interestRateSum / item.interestRateCount).toFixed(2)
+      item.interestRate_count > 0
+        ? (item.interestRate_sum / item.interestRate_count).toFixed(2)
         : "0.00",
   }));
+
 
   //Parte logica para o os lançamentos de renda fixa de saida
 
@@ -222,25 +228,23 @@ export function FixedIncome() {
   const [openWithdraw, setOpenWithdraw] = useState(false);
   const [withdrawData, setWithdrawData] = useState(null);
 
-  // Busca lançamentos de renda fixa de saída
-  const { data: loadFixedIncomeExitQuery = [] } = useQuery({
-    queryKey: ["fixed-income-exit"],
-    queryFn: async () => {
-      const response = await api.get("/investiments-fixed-income-exit");
-      return response.data;
-    },
-  });
+const { data: loadFixedIncomeExitQuery = [] } = useQuery({
+  queryKey: ["variable_income_exit"],
+  queryFn: async () => {
+    const response = await api.get("/investiments_variable_income_exit");
+    return response.data;
+  },
+});
 
-  // Mutation para criar (POST) retirada de renda fixa
   const saveFixedIncomeExitMutation = useMutation({
     mutationFn: async (data) => {
-      await api.post("/investiments-fixed-income-exit", data);
+      await api.post("/investiments_variable_income_exit", data);
     },
     onSuccess: () => {
       setOpenWithdraw(false);
       setWithdrawData(null);
-      queryClient.invalidateQueries(["fixed-income-exit"]);
-      queryClient.invalidateQueries(["fixed_income"]);
+      queryClient.invalidateQueries(["variable_income_exit"]);
+      queryClient.invalidateQueries(["variable_income"]);
     },
   });
 
@@ -248,6 +252,7 @@ export function FixedIncome() {
     setWithdrawData(row);
     setOpenWithdraw(true);
   };
+
 
   const handleWithdrawSubmit = (values) => {
     const nome = withdrawData.name;
@@ -266,6 +271,7 @@ export function FixedIncome() {
 
       // Salva a retirada (POST)
       saveFixedIncomeExitMutation.mutate({
+        id: Math.random().toString(36).substr(2, 8),
         name: registro.name,
         initialValue: valorAtual,
         withdrawalAmount: valorParaRetirar,
@@ -274,7 +280,6 @@ export function FixedIncome() {
         dueDate: registro.dueDate,
         interestRate: registro.interestRate,
         inclusionDate: registro.startDate,
-        typeInvestment: "fixed_income",
       });
 
       if (valorParaRetirar === valorAtual) {
@@ -298,13 +303,12 @@ export function FixedIncome() {
     setWithdrawData(null);
   };
 
-  // Mutation para deletar retirada de renda fixa
   const deleteFixedIncomeExitMutation = useMutation({
     mutationFn: async (id) => {
-      await api.delete(`/investiments-fixed-income-exit/${id}`);
+      await api.delete(`/fixed_income_exit/${id}`);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(["fixed-income-exit"]);
+      queryClient.invalidateQueries(["variable_income_exit"]);
     },
   });
 
@@ -313,15 +317,6 @@ export function FixedIncome() {
         (row) => row && row.id !== undefined && row.id !== null && row.sellDate
       )
     : [];
-
-  // Função utilitária para formatar valores como moeda brasileira
-  const formatCurrency = (value) => {
-    if (value === undefined || value === null || value === "") return "";
-    return Number(value).toLocaleString("pt-BR", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    });
-  };
 
   return (
     <div className="flex flex-col height-screen h-full w-full overflow-hidden ">
@@ -337,7 +332,7 @@ export function FixedIncome() {
         onClose={handleCloseModal}
         onSubmit={handleSubmit}
         initialValues={{
-          typeInvestment: "fixed_income", // valor padrão aqui
+          typInvestiment: "variable_income", // valor padrão aqui
           name: "",
           value: "",
           interestRate: "",
@@ -356,7 +351,7 @@ export function FixedIncome() {
         onSubmit={handleSubmit}
         initialValues={
           editData || {
-            typeInvestment: "fixed_income",
+            typInvestiment: "variable_income",
             name: "",
             value: "",
             interestRate: "",
@@ -450,12 +445,7 @@ export function FixedIncome() {
             rows={rowsFixedIncomeSummary}
             columns={[
               { field: "name", headerName: "Nome", flex: 2 },
-              {
-                field: "value",
-                headerName: "Valor Total",
-                flex: 1,
-                valueFormatter: (params) => `R$ ${formatCurrency(params)}`,
-              },
+              { field: "value", headerName: "Valor Total", flex: 1 },
               {
                 field: "interestRate",
                 headerName: "Média Taxa de Juros (%)",
@@ -509,12 +499,7 @@ export function FixedIncome() {
             columns={[
               { field: "id", headerName: "ID", flex: 0.5 },
               { field: "name", headerName: "Nome", flex: 2 },
-              {
-                field: "value",
-                headerName: "Valor",
-                flex: 1,
-                valueFormatter: (params) => `R$ ${formatCurrency(params)}`,
-              },
+              { field: "value", headerName: "Valor", flex: 1 },
               {
                 field: "interestRate",
                 headerName: "Taxa de Juros (%)",
@@ -573,7 +558,9 @@ export function FixedIncome() {
                       <Button
                         color="error"
                         variant="outlined"
-                        onClick={() => deleteFixedIncomeMutation.mutate(row.id)}
+                        onClick={() =>
+                          deleteFixedIncomeExitMutation.mutate(row.id)
+                        }
                       >
                         <DeleteOutlineOutlinedIcon />
                       </Button>
@@ -623,17 +610,11 @@ export function FixedIncome() {
             columns={[
               { field: "id", headerName: "ID", flex: 0.5 },
               { field: "name", headerName: "Nome", flex: 2 },
-              {
-                field: "initialValue",
-                headerName: "Valor Inicial",
-                flex: 1,
-                valueFormatter: (params) => `R$ ${formatCurrency(params)}`,
-              },
+              { field: "initialValue", headerName: "Valor Inicial", flex: 1 },
               {
                 field: "withdrawalAmount",
                 headerName: "Valor de Retirada",
                 flex: 1,
-                valueFormatter: (params) => `R$ ${formatCurrency(params)}`,
               },
               {
                 field: "sellDate",

@@ -110,6 +110,9 @@ export const CategoryPage = () => {
         typeof data.planned === "string"
           ? parseFloat(data.planned.replace(/\./g, "").replace(",", "."))
           : data.planned,
+      // Garante que investmentType só vai se o tipo for investment
+      investmentType:
+        data.type === "investment" ? data.investmentType : undefined,
     };
 
     if (editData) {
@@ -133,7 +136,7 @@ export const CategoryPage = () => {
   );
 
   return (
-    <div className="flex flex-col gap-4 bg-background bg-[#1B2232] height-screen h-screen w-full overflow-hidden">
+    <div className="flex flex-col gap-4 bg-background bg-[#1B2232] height-screen h-screen w-full overflow-hidden min-h-screen ">
       {/* Modal de Adição */}
       <CategoryAddModal
         open={openAdd}
@@ -153,7 +156,7 @@ export const CategoryPage = () => {
       />
 
       {/* Área principal com botão de adicionar e tabela */}
-      <div className="flex flex-col gap-4 p-8">
+      <div className="flex flex-col gap-4 p-8 w-full h-full overflow-y-auto">
         <div className="flex justify-end w-full">
           {/* Botão para abrir o modal de adição */}
           <Button variant="contained" onClick={handleOpenAddModal}>
@@ -168,7 +171,12 @@ export const CategoryPage = () => {
                 <TableCell sx={{ color: "white" }}>Nome</TableCell>
                 <TableCell sx={{ color: "white" }}>Descrição</TableCell>
                 <TableCell sx={{ color: "white" }}>Tipo</TableCell>
-                <TableCell sx={{ color: "white" }}>Ações</TableCell>
+                <TableCell sx={{ color: "white" }}>
+                  {/* Exibe coluna de tipo de investimento apenas se houver algum investimento */}
+                  {categoriesData.some((row) => row.type === "investment") &&
+                    "Tipo de Investimento"}
+                </TableCell>
+                <TableCell sx={{ color: "white", textAlign: "center" }}>Ações</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -178,8 +186,6 @@ export const CategoryPage = () => {
                   <TableCell sx={{ color: "white" }}>
                     {row.description}
                   </TableCell>
-
-                  {/* Alteração de Cor de Tipo */}
                   <TableCell sx={{ color: "white" }}>
                     {row.type === "expanse" && (
                       <span style={{ color: "red" }}>Despesa</span>
@@ -191,7 +197,17 @@ export const CategoryPage = () => {
                       <span style={{ color: "yellow" }}>Investimento</span>
                     )}
                   </TableCell>
-
+                  {/* Exibe o tipo de investimento se for investimento */}
+                  <TableCell sx={{ color: "white" }}>
+                    {row.type === "investment" &&
+                      (row.investmentType === "fixed_income"
+                        ? "Renda Fixa"
+                        : row.investmentType === "variable_income"
+                        ? "Renda Variável"
+                        : row.investmentType === "cripto"
+                        ? "Cripto"
+                        : "-")}
+                  </TableCell>
                   <TableCell>
                     <div className="flex gap-3 justify-center items-center">
                       <Button

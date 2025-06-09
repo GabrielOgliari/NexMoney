@@ -22,11 +22,23 @@ const bankStatementExpense = require("./bank_statement_expense")(
   Sequelize.DataTypes
 );
 
+const investmentFixedIncome = require("./investment_fixed_income")(
+  sequelize,
+  Sequelize.DataTypes
+);
+
+const investimentFixedIncomeExit = require("./investment_fixed_income_exit")(
+  sequelize,
+  Sequelize.DataTypes
+);
+
 const db = {
   category,
   accountPayable,
   mappedExpense,
   bankStatementExpense,
+  investmentFixedIncome,
+  investimentFixedIncomeExit,
   sequelize,
   Sequelize,
 };
