@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Dialog,
   DialogActions,
@@ -14,6 +14,8 @@ import { Controller } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
 
 export function CategoryAddModal({ open, handleClose, onSubmit, control }) {
+  const [selectedType, setSelectedType] = useState("");
+
   const roundedInput = {
     "& .MuiOutlinedInput-root": { borderRadius: "12px" },
     "& .MuiInputBase-root": { borderRadius: "12px" },
@@ -79,7 +81,16 @@ export function CategoryAddModal({ open, handleClose, onSubmit, control }) {
                 name="type"
                 control={control}
                 render={({ field }) => (
-                  <TextField {...field} select fullWidth sx={roundedInput}>
+                  <TextField
+                    {...field}
+                    select
+                    fullWidth
+                    sx={roundedInput}
+                    onChange={(e) => {
+                      field.onChange(e);
+                      setSelectedType(e.target.value);
+                    }}
+                  >
                     <MenuItem value="expanse">Despesas</MenuItem>
                     <MenuItem value="income">Receita</MenuItem>
                     <MenuItem value="investment">Investimentos</MenuItem>
@@ -115,6 +126,30 @@ export function CategoryAddModal({ open, handleClose, onSubmit, control }) {
               />
             </div>
           </div>
+
+          {/* Campo Tipo de Investimento (aparece só se for investimento) */}
+          {selectedType === "investment" && (
+            <div className="w-full flex flex-col items-start">
+              <FormLabel sx={{ mb: 1 }}>Tipo de Investimento</FormLabel>
+              <Controller
+                name="investmentType"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    select
+                    fullWidth
+                    sx={roundedInput}
+                    placeholder="Selecione o tipo de investimento"
+                  >
+                    <MenuItem value="fixed_income">Renda Fixa</MenuItem>
+                    <MenuItem value="variable_income">Renda Variável</MenuItem>
+                    <MenuItem value="cripto">Cripto</MenuItem>
+                  </TextField>
+                )}
+              />
+            </div>
+          )}
 
           {/* Botões de Ação */}
           <DialogActions className="flex justify-end mt-2 px-0 w-full">
