@@ -62,7 +62,7 @@ export function VariableIncome() {
   } = useQuery({
     queryKey: ["variable_income"],
     queryFn: async () => {
-      const response = await api.get("/investiments-variable-income");
+      const response = await api.get("/investiments-variableIncome-crypto");
       return response.data;
     },
   });
@@ -87,7 +87,7 @@ export function VariableIncome() {
 
   const deleteVariableIncomeMutation = useMutation({
     mutationFn: async (id) => {
-      await api.delete(`/investiments-variable-income/${id}`);
+      await api.delete(`/investiments-variableIncome-crypto/${id}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["variable_income"]);
@@ -97,7 +97,7 @@ export function VariableIncome() {
   // Adicione esta mutation:
   const updateVariableIncomeExitMutation = useMutation({
     mutationFn: async ({ id, data }) => {
-      await api.put(`/investiments-variable-income-exit/${id}`, data);
+      await api.put(`/investiments-variableIncome-crypto-exit/${id}`, data);
     },
     onSuccess: () => {
       setOpenEditExit(false);
@@ -122,7 +122,7 @@ export function VariableIncome() {
   // Mutation para editar (PUT)
   const updateVariableIncomeMutation = useMutation({
     mutationFn: async ({ id, data }) => {
-      await api.put(`/investiments-variable-income/${id}`, data);
+      await api.put(`/investiments-variableIncome-crypto/${id}`, data);
     },
     onSuccess: () => {
       setOpenEdit(false);
@@ -134,7 +134,7 @@ export function VariableIncome() {
   // Mutation para criar (POST)
   const createVariableIncomeMutation = useMutation({
     mutationFn: async (data) => {
-      await api.post("/investiments-variable-income", data);
+      await api.post("/investiments-variableIncome-crypto", data);
     },
     onSuccess: () => {
       setOpenAdd(false);
@@ -150,7 +150,7 @@ export function VariableIncome() {
       value: Number(values.value),
       amount: Number(values.amount),
       purchaseDate: values.purchaseDate,
-      saleDate: values.saleDate,
+      // saleDate: values.saleDate,
       totalValue: Number(values.value) * Number(values.amount), // Calcula o valor total
     };
 
@@ -212,7 +212,7 @@ export function VariableIncome() {
   const { data: loadVariableIncomeExitQuery = [] } = useQuery({
     queryKey: ["variable-income-exit"],
     queryFn: async () => {
-      const response = await api.get("/investiments-variable-income-exit");
+      const response = await api.get("/investiments-variableIncome-crypto-exit");
       return response.data;
     },
   });
@@ -220,7 +220,7 @@ export function VariableIncome() {
   // Mutation para criar (POST) retirada de renda fixa
   const saveVariableIncomeExitMutation = useMutation({
     mutationFn: async (data) => {
-      await api.post("/investiments-variable-income-exit", data);
+      await api.post("/investiments-variableIncome-crypto-exit", data);
     },
     onSuccess: () => {
       setOpenWithdraw(false);
@@ -256,16 +256,17 @@ export function VariableIncome() {
       // Salva a retirada (POST)
       saveVariableIncomeExitMutation.mutate({
         name: registro.name,
-        initialValue: Number(registro.value), // valor unitário do registro de entrada
+        initialValue: Number(registro.value),
         initialAmount: quantidadeAtual,
         salesValue: Number(values.salesValue),
         withdrawalAmount: quantidadeParaRetirar,
         sellDate: values.sellDate,
         purchaseDate: registro.purchaseDate,
-        saleDate: registro.saleDate,
-        amount: registro.amount,
+        // saleDate: registro.saleDate,
+        // amount: registro.amount,
         inclusionDate: registro.purchaseDate,
         typeInvestment: "variable_income",
+        totalValue: Number(values.salesValue) * Number(quantidadeParaRetirar), // <-- aqui!
       });
 
       if (quantidadeParaRetirar === quantidadeAtual) {
@@ -292,7 +293,7 @@ export function VariableIncome() {
   // Mutation para deletar retirada de renda fixa
   const deleteVariableIncomeExitMutation = useMutation({
     mutationFn: async (id) => {
-      await api.delete(`/investiments-variable-income-exit/${id}`);
+      await api.delete(`/investiments-variableIncome-crypto-exit/${id}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["variable-income-exit"]);
@@ -333,7 +334,7 @@ export function VariableIncome() {
           value: "",
           amount: "",
           purchaseDate: "",
-          saleDate: "",
+          // saleDate: "",
         }}
         fields={VariableIncomeFields}
         validationSchema={validationSchema}
@@ -352,7 +353,7 @@ export function VariableIncome() {
             value: "",
             amount: "",
             purchaseDate: "",
-            saleDate: "",
+            // saleDate: "",
           }
         }
         fields={VariableIncomeFields}
@@ -455,8 +456,7 @@ export function VariableIncome() {
                 field: "totalValue",
                 headerName: "Valor Total",
                 flex: 1,
-                valueFormatter: (params) =>
-                  `R$ ${formatCurrency(params)}`,
+                valueFormatter: (params) => `R$ ${formatCurrency(params)}`,
               },
               {
                 field: "actions",
@@ -659,6 +659,12 @@ export function VariableIncome() {
                   const [year, month, day] = parts;
                   return `${day}/${month}/${year}`;
                 },
+              },
+              {
+                field: "totalValue",
+                headerName: "Valor Total",
+                flex: 1,
+                valueFormatter: (params) => `R$ ${formatCurrency(params)}`,
               },
               {
                 field: "actions",
