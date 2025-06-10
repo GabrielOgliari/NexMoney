@@ -12,6 +12,7 @@ const accountPayable = require("./account_payable")(
   sequelize,
   Sequelize.DataTypes
 );
+const accountReceivable = require("./account_receivable")(sequelize, Sequelize.DataTypes);
 
-const db = { category, accountPayable, sequelize, Sequelize };
+const db = { category, accountPayable, accountReceivable, sequelize, Sequelize };
 module.exports = db;
