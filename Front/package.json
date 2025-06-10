@@ -32,6 +32,7 @@
     "react-hook-form": "^7.56.4",
     "react-number-format": "^5.4.4",
     "react-router": "^7.6.0",
+    "react-router-dom": "^7.6.2",
     "tailwindcss": "^4.1.7",
     "yup": "^1.6.1"
   },
