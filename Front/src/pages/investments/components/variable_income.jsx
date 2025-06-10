@@ -16,20 +16,7 @@ import api from "../../../services/api";
 
 //Parte logica para o os lançamentos de renda fixa de entrada
 
-// Busca as categorias para montar o select de nome
-// const useFixedIncomeCategories = () => {
-//   const { data: categories = [] } = useQuery({
-//     queryKey: ["categories"],
-//     queryFn: async () => {
-//       const response = await axios({
-//         method: "get",
-//         baseURL: import.meta.env.VITE_API,
-//         url: "/categories",
-//       });
-//       return response.data;
-//     },
-//   });
-const useFixedIncomeCategories = () => {
+const useVariableIncomeCategories = () => {
   const { data: categories = [] } = useQuery({
     queryFn: async () => {
       const response = await api.get("/categories");
@@ -43,7 +30,8 @@ const useFixedIncomeCategories = () => {
       categories
         .filter(
           (cat) =>
-            cat.type === "investment" && cat.investmentType === "variable_income"
+            cat.type === "investment" &&
+            cat.investmentType === "variable_income"
         )
         .map((cat) => ({ value: cat.name, label: cat.name })),
     [categories]
@@ -51,12 +39,11 @@ const useFixedIncomeCategories = () => {
 };
 
 const validationSchema = Yup.object({
-  typInvestiment: Yup.string().required("Tipo obrigatório"),
+  typeInvestment: Yup.string().required("Tipo obrigatório"),
   name: Yup.string().required("Nome obrigatório"),
   value: Yup.number().required("Valor obrigatório"),
-  interestRate: Yup.number(),
-  startDate: Yup.string().required("Data inicial obrigatória"),
-  dueDate: Yup.string().required("Data de vencimento obrigatória"),
+  amount: Yup.number(),
+  purchaseDate: Yup.string().required("Data inicial obrigatória"),
 });
 
 export function VariableIncome() {
@@ -68,20 +55,23 @@ export function VariableIncome() {
 
   const queryClient = useQueryClient();
 
-  const { data: loadFixedIncomeQuery = [], isLoading: isLoadingFixedIncome } =
-    useQuery({
-      queryKey: ["variable_income"],
-      queryFn: async () => {
-        const response = await api.get("/investiments_variable_income");
-        return response.data;
-      },
-    });
+  // Busca lançamentos de renda fixa
+  const {
+    data: loadVariableIncomeQuery = [],
+    isLoading: isLoadingVariableIncome,
+  } = useQuery({
+    queryKey: ["variable_income"],
+    queryFn: async () => {
+      const response = await api.get("/investiments-variable-income");
+      return response.data;
+    },
+  });
 
   // Busca categorias para o select de nome
-  const nameOptions = useFixedIncomeCategories();
+  const nameOptions = useVariableIncomeCategories();
 
   // Campos do formulário
-  const fixedIncomeFields = [
+  const VariableIncomeFields = [
     {
       name: "name",
       label: "Nome",
@@ -89,29 +79,30 @@ export function VariableIncome() {
       options: nameOptions,
     },
     { name: "value", label: "Valor" },
-    { name: "interestRate", label: "Taxa de Juros (%)" },
-    { name: "startDate", label: "Data Inicial", type: "date" },
-    { name: "dueDate", label: "Data de Vencimento", type: "date" },
+    { name: "amount", label: "Quantidade" },
+    { name: "purchaseDate", label: "Data Compra", type: "date" },
   ];
 
-  const deleteFixedIncomeMutation = useMutation({
+  // Mutation para deletar
+
+  const deleteVariableIncomeMutation = useMutation({
     mutationFn: async (id) => {
-      await api.delete(`/investiments_variable_income/${id}`);
+      await api.delete(`/investiments-variable-income/${id}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["variable_income"]);
     },
   });
 
-  // Mutation para editar (PUT) os lançamentos de renda fixa de saída
-  const updateFixedIncomeExitMutation = useMutation({
+  // Adicione esta mutation:
+  const updateVariableIncomeExitMutation = useMutation({
     mutationFn: async ({ id, data }) => {
-      await api.put(`/variable_income_exit/${id}`, data);
+      await api.put(`/investiments-variable-income-exit/${id}`, data);
     },
     onSuccess: () => {
       setOpenEditExit(false);
       setEditExitData(null);
-      queryClient.invalidateQueries(["variable_income_exit"]);
+      queryClient.invalidateQueries(["variable-income-exit"]);
     },
   });
 
@@ -121,8 +112,6 @@ export function VariableIncome() {
     setOpenAdd(true);
   };
 
-
-
   // Fechar modais
   const handleCloseModal = () => {
     setOpenAdd(false);
@@ -130,11 +119,10 @@ export function VariableIncome() {
     setEditData(null);
   };
 
-
   // Mutation para editar (PUT)
-  const updateFixedIncomeMutation = useMutation({
+  const updateVariableIncomeMutation = useMutation({
     mutationFn: async ({ id, data }) => {
-      await api.put(`/investiments_variable_income/${id}`, data);
+      await api.put(`/investiments-variable-income/${id}`, data);
     },
     onSuccess: () => {
       setOpenEdit(false);
@@ -144,9 +132,9 @@ export function VariableIncome() {
   });
 
   // Mutation para criar (POST)
-  const createFixedIncomeMutation = useMutation({
+  const createVariableIncomeMutation = useMutation({
     mutationFn: async (data) => {
-      await api.post("/investiments_variable_income", data);
+      await api.post("/investiments-variable-income", data);
     },
     onSuccess: () => {
       setOpenAdd(false);
@@ -159,68 +147,60 @@ export function VariableIncome() {
   const handleSubmit = (values) => {
     const formattedData = {
       ...values,
-      startDate: values.startDate,
-      dueDate: values.dueDate,
+      value: Number(values.value),
+      amount: Number(values.amount),
+      purchaseDate: values.purchaseDate,
+      saleDate: values.saleDate,
+      totalValue: Number(values.value) * Number(values.amount), // Calcula o valor total
     };
 
+    if (
+      formattedData.amount === "" ||
+      formattedData.amount === null ||
+      typeof formattedData.amount === "undefined"
+    ) {
+      delete formattedData.amount;
+    }
+
     if (editData && editData.id) {
-      updateFixedIncomeMutation.mutate({
+      updateVariableIncomeMutation.mutate({
         id: editData.id,
         data: formattedData,
       });
     } else {
-      // Gera um id string único (caso o backend não gere)
-      const newId = Math.random().toString(36).substr(2, 8);
-      createFixedIncomeMutation.mutate({ ...formattedData, id: newId });
+      createVariableIncomeMutation.mutate(formattedData);
     }
   };
 
   // Filtra apenas lançamentos com id definido
-  const rowsFixedIncome = Array.isArray(loadFixedIncomeQuery)
-    ? loadFixedIncomeQuery.filter(
+  const rowsVariableIncome = Array.isArray(loadVariableIncomeQuery)
+    ? loadVariableIncomeQuery.filter(
         (row) => row && row.id !== undefined && row.id !== null
       )
     : [];
 
   // Parte lógica para a grid de resumo de renda fixa
   // Agrupa os lançamentos por nome e resume os dados
-  // 
-  const rowsFixedIncomeSummary = Object.values(
-    rowsFixedIncome.reduce((acc, curr) => {
+  //
+  const rowsVariableIncomeSummary = Object.values(
+    rowsVariableIncome.reduce((acc, curr) => {
       if (!acc[curr.name]) {
         acc[curr.name] = {
-          id: curr.name, // pode usar o nome como id do resumo
+          id: curr.name,
           name: curr.name,
-          value: 0,
-          interestRate_sum: 0,
-          interestRate_count: 0,
-          startDate: curr.startDate,
-          dueDate: curr.dueDate,
+          amountSum: 0,
+          totalValue: 0, // <-- inicializa aqui
         };
       }
-      acc[curr.name].value += Number(curr.value || 0);
-      acc[curr.name].interestRate_sum += Number(curr.interestRate || 0);
-      acc[curr.name].interestRate_count += 1;
-      // Se quiser mostrar a menor data inicial e maior data final:
-      if (
-        acc[curr.name].startDate > curr.startDate ||
-        !acc[curr.name].startDate
-      ) {
-        acc[curr.name].startDate = curr.startDate;
-      }
-      if (acc[curr.name].dueDate < curr.dueDate || !acc[curr.name].dueDate) {
-        acc[curr.name].dueDate = curr.dueDate;
-      }
+      acc[curr.name].amountSum += Number(curr.amount || 0);
+      acc[curr.name].totalValue += Number(
+        curr.totalValue || curr.value * curr.amount || 0
+      ); // <-- soma o valor total
       return acc;
     }, {})
   ).map((item) => ({
     ...item,
-    interestRate:
-      item.interestRate_count > 0
-        ? (item.interestRate_sum / item.interestRate_count).toFixed(2)
-        : "0.00",
   }));
-
 
   //Parte logica para o os lançamentos de renda fixa de saida
 
@@ -228,22 +208,24 @@ export function VariableIncome() {
   const [openWithdraw, setOpenWithdraw] = useState(false);
   const [withdrawData, setWithdrawData] = useState(null);
 
-const { data: loadFixedIncomeExitQuery = [] } = useQuery({
-  queryKey: ["variable_income_exit"],
-  queryFn: async () => {
-    const response = await api.get("/investiments_variable_income_exit");
-    return response.data;
-  },
-});
+  // Busca lançamentos de renda fixa de saída
+  const { data: loadVariableIncomeExitQuery = [] } = useQuery({
+    queryKey: ["variable-income-exit"],
+    queryFn: async () => {
+      const response = await api.get("/investiments-variable-income-exit");
+      return response.data;
+    },
+  });
 
-  const saveFixedIncomeExitMutation = useMutation({
+  // Mutation para criar (POST) retirada de renda fixa
+  const saveVariableIncomeExitMutation = useMutation({
     mutationFn: async (data) => {
-      await api.post("/investiments_variable_income_exit", data);
+      await api.post("/investiments-variable-income-exit", data);
     },
     onSuccess: () => {
       setOpenWithdraw(false);
       setWithdrawData(null);
-      queryClient.invalidateQueries(["variable_income_exit"]);
+      queryClient.invalidateQueries(["variable-income-exit"]);
       queryClient.invalidateQueries(["variable_income"]);
     },
   });
@@ -253,70 +235,84 @@ const { data: loadFixedIncomeExitQuery = [] } = useQuery({
     setOpenWithdraw(true);
   };
 
-
   const handleWithdrawSubmit = (values) => {
     const nome = withdrawData.name;
-    let valorRestante = Number(values.withdrawalAmount);
+    let quantidadeRestante = Number(values.withdrawalAmount);
 
     // Filtra e ordena os lançamentos daquele nome por data (mais antigos primeiro)
-    const registros = rowsFixedIncome
+    const registros = rowsVariableIncome
       .filter((row) => row.name === nome)
-      .sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
+      .sort((a, b) => new Date(a.purchaseDate) - new Date(b.purchaseDate));
 
     registros.forEach((registro) => {
-      if (valorRestante <= 0) return;
+      if (quantidadeRestante <= 0) return;
 
-      const valorAtual = Number(registro.value);
-      const valorParaRetirar = Math.min(valorAtual, valorRestante);
+      const quantidadeAtual = Number(registro.amount);
+      const quantidadeParaRetirar = Math.min(
+        quantidadeAtual,
+        quantidadeRestante
+      );
 
       // Salva a retirada (POST)
-      saveFixedIncomeExitMutation.mutate({
-        id: Math.random().toString(36).substr(2, 8),
+      saveVariableIncomeExitMutation.mutate({
         name: registro.name,
-        initialValue: valorAtual,
-        withdrawalAmount: valorParaRetirar,
+        initialValue: Number(registro.value), // valor unitário do registro de entrada
+        initialAmount: quantidadeAtual,
+        salesValue: Number(values.salesValue),
+        withdrawalAmount: quantidadeParaRetirar,
         sellDate: values.sellDate,
-        startDate: registro.startDate,
-        dueDate: registro.dueDate,
-        interestRate: registro.interestRate,
-        inclusionDate: registro.startDate,
+        purchaseDate: registro.purchaseDate,
+        saleDate: registro.saleDate,
+        amount: registro.amount,
+        inclusionDate: registro.purchaseDate,
+        typeInvestment: "variable_income",
       });
 
-      if (valorParaRetirar === valorAtual) {
-        // Remove o lançamento se retirou tudo (DELETE)
-        deleteFixedIncomeMutation.mutate(registro.id);
-      } else if (valorParaRetirar < valorAtual) {
-        // Atualiza o valor do lançamento se retirou parcialmente (PUT)
-        updateFixedIncomeMutation.mutate({
+      if (quantidadeParaRetirar === quantidadeAtual) {
+        // Remove o lançamento se retirou toda a quantidade
+        deleteVariableIncomeMutation.mutate(registro.id);
+      } else if (quantidadeParaRetirar < quantidadeAtual) {
+        // Atualiza a quantidade do lançamento se retirou parcialmente
+        updateVariableIncomeMutation.mutate({
           id: registro.id,
           data: {
             ...registro,
-            value: valorAtual - valorParaRetirar,
+            amount: quantidadeAtual - quantidadeParaRetirar,
           },
         });
       }
 
-      valorRestante -= valorParaRetirar;
+      quantidadeRestante -= quantidadeParaRetirar;
     });
 
     setOpenWithdraw(false);
     setWithdrawData(null);
   };
 
-  const deleteFixedIncomeExitMutation = useMutation({
+  // Mutation para deletar retirada de renda fixa
+  const deleteVariableIncomeExitMutation = useMutation({
     mutationFn: async (id) => {
-      await api.delete(`/fixed_income_exit/${id}`);
+      await api.delete(`/investiments-variable-income-exit/${id}`);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(["variable_income_exit"]);
+      queryClient.invalidateQueries(["variable-income-exit"]);
     },
   });
 
-  const rowsFixedIncomeExit = Array.isArray(loadFixedIncomeExitQuery)
-    ? loadFixedIncomeExitQuery.filter(
+  const rowsVariableIncomeExit = Array.isArray(loadVariableIncomeExitQuery)
+    ? loadVariableIncomeExitQuery.filter(
         (row) => row && row.id !== undefined && row.id !== null && row.sellDate
       )
     : [];
+
+  // Função utilitária para formatar valores como moeda brasileira
+  function formatCurrency(value) {
+    if (value === undefined || value === null || value === "") return "";
+    return Number(value).toLocaleString("pt-BR", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  }
 
   return (
     <div className="flex flex-col height-screen h-full w-full overflow-hidden ">
@@ -332,14 +328,14 @@ const { data: loadFixedIncomeExitQuery = [] } = useQuery({
         onClose={handleCloseModal}
         onSubmit={handleSubmit}
         initialValues={{
-          typInvestiment: "variable_income", // valor padrão aqui
+          typeInvestment: "variable_income", // valor padrão aqui
           name: "",
           value: "",
-          interestRate: "",
-          startDate: "",
-          dueDate: "",
+          amount: "",
+          purchaseDate: "",
+          saleDate: "",
         }}
-        fields={fixedIncomeFields}
+        fields={VariableIncomeFields}
         validationSchema={validationSchema}
         title="Novo Lançamento"
         submitLabel="Adicionar"
@@ -351,15 +347,15 @@ const { data: loadFixedIncomeExitQuery = [] } = useQuery({
         onSubmit={handleSubmit}
         initialValues={
           editData || {
-            typInvestiment: "variable_income",
+            typeInvestment: "variable_income",
             name: "",
             value: "",
-            interestRate: "",
-            startDate: "",
-            dueDate: "",
+            amount: "",
+            purchaseDate: "",
+            saleDate: "",
           }
         }
-        fields={fixedIncomeFields}
+        fields={VariableIncomeFields}
         validationSchema={validationSchema}
         title="Editar Lançamento"
         submitLabel="Salvar"
@@ -370,25 +366,30 @@ const { data: loadFixedIncomeExitQuery = [] } = useQuery({
         onClose={() => setOpenWithdraw(false)}
         onSubmit={handleWithdrawSubmit}
         initialValues={{
-          withdrawalAmount: "",
+          salesValue: "",
+          withdrawalAmount: "", // novo campo
           sellDate: "",
         }}
         fields={[
           {
+            name: "salesValue",
+            label: "Valor de Venda",
+            type: "number",
+          },
+          {
             name: "withdrawalAmount",
-            label: "Valor de Retirada",
+            label: "Quantidade de Retirada",
             type: "number",
           },
           { name: "sellDate", label: "Data de venda", type: "date" },
         ]}
         validationSchema={Yup.object({
+          salesValue: Yup.number()
+            .required("Obrigatório")
+            .min(0.01, "Valor mínimo 0.01"),
           withdrawalAmount: Yup.number()
             .required("Obrigatório")
-            .min(0.01, "Valor mínimo 0.01")
-            .max(
-              Number(withdrawData?.value || 0),
-              "Não pode ser maior que o valor total"
-            ),
+            .min(0.01, "Quantidade mínima 0.01"),
           sellDate: Yup.string().required("Obrigatório"),
         })}
         title={`Retirada de ${withdrawData?.name || ""}`}
@@ -402,31 +403,31 @@ const { data: loadFixedIncomeExitQuery = [] } = useQuery({
           setEditExitData(null);
         }}
         onSubmit={(values) => {
-          updateFixedIncomeExitMutation.mutate({
+          updateVariableIncomeExitMutation.mutate({
             id: editExitData.id,
             data: {
               ...editExitData,
-              withdrawalAmount: values.withdrawalAmount,
+              salesValue: values.salesValue,
               sellDate: values.sellDate,
             },
           });
         }}
         initialValues={
           editExitData || {
-            withdrawalAmount: "",
+            salesValue: "",
             sellDate: "",
           }
         }
         fields={[
           {
-            name: "withdrawalAmount",
-            label: "Valor de Retirada",
+            name: "salesValue",
+            label: "Valor de Venda",
             type: "number",
           },
           { name: "sellDate", label: "Data de venda", type: "date" },
         ]}
         validationSchema={Yup.object({
-          withdrawalAmount: Yup.number()
+          salesValue: Yup.number()
             .required("Obrigatório")
             .min(0.01, "Valor mínimo 0.01"),
           sellDate: Yup.string().required("Obrigatório"),
@@ -442,14 +443,20 @@ const { data: loadFixedIncomeExitQuery = [] } = useQuery({
           </div>
           <DataGrid
             localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
-            rows={rowsFixedIncomeSummary}
+            rows={rowsVariableIncomeSummary}
             columns={[
               { field: "name", headerName: "Nome", flex: 2 },
-              { field: "value", headerName: "Valor Total", flex: 1 },
               {
-                field: "interestRate",
-                headerName: "Média Taxa de Juros (%)",
+                field: "amountSum",
+                headerName: "Quantidade Total",
                 flex: 1,
+              },
+              {
+                field: "totalValue",
+                headerName: "Valor Total",
+                flex: 1,
+                valueFormatter: (params) =>
+                  `R$ ${formatCurrency(params)}`,
               },
               {
                 field: "actions",
@@ -479,7 +486,7 @@ const { data: loadFixedIncomeExitQuery = [] } = useQuery({
               pagination: { paginationModel: { pageSize: 5 } },
             }}
             pageSizeOptions={[5]}
-            loading={isLoadingFixedIncome}
+            loading={isLoadingVariableIncome}
             disableRowSelectionOnClick
           />
         </Box>
@@ -495,19 +502,13 @@ const { data: loadFixedIncomeExitQuery = [] } = useQuery({
           </div>
           <DataGrid
             localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
-            rows={rowsFixedIncome}
+            rows={rowsVariableIncome}
             columns={[
               { field: "id", headerName: "ID", flex: 0.5 },
               { field: "name", headerName: "Nome", flex: 2 },
-              { field: "value", headerName: "Valor", flex: 1 },
               {
-                field: "interestRate",
-                headerName: "Taxa de Juros (%)",
-                flex: 1,
-              },
-              {
-                field: "startDate",
-                headerName: "Data Inicial",
+                field: "purchaseDate",
+                headerName: "Data Compra",
                 type: "string",
                 flex: 1,
                 valueFormatter: (params) => {
@@ -520,19 +521,32 @@ const { data: loadFixedIncomeExitQuery = [] } = useQuery({
                 },
               },
               {
-                field: "dueDate",
-                headerName: "Data de Vencimento",
-                type: "string",
+                field: "value",
+                headerName: "Valor Por Unidade",
                 flex: 1,
-                valueFormatter: (params) => {
-                  const value = params;
-                  if (!value) return "";
-                  const parts = value.split("-");
-                  if (parts.length !== 3) return value;
-                  const [year, month, day] = parts;
-                  return `${day}/${month}/${year}`;
-                },
+                valueFormatter: (params) => `R$ ${formatCurrency(params)}`,
               },
+              {
+                field: "amount",
+                headerName: "Quantidade",
+                flex: 1,
+              },
+              {
+                field: "totalValue",
+                headerName: "Valor Total",
+                flex: 1,
+                //   valueGetter: (params) => {
+                //     const row = params?.row || {};
+                //     // Use amountSum para resumo, amount para histórico
+                //     // return Number(row.value || 0) * Number(row.amountSum ?? row.amount ?? 0);
+                //     return console.log(row);
+                //   },
+                //   valueFormatter: (params) =>
+                //     params?.value != null
+                //       ? `R$ ${formatCurrency(params.value)}`
+                //       : "",
+              },
+
               {
                 field: "actions",
                 headerName: "Ações",
@@ -559,7 +573,7 @@ const { data: loadFixedIncomeExitQuery = [] } = useQuery({
                         color="error"
                         variant="outlined"
                         onClick={() =>
-                          deleteFixedIncomeExitMutation.mutate(row.id)
+                          deleteVariableIncomeMutation.mutate(row.id)
                         }
                       >
                         <DeleteOutlineOutlinedIcon />
@@ -573,7 +587,7 @@ const { data: loadFixedIncomeExitQuery = [] } = useQuery({
               pagination: { paginationModel: { pageSize: 5 } },
             }}
             pageSizeOptions={[5]}
-            loading={isLoadingFixedIncome}
+            loading={isLoadingVariableIncome}
             disableRowSelectionOnClick
           />
         </Box>
@@ -582,8 +596,8 @@ const { data: loadFixedIncomeExitQuery = [] } = useQuery({
         <div className="mt-15 text-right">
           <span>
             Total filtrado: R${" "}
-            {(Array.isArray(rowsFixedIncome)
-              ? rowsFixedIncome.reduce((sum, row) => {
+            {(Array.isArray(rowsVariableIncome)
+              ? rowsVariableIncome.reduce((sum, row) => {
                   const valor = Number(
                     String(row.value)
                       .replace(/\./g, "") // remove separador de milhar
@@ -606,14 +620,30 @@ const { data: loadFixedIncomeExitQuery = [] } = useQuery({
 
           <DataGrid
             localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
-            rows={rowsFixedIncomeExit}
+            rows={rowsVariableIncomeExit}
             columns={[
               { field: "id", headerName: "ID", flex: 0.5 },
               { field: "name", headerName: "Nome", flex: 2 },
-              { field: "initialValue", headerName: "Valor Inicial", flex: 1 },
+              {
+                field: "initialValue",
+                headerName: "Valor Unitário Inicial",
+                flex: 1,
+                valueFormatter: (params) => `R$ ${formatCurrency(params)}`,
+              },
+              {
+                field: "initialAmount",
+                headerName: "Quantidade Inicial",
+                flex: 1,
+              },
+              {
+                field: "salesValue",
+                headerName: "Valor de Venda",
+                flex: 1,
+                valueFormatter: (params) => `R$ ${formatCurrency(params)}`,
+              },
               {
                 field: "withdrawalAmount",
-                headerName: "Valor de Retirada",
+                headerName: "Quantidade Retirada",
                 flex: 1,
               },
               {
@@ -648,7 +678,7 @@ const { data: loadFixedIncomeExitQuery = [] } = useQuery({
                         onClick={() => {
                           setEditExitData({
                             ...row,
-                            withdrawalAmount: row.withdrawalAmount,
+                            salesValue: row.salesValue,
                             sellDate: row.sellDate,
                           });
                           setOpenEditExit(true);
@@ -660,7 +690,7 @@ const { data: loadFixedIncomeExitQuery = [] } = useQuery({
                         color="error"
                         variant="outlined"
                         onClick={() =>
-                          deleteFixedIncomeExitMutation.mutate(row.id)
+                          deleteVariableIncomeExitMutation.mutate(row.id)
                         }
                       >
                         <DeleteOutlineOutlinedIcon />
@@ -674,7 +704,7 @@ const { data: loadFixedIncomeExitQuery = [] } = useQuery({
               pagination: { paginationModel: { pageSize: 5 } },
             }}
             pageSizeOptions={[5]}
-            loading={isLoadingFixedIncome}
+            loading={isLoadingVariableIncome}
             disableRowSelectionOnClick
           />
         </Box>
