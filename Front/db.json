@@ -157,6 +157,70 @@
         "endDate": "2025-05-28"
       },
       "id": "1efe"
+    },
+    {
+      "id": "003b",
+      "description": "teste",
+      "amount": 123,
+      "dueDate": "2015-12-12",
+      "category": "Utilidades",
+      "categoryId": "",
+      "status": "pending",
+      "reminder": true,
+      "recurrence": {
+        "type": "monthly",
+        "hasEndDate": false,
+        "endDate": null,
+        "enabled": false
+      }
+    },
+    {
+      "id": "ec80",
+      "description": "teste",
+      "amount": 123,
+      "dueDate": "2020-11-12",
+      "category": "Diversos",
+      "categoryId": "",
+      "status": "pending",
+      "reminder": true,
+      "recurrence": {
+        "type": "monthly",
+        "hasEndDate": false,
+        "endDate": null,
+        "enabled": true
+      }
+    }
+  ],
+  "accounts-receivable": [
+    {
+      "id": "1",
+      "description": "Salário",
+      "amount": 5000,
+      "dueDate": "2025-07-01",
+      "category": "Diversos",
+      "categoryId": "8",
+      "status": "pending",
+      "reminder": true,
+      "recurrence": {
+        "type": "monthly",
+        "endDate": "2025-08-01"
+      }
+    },
+    {
+      "id": "3fa5",
+      "description": "teste",
+      "amount": 123,
+      "dueDate": "2021-11-12",
+      "category": "Saúde",
+      "categoryId": "",
+      "status": "paid",
+      "reminder": true,
+      "recurrence": {
+        "type": "monthly",
+        "hasEndDate": false,
+        "endDate": null,
+        "enabled": true
+      }
     }
   ],
   "expenses": [

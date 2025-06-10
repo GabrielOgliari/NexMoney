@@ -3,7 +3,7 @@ const router = express.Router();
 const model = require("../../../model");
 const AccountReceivable = model.accountReceivable;
 
-// GET todas as contas a pagar
+// GET todas as contas a receber
 router.get("/api/v1/rest/accounts-receivable", async (req, res) => {
   try {
     const data = await AccountReceivable.findAll();

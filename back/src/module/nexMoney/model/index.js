@@ -12,6 +12,8 @@ const accountPayable = require("./account_payable")(
   sequelize,
   Sequelize.DataTypes
 );
+const accountReceivable = require("./account_receivable")(sequelize, Sequelize.DataTypes);
+
 const mappedExpense = require("./mapped_expense")(
   sequelize,
   Sequelize.DataTypes
@@ -45,6 +47,7 @@ const investimentsVariableIncomeCryptoExit = require("./investiments_variableInc
 const db = {
   category,
   accountPayable,
+  accountReceivable,
   mappedExpense,
   bankStatementExpense,
   investmentFixedIncome,
