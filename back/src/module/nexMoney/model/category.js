@@ -7,11 +7,34 @@ module.exports = (sequelize, DataTypes) => {
       // associações se necessário
     }
   }
+
   Category.init(
     {
-      id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-      name: { type: DataTypes.STRING, allowNull: false },
-      planned: { type: DataTypes.NUMERIC, allowNull: false },
+      id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+      },
+      name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      planned: {
+        type: DataTypes.NUMERIC,
+        allowNull: true,
+      },
+      type: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      description: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      investmentType: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
     },
     {
       sequelize,
@@ -19,5 +42,6 @@ module.exports = (sequelize, DataTypes) => {
       tableName: "categories",
     }
   );
+
   return Category;
 };

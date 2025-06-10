@@ -11,16 +11,24 @@ import { useState, useEffect } from "react";
 import api from "../../services/api";
 import { useQuery } from "@tanstack/react-query";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
-
 import { Draggable as DraggableItem } from "./components/draggable";
+import { NumericFormat } from "react-number-format";
 
 // Página principal de comparação orçamentária
 export const BudgetComparisonPage = () => {
-  // Carrega as categorias do banco
+  // Carrega categorias dos tipos "income" e "expanse"
   const { data: categories = [], isSuccess: categoriesLoaded } = useQuery({
-    queryKey: ["categories"],
+    queryKey: ["categories", "income+expanse"],
     queryFn: async () => {
-      const response = await api.get("/categories");
+      const response = await api.get("/categories", {
+        params: {
+          type: ["income", "expanse"],
+        },
+        paramsSerializer: {
+          indexes: null, // força Axios a gerar múltiplos type=... e não type[0]=...
+        },
+      });
+
       return response.data;
     },
   });
@@ -73,20 +81,33 @@ export const BudgetComparisonPage = () => {
     }
   };
 
-  // Função para calcular o total de uma categoria
+  // Função para calcular o total de uma categoria (usando valor absoluto das despesas)
   const getCategoryTotal = (categoryId) => {
-    return (columns[categoryId] || []).reduce(
-      (sum, item) => sum + item.amount,
-      0
-    );
+    return (columns[categoryId] || []).reduce((sum, item) => {
+      const value = Number(item.amount) || 0;
+      return value < 0 ? sum + Math.abs(value) : sum;
+    }, 0);
   };
 
-  const totalPlanned = categories.reduce((sum, c) => sum + c.planned, 0);
+  // Total planejado: soma dos valores definidos nas categorias
+  const totalPlanned = categories.reduce(
+    (sum, c) => sum + (Number(c.planned) || 0),
+    0
+  );
+
+  // Total mapeado: soma das despesas alocadas nas categorias
   const totalMapped = categories.reduce(
     (sum, c) => sum + getCategoryTotal(c.id),
     0
   );
-  const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0);
+
+  // Total de despesas no extrato (ignora receitas)
+  const totalExpenses = expenses.reduce((sum, e) => {
+    const value = Number(e.amount) || 0;
+    return value < 0 ? sum + Math.abs(value) : sum;
+  }, 0);
+
+  // Sobra total entre o planejado e o que foi mapeado
   const sobraTotal = totalPlanned - totalMapped;
   const mappedPct =
     totalExpenses > 0 ? Math.round((totalMapped / totalExpenses) * 100) : 0;
@@ -98,22 +119,18 @@ export const BudgetComparisonPage = () => {
     categories.forEach((cat) => {
       (columns[cat.id] || []).forEach((item) => {
         mappedExpenses.push({
-          expenseId: item.id,
-          expenseName: item.name,
-          amount: item.amount,
-          date: item.date,
+          id: item.id,
           categoryId: cat.id,
-          categoryName: cat.name,
+          mapped: true,
+          category: cat.name,
         });
       });
     });
 
     try {
-      await api.post("/mappedExpenses", mappedExpenses);
-      alert("Mapeamento salvo com sucesso!");
+      await api.put("/bankStatementExpenses", mappedExpenses);
     } catch (error) {
       console.error("Erro ao salvar mapeamento:", error);
-      alert("Erro ao salvar mapeamento.");
     }
   };
 
@@ -122,14 +139,23 @@ export const BudgetComparisonPage = () => {
       <h2 className="text-2xl font-bold">Comparação Financeira</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div className="bg-[#111827] p-4 rounded">
-          <h3>Total Planejado</h3>
-          <p>R$ {totalPlanned.toLocaleString("pt-BR")}</p>
-        </div>
-        <div className="bg-[#111827] p-4 rounded">
-          <h3>Total do Extrato</h3>
-          <p>R$ {totalExpenses.toLocaleString("pt-BR")}</p>
-        </div>
+        {[
+          { title: "Total Planejado", value: totalPlanned },
+          { title: "Total do Extrato", value: totalExpenses },
+        ].map((card, i) => (
+          <div key={i} className="bg-[#111827] p-4 rounded">
+            <h3>{card.title}</h3>
+            <NumericFormat
+              value={card.value}
+              displayType="text"
+              thousandSeparator="."
+              decimalSeparator=","
+              prefix="R$ "
+              decimalScale={2}
+              fixedDecimalScale
+            />
+          </div>
+        ))}
         <div className="bg-[#111827] p-4 rounded">
           <h3>Progresso de Mapeamento</h3>
           <p>{mappedPct}%</p>
@@ -146,18 +172,82 @@ export const BudgetComparisonPage = () => {
                 {categories.map((cat) => (
                   <div key={cat.id} className="mb-2 p-2 rounded bg-[#111827]">
                     <p className="font-semibold">{cat.name}</p>
-                    <p>Meta: R$ {cat.planned}</p>
-                    <p>Atual: R$ {getCategoryTotal(cat.id)}</p>
-                    <p>Sobra: R$ {cat.planned - getCategoryTotal(cat.id)}</p>
+                    <p>
+                      Meta:{" "}
+                      <NumericFormat
+                        value={cat.planned}
+                        displayType="text"
+                        thousandSeparator="."
+                        decimalSeparator=","
+                        prefix="R$ "
+                        decimalScale={2}
+                        fixedDecimalScale
+                      />
+                    </p>
+                    <p>
+                      Atual:{" "}
+                      <NumericFormat
+                        value={getCategoryTotal(cat.id)}
+                        displayType="text"
+                        thousandSeparator="."
+                        decimalSeparator=","
+                        prefix="R$ "
+                        decimalScale={2}
+                        fixedDecimalScale
+                      />
+                    </p>
+                    <p>
+                      Sobra:{" "}
+                      <NumericFormat
+                        value={cat.planned - getCategoryTotal(cat.id)}
+                        displayType="text"
+                        thousandSeparator="."
+                        decimalSeparator=","
+                        prefix="R$ "
+                        decimalScale={2}
+                        fixedDecimalScale
+                      />
+                    </p>
                   </div>
                 ))}
                 {provided.placeholder}
                 <div className="bg-[#111827] p-4 rounded mt-4 font-bold">
                   <p>
-                    Total Planejado: R$ {totalPlanned.toLocaleString("pt-BR")}
+                    Total Planejado:{" "}
+                    <NumericFormat
+                      value={totalPlanned}
+                      displayType="text"
+                      thousandSeparator="."
+                      decimalSeparator=","
+                      prefix="R$ "
+                      decimalScale={2}
+                      fixedDecimalScale
+                    />
                   </p>
-                  <p>Total Atual: R$ {totalMapped.toLocaleString("pt-BR")}</p>
-                  <p>Total Sobra: R$ {sobraTotal.toLocaleString("pt-BR")}</p>
+                  <p>
+                    Total Atual:{" "}
+                    <NumericFormat
+                      value={totalMapped}
+                      displayType="text"
+                      thousandSeparator="."
+                      decimalSeparator=","
+                      prefix="R$ "
+                      decimalScale={2}
+                      fixedDecimalScale
+                    />
+                  </p>
+                  <p>
+                    Total Sobra:{" "}
+                    <NumericFormat
+                      value={sobraTotal}
+                      displayType="text"
+                      thousandSeparator="."
+                      decimalSeparator=","
+                      prefix="R$ "
+                      decimalScale={2}
+                      fixedDecimalScale
+                    />
+                  </p>
                 </div>
               </div>
             )}
@@ -167,7 +257,7 @@ export const BudgetComparisonPage = () => {
           <div>
             <h3 className="text-lg font-bold mb-2">De Para</h3>
             {categories.map((cat) => (
-              <Droppable droppableId={cat.id} key={cat.id}>
+              <Droppable droppableId={String(cat.id)} key={cat.id}>
                 {(provided) => (
                   <div
                     ref={provided.innerRef}
@@ -177,7 +267,7 @@ export const BudgetComparisonPage = () => {
                     <h4 className="font-semibold">{cat.name}</h4>
                     {(columns[cat.id] || []).map((item, index) => (
                       <Draggable
-                        draggableId={item.id}
+                        draggableId={String(item.id)}
                         index={index}
                         key={item.id}
                       >
@@ -213,7 +303,7 @@ export const BudgetComparisonPage = () => {
                   {columns.extrato?.length > 0 ? (
                     columns.extrato.map((item, index) => (
                       <Draggable
-                        draggableId={item.id}
+                        draggableId={String(item.id)}
                         index={index}
                         key={item.id}
                       >
@@ -235,11 +325,21 @@ export const BudgetComparisonPage = () => {
                   )}
                   {provided.placeholder}
                   <p className="mt-4 font-bold text-yellow-400">
-                    Total não mapeado: R${" "}
-                    {columns.extrato
-                      ?.reduce((s, i) => s + i.amount, 0)
-                      ?.toLocaleString("pt-BR") || 0}
+                    Total não mapeado:{" "}
+                    <NumericFormat
+                      value={columns.extrato?.reduce(
+                        (s, i) => s + (parseFloat(i.amount) || 0),
+                        0
+                      )}
+                      displayType="text"
+                      thousandSeparator="."
+                      decimalSeparator=","
+                      prefix="R$ "
+                      decimalScale={2}
+                      fixedDecimalScale
+                    />
                   </p>
+
                   <button
                     onClick={handleSaveMapping}
                     className="bg-green-600 hover:bg-green-700 text-white px-2 py-1 rounded text-sm mt-2"
@@ -309,8 +409,17 @@ export const BudgetComparisonPage = () => {
                 >
                   <TableCell sx={{ color: "white" }}>{cat.name}</TableCell>
                   <TableCell sx={{ color: "white" }}>
-                    R$ {cat.planned.toLocaleString("pt-BR")}
+                    <NumericFormat
+                      value={cat.planned}
+                      displayType="text"
+                      thousandSeparator="."
+                      decimalSeparator=","
+                      prefix="R$ "
+                      decimalScale={2}
+                      fixedDecimalScale
+                    />
                   </TableCell>
+
                   <TableCell sx={{ color: "white" }}>
                     R$ {actual.toLocaleString("pt-BR")}
                   </TableCell>

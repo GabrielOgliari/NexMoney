@@ -14,5 +14,35 @@ const accountPayable = require("./account_payable")(
 );
 const accountReceivable = require("./account_receivable")(sequelize, Sequelize.DataTypes);
 
-const db = { category, accountPayable, accountReceivable, sequelize, Sequelize };
+const mappedExpense = require("./mapped_expense")(
+  sequelize,
+  Sequelize.DataTypes
+);
+
+const bankStatementExpense = require("./bank_statement_expense")(
+  sequelize,
+  Sequelize.DataTypes
+);
+
+const investmentFixedIncome = require("./investment_fixed_income")(
+  sequelize,
+  Sequelize.DataTypes
+);
+
+const investimentFixedIncomeExit = require("./investment_fixed_income_exit")(
+  sequelize,
+  Sequelize.DataTypes
+);
+
+const db = {
+  category,
+  accountPayable,
+  accountReceivable,
+  mappedExpense,
+  bankStatementExpense,
+  investmentFixedIncome,
+  investimentFixedIncomeExit,
+  sequelize,
+  Sequelize,
+};
 module.exports = db;

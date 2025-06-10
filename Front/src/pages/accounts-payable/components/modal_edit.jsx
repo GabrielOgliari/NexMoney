@@ -65,6 +65,7 @@ export function AccountsPayableEditModal({
                   placeholder="Digite a descrição"
                   fullWidth
                   sx={roundedInput}
+                  inputProps={{ maxLength: 50 }}
                 />
               )}
             />
@@ -102,6 +103,7 @@ export function AccountsPayableEditModal({
                 )}
               />
             </div>
+
             <div className="w-1/2 flex flex-col items-start">
               <FormLabel sx={{ mb: 1, color: "text.primary" }}>
                 Data de Vencimento
@@ -115,18 +117,19 @@ export function AccountsPayableEditModal({
                       {...field}
                       onChange={(date) => field.onChange(date)}
                       value={field.value}
+                      format="DD/MM/YYYY" // Define o formato de data como "dd/mm/aaaa"
                       enableAccessibleFieldDOMStructure={false}
                       slotProps={{
                         textField: {
                           fullWidth: true,
-                          placeholder: "dd/mm/aaaa",
+                          placeholder: "dd/mm/aaaa", // Mantém o placeholder consistente
                           variant: "outlined",
                           sx: {
                             "& .MuiOutlinedInput-root": {
-                              borderRadius: "10px",
+                              borderRadius: "10px", // Consistência no arredondamento
                             },
                             "& .MuiOutlinedInput-notchedOutline": {
-                              borderRadius: "10px",
+                              borderRadius: "10px", // Consistência no arredondamento
                             },
                           },
                         },
@@ -223,7 +226,7 @@ export function AccountsPayableEditModal({
 
           {/* Data Final da Recorrência */}
           {watch("recurrence.hasEndDate") && (
-            <div className="w-full flex flex-col items-start">
+            <div className="w-1/2 flex flex-col items-start">
               <FormLabel sx={{ mb: 1, color: "text.primary" }}>
                 Data Final da Recorrência
               </FormLabel>
@@ -236,15 +239,23 @@ export function AccountsPayableEditModal({
                       {...field}
                       onChange={(date) => field.onChange(date)}
                       value={field.value}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          fullWidth
-                          placeholder="dd/mm/aaaa"
-                          sx={roundedInput}
-                          variant="outlined"
-                        />
-                      )}
+                      format="DD/MM/YYYY"
+                      enableAccessibleFieldDOMStructure={false}
+                      slotProps={{
+                        textField: {
+                          fullWidth: true,
+                          placeholder: "dd/mm/aaaa",
+                          variant: "outlined",
+                          sx: {
+                            "& .MuiOutlinedInput-root": {
+                              borderRadius: "10px",
+                            },
+                            "& .MuiOutlinedInput-notchedOutline": {
+                              borderRadius: "10px",
+                            },
+                          },
+                        },
+                      }}
                     />
                   </LocalizationProvider>
                 )}
@@ -252,7 +263,7 @@ export function AccountsPayableEditModal({
             </div>
           )}
 
-          {/* Checkbox: Lembrete */}
+          {/* Lembrete */}
           <div className="w-full flex flex-col items-start">
             <Controller
               name="reminder"
