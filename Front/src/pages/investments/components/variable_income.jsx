@@ -212,7 +212,9 @@ export function VariableIncome() {
   const { data: loadVariableIncomeExitQuery = [] } = useQuery({
     queryKey: ["variable-income-exit"],
     queryFn: async () => {
-      const response = await api.get("/investiments-variableIncome-crypto-exit");
+      const response = await api.get(
+        "/investiments-variableIncome-crypto-exit"
+      );
       return response.data;
     },
   });
@@ -273,15 +275,17 @@ export function VariableIncome() {
         // Remove o lançamento se retirou toda a quantidade
         deleteVariableIncomeMutation.mutate(registro.id);
       } else if (quantidadeParaRetirar < quantidadeAtual) {
-        // Atualiza a quantidade do lançamento se retirou parcialmente
-        updateVariableIncomeMutation.mutate({
-          id: registro.id,
-          data: {
-            ...registro,
-            amount: quantidadeAtual - quantidadeParaRetirar,
-          },
-        });
-      }
+    // Atualiza a quantidade e o valor total do lançamento se retirou parcialmente
+    const novaQuantidade = quantidadeAtual - quantidadeParaRetirar;
+    updateVariableIncomeMutation.mutate({
+      id: registro.id,
+      data: {
+        ...registro,
+        amount: novaQuantidade,
+        totalValue: Number(registro.value) * novaQuantidade, // <-- ajuste aqui!
+      },
+    });
+  }
 
       quantidadeRestante -= quantidadeParaRetirar;
     });
