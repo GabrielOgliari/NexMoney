@@ -1,6 +1,6 @@
 "use strict";
 const Sequelize = require("sequelize");
-const config = require("../../../../config/databases")[
+const config = require("../../../../src/config/databases")[
   process.env.NODE_ENV || "development"
 ];
 const sequelize = config.use_env_variable
@@ -12,6 +12,34 @@ const accountPayable = require("./account_payable")(
   sequelize,
   Sequelize.DataTypes
 );
+const mappedExpense = require("./mapped_expense")(
+  sequelize,
+  Sequelize.DataTypes
+);
 
-const db = { category, accountPayable, sequelize, Sequelize };
+const bankStatementExpense = require("./bank_statement_expense")(
+  sequelize,
+  Sequelize.DataTypes
+);
+
+const investmentFixedIncome = require("./investment_fixed_income")(
+  sequelize,
+  Sequelize.DataTypes
+);
+
+const investimentFixedIncomeExit = require("./investment_fixed_income_exit")(
+  sequelize,
+  Sequelize.DataTypes
+);
+
+const db = {
+  category,
+  accountPayable,
+  mappedExpense,
+  bankStatementExpense,
+  investmentFixedIncome,
+  investimentFixedIncomeExit,
+  sequelize,
+  Sequelize,
+};
 module.exports = db;

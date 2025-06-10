@@ -2,24 +2,20 @@
 const { Model } = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
-  class MappedExpense extends Model {
+  class AccountReceivable extends Model {
     static associate(models) {
-      // Associações se necessário
+      // associações se necessário
     }
   }
 
-  MappedExpense.init(
+  AccountReceivable.init(
     {
       id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
       },
-      expenseId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-      },
-      expenseName: {
+      description: {
         type: DataTypes.STRING,
         allowNull: false,
       },
@@ -27,25 +23,37 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.NUMERIC,
         allowNull: false,
       },
-      date: {
+      receiptDate: {
         type: DataTypes.DATEONLY,
+        allowNull: false,
+      },
+      category: {
+        type: DataTypes.STRING,
         allowNull: false,
       },
       categoryId: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true, // deixado como opcional
       },
-      categoryName: {
+      status: {
         type: DataTypes.STRING,
         allowNull: false,
+      },
+      reminder: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+      },
+      recurrence: {
+        type: DataTypes.JSONB,
+        allowNull: true, // recorrência pode ser opcional
       },
     },
     {
       sequelize,
-      modelName: "mappedExpense",
-      tableName: "mapped_expenses",
+      modelName: "accountReceivable",
+      tableName: "accounts_receivable",
     }
   );
 
-  return MappedExpense;
+  return AccountReceivable;
 };

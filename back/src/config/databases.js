@@ -19,8 +19,8 @@ module.exports = {
     logging: false,
     dialectOptions: {
       ssl: {
-        require: true, // Para conexões seguras
-        rejectUnauthorized: false, // Ajuste se necessário para certificados
+        require: true, // para conexões seguras
+        rejectUnauthorized: false, // ajuste se necessário para certificados
       },
     },
   },

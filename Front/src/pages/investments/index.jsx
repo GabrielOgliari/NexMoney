@@ -7,7 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { FixedIncome } from "./components/fixed_income";
 import { Button } from "@mui/material";
-// import { VariableIncome } from "./components/variable_income";
+import { VariableIncome } from "./components/variable_income";
 
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.components?.MuiPaper?.styleOverrides?.root,
