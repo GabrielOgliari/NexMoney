@@ -1,12 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const model = require("../../../model");
-const investimentsVariableIncomeCrypto = model.investimentsVariableIncomeCrypto;
+const investimentsVariableIncome = model.investimentsVariableIncome;
 
 // Listar todos os investimentos de renda variável (cripto)
-router.get("/api/v1/rest/investiments-variableIncome-crypto", async (req, res) => {
+router.get("/api/v1/rest/investiments-variable-income", async (req, res) => {
   try {
-    const data = await investimentsVariableIncomeCrypto.findAll();
+    const data = await investimentsVariableIncome.findAll();
     res.json(data);
   } catch (error) {
     console.error(error);
@@ -15,9 +15,9 @@ router.get("/api/v1/rest/investiments-variableIncome-crypto", async (req, res) =
 });
 
 // Obter um investimento específico por ID
-router.get("/api/v1/rest/investiments-variableIncome-crypto/:id", async (req, res) => {
+router.get("/api/v1/rest/investiments-variable-income/:id", async (req, res) => {
   try {
-    const data = await investimentsVariableIncomeCrypto.findByPk(req.params.id);
+    const data = await investimentsVariableIncome.findByPk(req.params.id);
     if (!data) return res.status(404).json({ error: "não encontrado" });
     res.json(data);
   } catch (error) {
@@ -27,7 +27,7 @@ router.get("/api/v1/rest/investiments-variableIncome-crypto/:id", async (req, re
 });
 
 // Criar um novo investimento de renda variável (cripto)
-router.post("/api/v1/rest/investiments-variableIncome-crypto", async (req, res) => {
+router.post("/api/v1/rest/investiments-variable-income", async (req, res) => {
   try {
     const {
       typeInvestment,
@@ -50,7 +50,7 @@ router.post("/api/v1/rest/investiments-variableIncome-crypto", async (req, res) 
       return res.status(400).json({ error: "Campos obrigatórios não preenchidos" });
     }
 
-    const created = await investimentsVariableIncomeCrypto.create({
+    const created = await investimentsVariableIncome.create({
       typeInvestment,
       name,
       value,
@@ -66,9 +66,9 @@ router.post("/api/v1/rest/investiments-variableIncome-crypto", async (req, res) 
 });
 
 // Atualizar um investimento de renda variável (cripto)
-router.put("/api/v1/rest/investiments-variableIncome-crypto/:id", async (req, res) => {
+router.put("/api/v1/rest/investiments-variable-income/:id", async (req, res) => {
   try {
-    const data = await investimentsVariableIncomeCrypto.findByPk(req.params.id);
+    const data = await investimentsVariableIncome.findByPk(req.params.id);
     if (!data) return res.status(404).json({ error: "não encontrado" });
 
     const {
@@ -97,9 +97,9 @@ router.put("/api/v1/rest/investiments-variableIncome-crypto/:id", async (req, re
 });
 
 // Deletar um investimento de renda variável (cripto)
-router.delete("/api/v1/rest/investiments-variableIncome-crypto/:id", async (req, res) => {
+router.delete("/api/v1/rest/investiments-variable-income/:id", async (req, res) => {
   try {
-    const data = await investimentsVariableIncomeCrypto.findByPk(req.params.id);
+    const data = await investimentsVariableIncome.findByPk(req.params.id);
     if (!data) return res.status(404).json({ error: "não encontrado" });
     await data.destroy();
     res.json({ success: true, msg: `Conta ${data.id} deletada com sucesso!` });

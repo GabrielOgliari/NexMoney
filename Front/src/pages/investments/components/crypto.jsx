@@ -16,7 +16,7 @@ import api from "../../../services/api";
 
 //Parte logica para o os lançamentos de renda fixa de entrada
 
-const useVariableIncomeCategories = () => {
+const useCryptoCategories = () => {
   const { data: categories = [] } = useQuery({
     queryFn: async () => {
       const response = await api.get("/categories");
@@ -31,7 +31,7 @@ const useVariableIncomeCategories = () => {
         .filter(
           (cat) =>
             cat.type === "investment" &&
-            cat.investmentType === "variable_income"
+            cat.investmentType === "crypto"
         )
         .map((cat) => ({ value: cat.name, label: cat.name })),
     [categories]
@@ -46,7 +46,7 @@ const validationSchema = Yup.object({
   purchaseDate: Yup.string().required("Data inicial obrigatória"),
 });
 
-export function VariableIncome() {
+export function Crypto() {
   const [openAdd, setOpenAdd] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [editData, setEditData] = useState(null);
@@ -57,21 +57,21 @@ export function VariableIncome() {
 
   // Busca lançamentos de renda fixa
   const {
-    data: loadVariableIncomeQuery = [],
-    isLoading: isLoadingVariableIncome,
+    data: loadCryptoQuery = [],
+    isLoading: isLoadingCrypto,
   } = useQuery({
-    queryKey: ["variable_income"],
+    queryKey: ["crypto"],
     queryFn: async () => {
-      const response = await api.get("/investiments-variable-income");
+      const response = await api.get("/investiments-crypto");
       return response.data;
     },
   });
 
   // Busca categorias para o select de nome
-  const nameOptions = useVariableIncomeCategories();
+  const nameOptions = useCryptoCategories();
 
   // Campos do formulário
-  const VariableIncomeFields = [
+  const CryptoFields = [
     {
       name: "name",
       label: "Nome",
@@ -85,19 +85,19 @@ export function VariableIncome() {
 
   // Mutation para deletar
 
-  const deleteVariableIncomeMutation = useMutation({
+  const deleteCryptoMutation = useMutation({
     mutationFn: async (id) => {
-      await api.delete(`/investiments-variable-income/${id}`);
+      await api.delete(`/investiments-crypto/${id}`);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(["variable_income"]);
+      queryClient.invalidateQueries(["crypto"]);
     },
   });
 
   // Adicione esta mutation:
-  const updateVariableIncomeExitMutation = useMutation({
+  const updateCryptoExitMutation = useMutation({
     mutationFn: async ({ id, data }) => {
-      await api.put(`/investiments-variable-income-exit/${id}`, data);
+      await api.put(`/investiments-crypto-exit/${id}`, data);
     },
     onSuccess: () => {
       setOpenEditExit(false);
@@ -120,26 +120,26 @@ export function VariableIncome() {
   };
 
   // Mutation para editar (PUT)
-  const updateVariableIncomeMutation = useMutation({
+  const updateCryptoMutation = useMutation({
     mutationFn: async ({ id, data }) => {
-      await api.put(`/investiments-variable-income/${id}`, data);
+      await api.put(`/investiments-crypto/${id}`, data);
     },
     onSuccess: () => {
       setOpenEdit(false);
       setEditData(null);
-      queryClient.invalidateQueries(["variable_income"]);
+      queryClient.invalidateQueries(["crypto"]);
     },
   });
 
   // Mutation para criar (POST)
-  const createVariableIncomeMutation = useMutation({
+  const createCryptoMutation = useMutation({
     mutationFn: async (data) => {
-      await api.post("/investiments-variable-income", data);
+      await api.post("/investiments-crypto", data);
     },
     onSuccess: () => {
       setOpenAdd(false);
       setEditData(null);
-      queryClient.invalidateQueries(["variable_income"]);
+      queryClient.invalidateQueries(["crypto"]);
     },
   });
 
@@ -163,18 +163,18 @@ export function VariableIncome() {
     }
 
     if (editData && editData.id) {
-      updateVariableIncomeMutation.mutate({
+      updateCryptoMutation.mutate({
         id: editData.id,
         data: formattedData,
       });
     } else {
-      createVariableIncomeMutation.mutate(formattedData);
+      createCryptoMutation.mutate(formattedData);
     }
   };
 
   // Filtra apenas lançamentos com id definido
-  const rowsVariableIncome = Array.isArray(loadVariableIncomeQuery)
-    ? loadVariableIncomeQuery.filter(
+  const rowsCrypto = Array.isArray(loadCryptoQuery)
+    ? loadCryptoQuery.filter(
         (row) => row && row.id !== undefined && row.id !== null
       )
     : [];
@@ -182,8 +182,8 @@ export function VariableIncome() {
   // Parte lógica para a grid de resumo de renda fixa
   // Agrupa os lançamentos por nome e resume os dados
   //
-  const rowsVariableIncomeSummary = Object.values(
-    rowsVariableIncome.reduce((acc, curr) => {
+  const rowsCryptoSummary = Object.values(
+    rowsCrypto.reduce((acc, curr) => {
       if (!acc[curr.name]) {
         acc[curr.name] = {
           id: curr.name,
@@ -209,26 +209,26 @@ export function VariableIncome() {
   const [withdrawData, setWithdrawData] = useState(null);
 
   // Busca lançamentos de renda fixa de saída
-  const { data: loadVariableIncomeExitQuery = [] } = useQuery({
+  const { data: loadCryptoExitQuery = [] } = useQuery({
     queryKey: ["variable-income-exit"],
     queryFn: async () => {
       const response = await api.get(
-        "/investiments-variable-income-exit"
+        "/investiments-crypto-exit"
       );
       return response.data;
     },
   });
 
   // Mutation para criar (POST) retirada de renda fixa
-  const saveVariableIncomeExitMutation = useMutation({
+  const saveCryptoExitMutation = useMutation({
     mutationFn: async (data) => {
-      await api.post("/investiments-variable-income-exit", data);
+      await api.post("/investiments-crypto-exit", data);
     },
     onSuccess: () => {
       setOpenWithdraw(false);
       setWithdrawData(null);
       queryClient.invalidateQueries(["variable-income-exit"]);
-      queryClient.invalidateQueries(["variable_income"]);
+      queryClient.invalidateQueries(["crypto"]);
     },
   });
 
@@ -242,7 +242,7 @@ export function VariableIncome() {
     let quantidadeRestante = Number(values.withdrawalAmount);
 
     // Filtra e ordena os lançamentos daquele nome por data (mais antigos primeiro)
-    const registros = rowsVariableIncome
+    const registros = rowsCrypto
       .filter((row) => row.name === nome)
       .sort((a, b) => new Date(a.purchaseDate) - new Date(b.purchaseDate));
 
@@ -256,7 +256,7 @@ export function VariableIncome() {
       );
 
       // Salva a retirada (POST)
-      saveVariableIncomeExitMutation.mutate({
+      saveCryptoExitMutation.mutate({
         name: registro.name,
         initialValue: Number(registro.value),
         initialAmount: quantidadeAtual,
@@ -267,17 +267,17 @@ export function VariableIncome() {
         // saleDate: registro.saleDate,
         // amount: registro.amount,
         inclusionDate: registro.purchaseDate,
-        typeInvestment: "variable_income",
+        typeInvestment: "crypto",
         totalValue: Number(values.salesValue) * Number(quantidadeParaRetirar), // <-- aqui!
       });
 
       if (quantidadeParaRetirar === quantidadeAtual) {
         // Remove o lançamento se retirou toda a quantidade
-        deleteVariableIncomeMutation.mutate(registro.id);
+        deleteCryptoMutation.mutate(registro.id);
       } else if (quantidadeParaRetirar < quantidadeAtual) {
     // Atualiza a quantidade e o valor total do lançamento se retirou parcialmente
     const novaQuantidade = quantidadeAtual - quantidadeParaRetirar;
-    updateVariableIncomeMutation.mutate({
+    updateCryptoMutation.mutate({
       id: registro.id,
       data: {
         ...registro,
@@ -295,17 +295,17 @@ export function VariableIncome() {
   };
 
   // Mutation para deletar retirada de renda fixa
-  const deleteVariableIncomeExitMutation = useMutation({
+  const deleteCryptoExitMutation = useMutation({
     mutationFn: async (id) => {
-      await api.delete(`/investiments-variable-income-exit/${id}`);
+      await api.delete(`/investiments-crypto-exit/${id}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["variable-income-exit"]);
     },
   });
 
-  const rowsVariableIncomeExit = Array.isArray(loadVariableIncomeExitQuery)
-    ? loadVariableIncomeExitQuery.filter(
+  const rowsCryptoExit = Array.isArray(loadCryptoExitQuery)
+    ? loadCryptoExitQuery.filter(
         (row) => row && row.id !== undefined && row.id !== null && row.sellDate
       )
     : [];
@@ -333,14 +333,14 @@ export function VariableIncome() {
         onClose={handleCloseModal}
         onSubmit={handleSubmit}
         initialValues={{
-          typeInvestment: "variable_income", // valor padrão aqui
+          typeInvestment: "crypto", // valor padrão aqui
           name: "",
           value: "",
           amount: "",
           purchaseDate: "",
           // saleDate: "",
         }}
-        fields={VariableIncomeFields}
+        fields={CryptoFields}
         validationSchema={validationSchema}
         title="Novo Lançamento"
         submitLabel="Adicionar"
@@ -352,7 +352,7 @@ export function VariableIncome() {
         onSubmit={handleSubmit}
         initialValues={
           editData || {
-            typeInvestment: "variable_income",
+            typeInvestment: "crypto",
             name: "",
             value: "",
             amount: "",
@@ -360,7 +360,7 @@ export function VariableIncome() {
             // saleDate: "",
           }
         }
-        fields={VariableIncomeFields}
+        fields={CryptoFields}
         validationSchema={validationSchema}
         title="Editar Lançamento"
         submitLabel="Salvar"
@@ -408,7 +408,7 @@ export function VariableIncome() {
           setEditExitData(null);
         }}
         onSubmit={(values) => {
-          updateVariableIncomeExitMutation.mutate({
+          updateCryptoExitMutation.mutate({
             id: editExitData.id,
             data: {
               ...editExitData,
@@ -448,7 +448,7 @@ export function VariableIncome() {
           </div>
           <DataGrid
             localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
-            rows={rowsVariableIncomeSummary}
+            rows={rowsCryptoSummary}
             columns={[
               { field: "name", headerName: "Nome", flex: 2 },
               {
@@ -490,7 +490,7 @@ export function VariableIncome() {
               pagination: { paginationModel: { pageSize: 5 } },
             }}
             pageSizeOptions={[5]}
-            loading={isLoadingVariableIncome}
+            loading={isLoadingCrypto}
             disableRowSelectionOnClick
           />
         </Box>
@@ -506,7 +506,7 @@ export function VariableIncome() {
           </div>
           <DataGrid
             localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
-            rows={rowsVariableIncome}
+            rows={rowsCrypto}
             columns={[
               { field: "id", headerName: "ID", flex: 0.5 },
               { field: "name", headerName: "Nome", flex: 2 },
@@ -577,7 +577,7 @@ export function VariableIncome() {
                         color="error"
                         variant="outlined"
                         onClick={() =>
-                          deleteVariableIncomeMutation.mutate(row.id)
+                          deleteCryptoMutation.mutate(row.id)
                         }
                       >
                         <DeleteOutlineOutlinedIcon />
@@ -591,7 +591,7 @@ export function VariableIncome() {
               pagination: { paginationModel: { pageSize: 5 } },
             }}
             pageSizeOptions={[5]}
-            loading={isLoadingVariableIncome}
+            loading={isLoadingCrypto}
             disableRowSelectionOnClick
           />
         </Box>
@@ -600,8 +600,8 @@ export function VariableIncome() {
         <div className="mt-15 text-right">
           <span>
             Total filtrado: R${" "}
-            {(Array.isArray(rowsVariableIncome)
-              ? rowsVariableIncome.reduce((sum, row) => {
+            {(Array.isArray(rowsCrypto)
+              ? rowsCrypto.reduce((sum, row) => {
                   const valor = Number(
                     String(row.value)
                       .replace(/\./g, "") // remove separador de milhar
@@ -624,7 +624,7 @@ export function VariableIncome() {
 
           <DataGrid
             localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
-            rows={rowsVariableIncomeExit}
+            rows={rowsCryptoExit}
             columns={[
               { field: "id", headerName: "ID", flex: 0.5 },
               { field: "name", headerName: "Nome", flex: 2 },
@@ -700,7 +700,7 @@ export function VariableIncome() {
                         color="error"
                         variant="outlined"
                         onClick={() =>
-                          deleteVariableIncomeExitMutation.mutate(row.id)
+                          deleteCryptoExitMutation.mutate(row.id)
                         }
                       >
                         <DeleteOutlineOutlinedIcon />
@@ -714,7 +714,7 @@ export function VariableIncome() {
               pagination: { paginationModel: { pageSize: 5 } },
             }}
             pageSizeOptions={[5]}
-            loading={isLoadingVariableIncome}
+            loading={isLoadingCrypto}
             disableRowSelectionOnClick
           />
         </Box>

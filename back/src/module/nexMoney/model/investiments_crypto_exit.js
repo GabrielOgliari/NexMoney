@@ -2,12 +2,12 @@
 const { Model } = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
-  class investimentsVariableIncomeCryptoExit extends Model {
+  class investimentsCryptoExit extends Model {
     static associate(models) {
       // associações se necessário
     }
   }
-  investimentsVariableIncomeCryptoExit.init(
+  investimentsCryptoExit.init(
     {
       id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
       typeInvestment: { type: DataTypes.STRING, allowNull: false },
@@ -23,9 +23,9 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: "investimentsVariableIncomeCryptoExit",
-      tableName: "investiments_VariableIncome_Crypto_Exit",
+      modelName: "investimentsCryptoExit",
+      tableName: "investiments_crypto_exit",
     }
   );
-  return investimentsVariableIncomeCryptoExit;
+  return investimentsCryptoExit;
 };

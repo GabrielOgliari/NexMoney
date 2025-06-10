@@ -8,6 +8,7 @@ import axios from "axios";
 import { FixedIncome } from "./components/fixed_income";
 import { Button } from "@mui/material";
 import { VariableIncome } from "./components/variable_income";
+import { Crypto } from "./components/crypto";
 
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.components?.MuiPaper?.styleOverrides?.root,
@@ -142,7 +143,8 @@ export const InvestmentsPage = () => {
                     <button
                       className="inline-flex h-8 items-center justify-center rounded-md px-3 text-sm  transition-colors bg-[#1B2232]  hover:bg-[#24304A] cursor-pointer"
                       role="tab"
-                      aria-selected="true"
+                      aria-selected={activeTab === "crypto"}
+                      onClick={() => setActiveTab("crypto")}
                     >
                       Criptomoedas
                     </button>
@@ -158,6 +160,7 @@ export const InvestmentsPage = () => {
                 <div className="flex flex-col overflow-hidden h-full w-full">
                   {activeTab === "fixed_income" && <FixedIncome />}
                   {activeTab === "variable_income" && <VariableIncome />}
+                  {activeTab === "crypto" && <Crypto />}
                 </div>
               </div>
             </Item>
