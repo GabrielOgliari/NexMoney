@@ -8,6 +8,10 @@ const filenames = {
     "account_receivable-resource",
     "investment_fixed_income-resource",
     "investment_fixed_income_exit-resource",
+    "investiments_variable_income_exit-resource",
+    "investiments_variable_income-resource",
+    "investiments_crypto_exit-resource",
+    "investiments_crypto-resource",
     // Descomente os recursos adicionais quando forem implementados
     // "post-resource",
     // "reply-resource",
