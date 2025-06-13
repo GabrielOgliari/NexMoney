@@ -1,12 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const model = require("../../../model");
-const investimentsCrypto = model.investimentsCrypto;
+const investimentsDividendos = model.investimentsDividendos;
 
 // Listar todos os investimentos de renda variável (cripto)
-router.get("/api/v1/rest/investiments-crypto", async (req, res) => {
+router.get("/api/v1/rest/investiments-dividendos", async (req, res) => {
   try {
-    const data = await investimentsCrypto.findAll();
+    const data = await investimentsDividendos.findAll();
     res.json(data);
   } catch (error) {
     console.error(error);
@@ -15,9 +15,9 @@ router.get("/api/v1/rest/investiments-crypto", async (req, res) => {
 });
 
 // Obter um investimento específico por ID
-router.get("/api/v1/rest/investiments-crypto/:id", async (req, res) => {
+router.get("/api/v1/rest/investiments-dividendos/:id", async (req, res) => {
   try {
-    const data = await investimentsCrypto.findByPk(req.params.id);
+    const data = await investimentsDividendos.findByPk(req.params.id);
     if (!data) return res.status(404).json({ error: "não encontrado" });
     res.json(data);
   } catch (error) {
@@ -27,13 +27,13 @@ router.get("/api/v1/rest/investiments-crypto/:id", async (req, res) => {
 });
 
 // Criar um novo investimento de renda variável (cripto)
-router.post("/api/v1/rest/investiments-crypto", async (req, res) => {
+router.post("/api/v1/rest/investiments-dividendos", async (req, res) => {
   try {
     const {
       typeInvestment,
       name,
-      value,
-      amount,
+      // value,
+      // amount,
       totalValue,
       purchaseDate
     } = req.body;
@@ -42,19 +42,19 @@ router.post("/api/v1/rest/investiments-crypto", async (req, res) => {
     if (
       !typeInvestment ||
       !name ||
-      value === undefined ||
-      amount === undefined ||
+      // value === undefined ||
+      // amount === undefined ||
       totalValue === undefined ||
       !purchaseDate
     ) {
       return res.status(400).json({ error: "Campos obrigatórios não preenchidos" });
     }
 
-    const created = await investimentsCrypto.create({
+    const created = await investimentsDividendos.create({
       typeInvestment,
       name,
-      value,
-      amount,
+      // value,
+      // amount,
       totalValue,
       purchaseDate
     });
@@ -66,16 +66,16 @@ router.post("/api/v1/rest/investiments-crypto", async (req, res) => {
 });
 
 // Atualizar um investimento de renda variável (cripto)
-router.put("/api/v1/rest/investiments-crypto/:id", async (req, res) => {
+router.put("/api/v1/rest/investiments-dividendos/:id", async (req, res) => {
   try {
-    const data = await investimentsCrypto.findByPk(req.params.id);
+    const data = await investimentsDividendos.findByPk(req.params.id);
     if (!data) return res.status(404).json({ error: "não encontrado" });
 
     const {
       typeInvestment,
       name,
-      value,
-      amount,
+      // value,
+      // amount,
       totalValue,
       purchaseDate
     } = req.body;
@@ -83,8 +83,8 @@ router.put("/api/v1/rest/investiments-crypto/:id", async (req, res) => {
     await data.update({
       typeInvestment: typeInvestment ?? data.typeInvestment,
       name: name ?? data.name,
-      value: value ?? data.value,
-      amount: amount ?? data.amount,
+      // value: value ?? data.value,
+      // amount: amount ?? data.amount,
       totalValue: totalValue ?? data.totalValue,
       purchaseDate: purchaseDate ?? data.purchaseDate
     });
@@ -97,9 +97,9 @@ router.put("/api/v1/rest/investiments-crypto/:id", async (req, res) => {
 });
 
 // Deletar um investimento de renda variável (cripto)
-router.delete("/api/v1/rest/investiments-crypto/:id", async (req, res) => {
+router.delete("/api/v1/rest/investiments-dividendos/:id", async (req, res) => {
   try {
-    const data = await investimentsCrypto.findByPk(req.params.id);
+    const data = await investimentsDividendos.findByPk(req.params.id);
     if (!data) return res.status(404).json({ error: "não encontrado" });
     await data.destroy();
     res.json({ success: true, msg: `Conta ${data.id} deletada com sucesso!` });

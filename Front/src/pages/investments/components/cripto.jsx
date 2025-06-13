@@ -16,7 +16,7 @@ import api from "../../../services/api";
 
 //Parte logica para o os lançamentos de renda fixa de entrada
 
-const useCryptoCategories = () => {
+const useCriptoCategories = () => {
   const { data: categories = [] } = useQuery({
     queryFn: async () => {
       const response = await api.get("/categories");
@@ -29,24 +29,41 @@ const useCryptoCategories = () => {
     () =>
       categories
         .filter(
-          (cat) =>
-            cat.type === "investment" &&
-            cat.investmentType === "crypto"
+          (cat) => cat.type === "investment" && cat.investmentType === "cripto"
         )
         .map((cat) => ({ value: cat.name, label: cat.name })),
     [categories]
   );
 };
 
-const validationSchema = Yup.object({
-  typeInvestment: Yup.string().required("Tipo obrigatório"),
-  name: Yup.string().required("Nome obrigatório"),
-  value: Yup.number().required("Valor obrigatório"),
-  amount: Yup.number(),
-  purchaseDate: Yup.string().required("Data inicial obrigatória"),
-});
+// Ajuste os campos do formulário para remover "value" e deixar "totalValue" manual:
 
-export function Crypto() {
+export function Cripto() {
+  // Busca categorias para o select de nome
+  const nameOptions = useCriptoCategories();
+
+  // Ajuste os campos do formulário para remover "value" e deixar "totalValue" manual:
+  const CriptoFields = [
+    {
+      name: "name",
+      label: "Nome",
+      type: "select",
+      options: nameOptions,
+    },
+    { name: "amount", label: "Quantidade" },
+    { name: "totalValue", label: "Valor Total" },
+    { name: "purchaseDate", label: "Data Compra", type: "date" },
+  ];
+
+  // Ajuste o validationSchema:
+  const validationSchema = Yup.object({
+    typeInvestment: Yup.string().required("Tipo obrigatório"),
+    name: Yup.string().required("Nome obrigatório"),
+    totalValue: Yup.number().required("Valor total obrigatório"), // só totalValue é obrigatório
+    amount: Yup.number(),
+    purchaseDate: Yup.string().required("Data inicial obrigatória"),
+  });
+
   const [openAdd, setOpenAdd] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [editData, setEditData] = useState(null);
@@ -56,53 +73,33 @@ export function Crypto() {
   const queryClient = useQueryClient();
 
   // Busca lançamentos de renda fixa
-  const {
-    data: loadCryptoQuery = [],
-    isLoading: isLoadingCrypto,
-  } = useQuery({
-    queryKey: ["crypto"],
+  const { data: loadCriptoQuery = [], isLoading: isLoadingCripto } = useQuery({
+    queryKey: ["cripto"],
     queryFn: async () => {
-      const response = await api.get("/investiments-crypto");
+      const response = await api.get("/investiments-cripto");
       return response.data;
     },
   });
 
-  // Busca categorias para o select de nome
-  const nameOptions = useCryptoCategories();
-
-  // Campos do formulário
-  const CryptoFields = [
-    {
-      name: "name",
-      label: "Nome",
-      type: "select",
-      options: nameOptions,
-    },
-    { name: "value", label: "Valor" },
-    { name: "amount", label: "Quantidade" },
-    { name: "purchaseDate", label: "Data Compra", type: "date" },
-  ];
-
   // Mutation para deletar
-
-  const deleteCryptoMutation = useMutation({
+  const deleteCriptoMutation = useMutation({
     mutationFn: async (id) => {
-      await api.delete(`/investiments-crypto/${id}`);
+      await api.delete(`/investiments-cripto/${id}`);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(["crypto"]);
+      queryClient.invalidateQueries(["cripto"]);
     },
   });
 
   // Adicione esta mutation:
-  const updateCryptoExitMutation = useMutation({
+  const updateCriptoExitMutation = useMutation({
     mutationFn: async ({ id, data }) => {
-      await api.put(`/investiments-crypto-exit/${id}`, data);
+      await api.put(`/investiments-cripto-exit/${id}`, data);
     },
     onSuccess: () => {
       setOpenEditExit(false);
       setEditExitData(null);
-      queryClient.invalidateQueries(["variable-income-exit"]);
+      queryClient.invalidateQueries(["cripto-exit"]);
     },
   });
 
@@ -120,26 +117,26 @@ export function Crypto() {
   };
 
   // Mutation para editar (PUT)
-  const updateCryptoMutation = useMutation({
+  const updateCriptoMutation = useMutation({
     mutationFn: async ({ id, data }) => {
-      await api.put(`/investiments-crypto/${id}`, data);
+      await api.put(`/investiments-cripto/${id}`, data);
     },
     onSuccess: () => {
       setOpenEdit(false);
       setEditData(null);
-      queryClient.invalidateQueries(["crypto"]);
+      queryClient.invalidateQueries(["cripto"]);
     },
   });
 
   // Mutation para criar (POST)
-  const createCryptoMutation = useMutation({
+  const createCriptoMutation = useMutation({
     mutationFn: async (data) => {
-      await api.post("/investiments-crypto", data);
+      await api.post("/investiments-cripto", data);
     },
     onSuccess: () => {
       setOpenAdd(false);
       setEditData(null);
-      queryClient.invalidateQueries(["crypto"]);
+      queryClient.invalidateQueries(["cripto"]);
     },
   });
 
@@ -147,11 +144,9 @@ export function Crypto() {
   const handleSubmit = (values) => {
     const formattedData = {
       ...values,
-      value: Number(values.value),
       amount: Number(values.amount),
+      totalValue: Number(values.totalValue), // valor informado pelo usuário
       purchaseDate: values.purchaseDate,
-      // saleDate: values.saleDate,
-      totalValue: Number(values.value) * Number(values.amount), // Calcula o valor total
     };
 
     if (
@@ -163,18 +158,18 @@ export function Crypto() {
     }
 
     if (editData && editData.id) {
-      updateCryptoMutation.mutate({
+      updateCriptoMutation.mutate({
         id: editData.id,
         data: formattedData,
       });
     } else {
-      createCryptoMutation.mutate(formattedData);
+      createCriptoMutation.mutate(formattedData);
     }
   };
 
   // Filtra apenas lançamentos com id definido
-  const rowsCrypto = Array.isArray(loadCryptoQuery)
-    ? loadCryptoQuery.filter(
+  const rowsCripto = Array.isArray(loadCriptoQuery)
+    ? loadCriptoQuery.filter(
         (row) => row && row.id !== undefined && row.id !== null
       )
     : [];
@@ -182,8 +177,8 @@ export function Crypto() {
   // Parte lógica para a grid de resumo de renda fixa
   // Agrupa os lançamentos por nome e resume os dados
   //
-  const rowsCryptoSummary = Object.values(
-    rowsCrypto.reduce((acc, curr) => {
+  const rowsCriptoSummary = Object.values(
+    rowsCripto.reduce((acc, curr) => {
       if (!acc[curr.name]) {
         acc[curr.name] = {
           id: curr.name,
@@ -209,26 +204,24 @@ export function Crypto() {
   const [withdrawData, setWithdrawData] = useState(null);
 
   // Busca lançamentos de renda fixa de saída
-  const { data: loadCryptoExitQuery = [] } = useQuery({
-    queryKey: ["variable-income-exit"],
+  const { data: loadCriptoExitQuery = [] } = useQuery({
+    queryKey: ["cripto-exit"],
     queryFn: async () => {
-      const response = await api.get(
-        "/investiments-crypto-exit"
-      );
+      const response = await api.get("/investiments-cripto-exit");
       return response.data;
     },
   });
 
   // Mutation para criar (POST) retirada de renda fixa
-  const saveCryptoExitMutation = useMutation({
+  const saveCriptoExitMutation = useMutation({
     mutationFn: async (data) => {
-      await api.post("/investiments-crypto-exit", data);
+      await api.post("/investiments-cripto-exit", data);
     },
     onSuccess: () => {
       setOpenWithdraw(false);
       setWithdrawData(null);
-      queryClient.invalidateQueries(["variable-income-exit"]);
-      queryClient.invalidateQueries(["crypto"]);
+      queryClient.invalidateQueries(["cripto-exit"]);
+      queryClient.invalidateQueries(["cripto"]);
     },
   });
 
@@ -241,8 +234,7 @@ export function Crypto() {
     const nome = withdrawData.name;
     let quantidadeRestante = Number(values.withdrawalAmount);
 
-    // Filtra e ordena os lançamentos daquele nome por data (mais antigos primeiro)
-    const registros = rowsCrypto
+    const registros = rowsCripto
       .filter((row) => row.name === nome)
       .sort((a, b) => new Date(a.purchaseDate) - new Date(b.purchaseDate));
 
@@ -255,37 +247,29 @@ export function Crypto() {
         quantidadeRestante
       );
 
-      // Salva a retirada (POST)
-      saveCryptoExitMutation.mutate({
+      saveCriptoExitMutation.mutate({
         name: registro.name,
-        initialValue: Number(registro.value),
         initialAmount: quantidadeAtual,
-        salesValue: Number(values.salesValue),
         withdrawalAmount: quantidadeParaRetirar,
+        salesValue: Number(values.salesValue),
         sellDate: values.sellDate,
         purchaseDate: registro.purchaseDate,
-        // saleDate: registro.saleDate,
-        // amount: registro.amount,
         inclusionDate: registro.purchaseDate,
-        typeInvestment: "crypto",
-        totalValue: Number(values.salesValue) * Number(quantidadeParaRetirar), // <-- aqui!
+        typeInvestment: "cripto",
       });
 
       if (quantidadeParaRetirar === quantidadeAtual) {
-        // Remove o lançamento se retirou toda a quantidade
-        deleteCryptoMutation.mutate(registro.id);
+        deleteCriptoMutation.mutate(registro.id);
       } else if (quantidadeParaRetirar < quantidadeAtual) {
-    // Atualiza a quantidade e o valor total do lançamento se retirou parcialmente
-    const novaQuantidade = quantidadeAtual - quantidadeParaRetirar;
-    updateCryptoMutation.mutate({
-      id: registro.id,
-      data: {
-        ...registro,
-        amount: novaQuantidade,
-        totalValue: Number(registro.value) * novaQuantidade, // <-- ajuste aqui!
-      },
-    });
-  }
+        const novaQuantidade = quantidadeAtual - quantidadeParaRetirar;
+        updateCriptoMutation.mutate({
+          id: registro.id,
+          data: {
+            ...registro,
+            amount: novaQuantidade,
+          },
+        });
+      }
 
       quantidadeRestante -= quantidadeParaRetirar;
     });
@@ -295,17 +279,17 @@ export function Crypto() {
   };
 
   // Mutation para deletar retirada de renda fixa
-  const deleteCryptoExitMutation = useMutation({
+  const deleteCriptoExitMutation = useMutation({
     mutationFn: async (id) => {
-      await api.delete(`/investiments-crypto-exit/${id}`);
+      await api.delete(`/investiments-cripto-exit/${id}`);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(["variable-income-exit"]);
+      queryClient.invalidateQueries(["cripto-exit"]);
     },
   });
 
-  const rowsCryptoExit = Array.isArray(loadCryptoExitQuery)
-    ? loadCryptoExitQuery.filter(
+  const rowsCriptoExit = Array.isArray(loadCriptoExitQuery)
+    ? loadCriptoExitQuery.filter(
         (row) => row && row.id !== undefined && row.id !== null && row.sellDate
       )
     : [];
@@ -333,14 +317,13 @@ export function Crypto() {
         onClose={handleCloseModal}
         onSubmit={handleSubmit}
         initialValues={{
-          typeInvestment: "crypto", // valor padrão aqui
+          typeInvestment: "cripto",
           name: "",
-          value: "",
           amount: "",
           purchaseDate: "",
-          // saleDate: "",
+          totalValue: "", // mantenha apenas os campos necessários
         }}
-        fields={CryptoFields}
+        fields={CriptoFields}
         validationSchema={validationSchema}
         title="Novo Lançamento"
         submitLabel="Adicionar"
@@ -352,15 +335,14 @@ export function Crypto() {
         onSubmit={handleSubmit}
         initialValues={
           editData || {
-            typeInvestment: "crypto",
+            typeInvestment: "cripto",
             name: "",
-            value: "",
             amount: "",
             purchaseDate: "",
-            // saleDate: "",
+            totalValue: "",
           }
         }
-        fields={CryptoFields}
+        fields={CriptoFields}
         validationSchema={validationSchema}
         title="Editar Lançamento"
         submitLabel="Salvar"
@@ -372,7 +354,7 @@ export function Crypto() {
         onSubmit={handleWithdrawSubmit}
         initialValues={{
           salesValue: "",
-          withdrawalAmount: "", // novo campo
+          withdrawalAmount: "",
           sellDate: "",
         }}
         fields={[
@@ -389,12 +371,8 @@ export function Crypto() {
           { name: "sellDate", label: "Data de venda", type: "date" },
         ]}
         validationSchema={Yup.object({
-          salesValue: Yup.number()
-            .required("Obrigatório")
-            .min(0.01, "Valor mínimo 0.01"),
-          withdrawalAmount: Yup.number()
-            .required("Obrigatório")
-            .min(0.01, "Quantidade mínima 0.01"),
+          salesValue: Yup.number().required("Obrigatório"),
+          withdrawalAmount: Yup.number().required("Obrigatório"),
           sellDate: Yup.string().required("Obrigatório"),
         })}
         title={`Retirada de ${withdrawData?.name || ""}`}
@@ -408,7 +386,7 @@ export function Crypto() {
           setEditExitData(null);
         }}
         onSubmit={(values) => {
-          updateCryptoExitMutation.mutate({
+          updateCriptoExitMutation.mutate({
             id: editExitData.id,
             data: {
               ...editExitData,
@@ -432,9 +410,7 @@ export function Crypto() {
           { name: "sellDate", label: "Data de venda", type: "date" },
         ]}
         validationSchema={Yup.object({
-          salesValue: Yup.number()
-            .required("Obrigatório")
-            .min(0.01, "Valor mínimo 0.01"),
+          salesValue: Yup.number().required("Obrigatório"),
           sellDate: Yup.string().required("Obrigatório"),
         })}
         title="Editar Retirada"
@@ -448,7 +424,7 @@ export function Crypto() {
           </div>
           <DataGrid
             localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
-            rows={rowsCryptoSummary}
+            rows={rowsCriptoSummary}
             columns={[
               { field: "name", headerName: "Nome", flex: 2 },
               {
@@ -490,7 +466,7 @@ export function Crypto() {
               pagination: { paginationModel: { pageSize: 5 } },
             }}
             pageSizeOptions={[5]}
-            loading={isLoadingCrypto}
+            loading={isLoadingCripto}
             disableRowSelectionOnClick
           />
         </Box>
@@ -506,7 +482,7 @@ export function Crypto() {
           </div>
           <DataGrid
             localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
-            rows={rowsCrypto}
+            rows={rowsCripto}
             columns={[
               { field: "id", headerName: "ID", flex: 0.5 },
               { field: "name", headerName: "Nome", flex: 2 },
@@ -524,12 +500,7 @@ export function Crypto() {
                   return `${day}/${month}/${year}`;
                 },
               },
-              {
-                field: "value",
-                headerName: "Valor Por Unidade",
-                flex: 1,
-                valueFormatter: (params) => `R$ ${formatCurrency(params)}`,
-              },
+              // Removido o campo "value" (Valor Por Unidade)
               {
                 field: "amount",
                 headerName: "Quantidade",
@@ -539,18 +510,9 @@ export function Crypto() {
                 field: "totalValue",
                 headerName: "Valor Total",
                 flex: 1,
-                //   valueGetter: (params) => {
-                //     const row = params?.row || {};
-                //     // Use amountSum para resumo, amount para histórico
-                //     // return Number(row.value || 0) * Number(row.amountSum ?? row.amount ?? 0);
-                //     return console.log(row);
-                //   },
-                //   valueFormatter: (params) =>
-                //     params?.value != null
-                //       ? `R$ ${formatCurrency(params.value)}`
-                //       : "",
+                valueFormatter: (params) =>
+                  `R$ ${formatCurrency(params)}`,
               },
-
               {
                 field: "actions",
                 headerName: "Ações",
@@ -576,9 +538,7 @@ export function Crypto() {
                       <Button
                         color="error"
                         variant="outlined"
-                        onClick={() =>
-                          deleteCryptoMutation.mutate(row.id)
-                        }
+                        onClick={() => deleteCriptoMutation.mutate(row.id)}
                       >
                         <DeleteOutlineOutlinedIcon />
                       </Button>
@@ -591,29 +551,29 @@ export function Crypto() {
               pagination: { paginationModel: { pageSize: 5 } },
             }}
             pageSizeOptions={[5]}
-            loading={isLoadingCrypto}
+            loading={isLoadingCripto}
             disableRowSelectionOnClick
           />
         </Box>
 
         {/* Total filtrado
-        <div className="mt-15 text-right">
-          <span>
-            Total filtrado: R${" "}
-            {(Array.isArray(rowsCrypto)
-              ? rowsCrypto.reduce((sum, row) => {
-                  const valor = Number(
-                    String(row.value)
-                      .replace(/\./g, "") // remove separador de milhar
-                      .replace(",", ".") // vírgula por ponto
-                      .replace(/[^\d.-]/g, "") // remove não numéricos
-                  );
-                  return sum + (isNaN(valor) ? 0 : valor);
-                }, 0)
-              : 0
-            ).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
-          </span>
-        </div> */}
+          <div className="mt-15 text-right">
+            <span>
+              Total filtrado: R${" "}
+              {(Array.isArray(rowsCripto)
+                ? rowsCripto.reduce((sum, row) => {
+                    const valor = Number(
+                      String(row.value)
+                        .replace(/\./g, "") // remove separador de milhar
+                        .replace(",", ".") // vírgula por ponto
+                        .replace(/[^\d.-]/g, "") // remove não numéricos
+                    );
+                    return sum + (isNaN(valor) ? 0 : valor);
+                  }, 0)
+                : 0
+              ).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+            </span>
+          </div> */}
       </div>
       {/* Retiradas de renda fixa */}
       <div>
@@ -624,16 +584,16 @@ export function Crypto() {
 
           <DataGrid
             localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
-            rows={rowsCryptoExit}
+            rows={rowsCriptoExit}
             columns={[
               { field: "id", headerName: "ID", flex: 0.5 },
               { field: "name", headerName: "Nome", flex: 2 },
-              {
-                field: "initialValue",
-                headerName: "Valor Unitário Inicial",
-                flex: 1,
-                valueFormatter: (params) => `R$ ${formatCurrency(params)}`,
-              },
+              // {
+              //   field: "initialValue",
+              //   headerName: "Valor Unitário Inicial",
+              //   flex: 1,
+              //   valueFormatter: (params) => `R$ ${formatCurrency(params)}`,
+              // },
               {
                 field: "initialAmount",
                 headerName: "Quantidade Inicial",
@@ -664,12 +624,7 @@ export function Crypto() {
                   return `${day}/${month}/${year}`;
                 },
               },
-              {
-                field: "totalValue",
-                headerName: "Valor Total",
-                flex: 1,
-                valueFormatter: (params) => `R$ ${formatCurrency(params)}`,
-              },
+              // Removido o campo "totalValue" do retiradas
               {
                 field: "actions",
                 headerName: "Ações",
@@ -699,9 +654,7 @@ export function Crypto() {
                       <Button
                         color="error"
                         variant="outlined"
-                        onClick={() =>
-                          deleteCryptoExitMutation.mutate(row.id)
-                        }
+                        onClick={() => deleteCriptoExitMutation.mutate(row.id)}
                       >
                         <DeleteOutlineOutlinedIcon />
                       </Button>
@@ -714,7 +667,7 @@ export function Crypto() {
               pagination: { paginationModel: { pageSize: 5 } },
             }}
             pageSizeOptions={[5]}
-            loading={isLoadingCrypto}
+            loading={isLoadingCripto}
             disableRowSelectionOnClick
           />
         </Box>
