@@ -8,36 +8,110 @@ import axios from "axios";
 import { FixedIncome } from "./components/fixed_income";
 import { Button } from "@mui/material";
 import { VariableIncome } from "./components/variable_income";
-import { Crypto } from "./components/crypto";
+import { Cripto } from "./components/cripto";
+import { Dividendos } from "./components/dividendos";
 
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.components?.MuiPaper?.styleOverrides?.root,
 }));
 
 export const InvestmentsPage = () => {
-  // const [open, setOpen] = React.useState(false);
   const [activeTab, setActiveTab] = React.useState(null);
 
-  const loadInvestmentsTotalQuery = useQuery({
-    queryKey: ["investiments-total"],
+  // Carrega todos os lançamentos normais (não exits) para cada tipo e faz o sum no front
+  const loadCriptoQuery = useQuery({
+    queryKey: ["investiments-cripto"],
     queryFn: async () => {
       const response = await axios({
         method: "get",
         baseURL: import.meta.env.VITE_API,
-        url: "/investiments",
+        url: "/investiments-cripto",
       });
-
       return response.data;
     },
   });
+
+  const criptoTotal = React.useMemo(() => {
+    if (!loadCriptoQuery.data) return 0;
+    return loadCriptoQuery.data
+      .filter((item) => !item.exit) // ajuste conforme sua estrutura para filtrar só os normais
+      .reduce((sum, item) => sum + Number(item.totalValue || 0), 0);
+  }, [loadCriptoQuery.data]);
+
+  const loadDividendosQuery = useQuery({
+    queryKey: ["investiments-dividendos"],
+    queryFn: async () => {
+      const response = await axios({
+        method: "get",
+        baseURL: import.meta.env.VITE_API,
+        url: "/investiments-dividendos",
+      });
+      return response.data;
+    },
+  });
+
+  const dividendosTotal = React.useMemo(() => {
+    if (!loadDividendosQuery.data) return 0;
+    return loadDividendosQuery.data.reduce(
+      (sum, item) => sum + Number(item.totalValue || 0),
+      0
+    );
+  }, [loadDividendosQuery.data]);
+
+  const loadFixedIncomeQuery = useQuery({
+    queryKey: ["investiments-fixed-income"],
+    queryFn: async () => {
+      const response = await axios({
+        method: "get",
+        baseURL: import.meta.env.VITE_API,
+        url: "/investiments-fixed-income",
+      });
+      return response.data;
+    },
+  });
+
+  const fixedIncomeTotal = React.useMemo(() => {
+    if (!loadFixedIncomeQuery.data) return 0;
+    return loadFixedIncomeQuery.data.reduce(
+      (sum, item) => sum + Number(item.value || 0),
+      0
+    );
+  }, [loadFixedIncomeQuery.data]);
+
+  const loadVariableIncomeQuery = useQuery({
+    queryKey: ["investiments-variable-income"],
+    queryFn: async () => {
+      const response = await axios({
+        method: "get",
+        baseURL: import.meta.env.VITE_API,
+        url: "/investiments-variable-income",
+      });
+      return response.data;
+    },
+  });
+
+  const variableIncomeTotal = React.useMemo(() => {
+    if (!loadVariableIncomeQuery.data) return 0;
+    return loadVariableIncomeQuery.data.reduce(
+      (sum, item) => sum + Number(item.totalValue || 0),
+      0
+    );
+  }, [loadVariableIncomeQuery.data]);
+
+  // Função para formatar moeda
+  const formatCurrency = (value) =>
+    value?.toLocaleString("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+      minimumFractionDigits: 2,
+    }) ?? "R$ 0,00";
+
   return (
     <div className="flex flex-col min-h-screen w-full bg-[#1B2232]">
-      
       <Box
         sx={{
           flexGrow: 1,
           padding: 2,
-          // backgroundColor: "#1B2232",
           borderRadius: 1,
           borderBlockColor: "#1E2B45",
           margin: 2,
@@ -52,9 +126,12 @@ export const InvestmentsPage = () => {
                   Total de Investimentos
                 </div>
                 <div className="flex flex-col gap-2 font-bold text-[20px]">
-                  R$
-                  {loadInvestmentsTotalQuery.data?.grand_total ??
-                    "Carregando..."}
+                  {formatCurrency(
+                    fixedIncomeTotal +
+                      variableIncomeTotal +
+                      criptoTotal +
+                      dividendosTotal
+                  )}
                 </div>
               </div>
             </Item>
@@ -66,9 +143,7 @@ export const InvestmentsPage = () => {
                   Renda Fixa
                 </div>
                 <div className="flex flex-col gap-2 font-bold text-[20px]">
-                  R${" "}
-                  {loadInvestmentsTotalQuery.data?.total_fixed_income ??
-                    "Carregando..."}
+                  {formatCurrency(fixedIncomeTotal)}
                 </div>
               </div>
             </Item>
@@ -80,9 +155,19 @@ export const InvestmentsPage = () => {
                   Renda Variável
                 </div>
                 <div className="flex flex-col gap-2 font-bold text-[20px]">
-                  R$
-                  {loadInvestmentsTotalQuery.data?.total_variable_income ??
-                    "Carregando..."}
+                  {formatCurrency(variableIncomeTotal)}
+                </div>
+              </div>
+            </Item>
+          </Grid>
+          <Grid size={3}>
+            <Item>
+              <div className="flex flex-col bg-background  h-full w-full border-0">
+                <div className="flex flex-col gap-2 font-bold text-[14px]">
+                  Criptomoedas
+                </div>
+                <div className="flex flex-col gap-2 font-bold text-[20px]">
+                  {formatCurrency(criptoTotal)}
                 </div>
               </div>
             </Item>
@@ -94,8 +179,7 @@ export const InvestmentsPage = () => {
                   Dividendos
                 </div>
                 <div className="flex flex-col gap-2 font-bold text-[20px]">
-                  R$
-                  {loadInvestmentsTotalQuery.data?.dividends ?? "Carregando..."}
+                  {formatCurrency(dividendosTotal)}
                 </div>
               </div>
             </Item>
@@ -143,15 +227,16 @@ export const InvestmentsPage = () => {
                     <button
                       className="inline-flex h-8 items-center justify-center rounded-md px-3 text-sm  transition-colors bg-[#1B2232]  hover:bg-[#24304A] cursor-pointer"
                       role="tab"
-                      aria-selected={activeTab === "crypto"}
-                      onClick={() => setActiveTab("crypto")}
+                      aria-selected={activeTab === "cripto"}
+                      onClick={() => setActiveTab("cripto")}
                     >
                       Criptomoedas
                     </button>
                     <button
                       className="inline-flex h-8 items-center justify-center rounded-md px-3 text-sm  transition-colors bg-[#1B2232]  hover:bg-[#24304A] cursor-pointer"
                       role="tab"
-                      aria-selected="true"
+                      aria-selected={activeTab === "dividendos"}
+                      onClick={() => setActiveTab("dividendos")}
                     >
                       Dividendos
                     </button>
@@ -160,7 +245,8 @@ export const InvestmentsPage = () => {
                 <div className="flex flex-col overflow-hidden h-full w-full">
                   {activeTab === "fixed_income" && <FixedIncome />}
                   {activeTab === "variable_income" && <VariableIncome />}
-                  {activeTab === "crypto" && <Crypto />}
+                  {activeTab === "cripto" && <Cripto />}
+                  {activeTab === "dividendos" && <Dividendos />}
                 </div>
               </div>
             </Item>
