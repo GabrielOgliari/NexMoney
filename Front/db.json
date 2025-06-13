@@ -59,6 +59,13 @@
       "name": "teste",
       "description": "",
       "type": "expanse"
+    },
+    {
+      "id": "5242",
+      "name": "renda variavel",
+      "type": "investment",
+      "investmentType": "variable_income",
+      "planned": 1000
     }
   ],
   "accounts-payable": [
@@ -150,6 +157,70 @@
         "endDate": "2025-05-28"
       },
       "id": "1efe"
+    },
+    {
+      "id": "003b",
+      "description": "teste",
+      "amount": 123,
+      "dueDate": "2015-12-12",
+      "category": "Utilidades",
+      "categoryId": "",
+      "status": "pending",
+      "reminder": true,
+      "recurrence": {
+        "type": "monthly",
+        "hasEndDate": false,
+        "endDate": null,
+        "enabled": false
+      }
+    },
+    {
+      "id": "ec80",
+      "description": "teste",
+      "amount": 123,
+      "dueDate": "2020-11-12",
+      "category": "Diversos",
+      "categoryId": "",
+      "status": "pending",
+      "reminder": true,
+      "recurrence": {
+        "type": "monthly",
+        "hasEndDate": false,
+        "endDate": null,
+        "enabled": true
+      }
+    }
+  ],
+  "accounts-receivable": [
+    {
+      "id": "1",
+      "description": "Salário",
+      "amount": 5000,
+      "dueDate": "2025-07-01",
+      "category": "Diversos",
+      "categoryId": "8",
+      "status": "pending",
+      "reminder": true,
+      "recurrence": {
+        "type": "monthly",
+        "endDate": "2025-08-01"
+      }
+    },
+    {
+      "id": "3fa5",
+      "description": "teste",
+      "amount": 123,
+      "dueDate": "2021-11-12",
+      "category": "Saúde",
+      "categoryId": "",
+      "status": "paid",
+      "reminder": true,
+      "recurrence": {
+        "type": "monthly",
+        "hasEndDate": false,
+        "endDate": null,
+        "enabled": true
+      }
     }
   ],
   "expenses": [
@@ -446,7 +517,7 @@
     "total_variable_income": 500,
     "dividends": 100
   },
-  "investiments_fixed_income": [
+  "investiments-fixed-income": [
     {
       "id": "cy15jq3n",
       "typInvestiment": "fixed_income",
@@ -457,7 +528,7 @@
       "dueDate": "2025-06-27"
     }
   ],
-  "investiments_fixed_income_exit": [
+  "investiments-fixed-income-exit": [
     {
       "id": "9szi2uz7",
       "name": "cdb",
@@ -468,6 +539,58 @@
       "dueDate": "2025-06-27",
       "interestRate": "1",
       "inclusionDate": "2025-06-01"
+    }
+  ],
+  "investiments-variableIncome-crypto-exit": [
+    {
+      "id": "2741",
+      "name": "renda variavel",
+      "initialValue": 10,
+      "initialAmount": 10,
+      "salesValue": 10,
+      "withdrawalAmount": 5,
+      "sellDate": "2025-06-11",
+      "purchaseDate": "2025-06-10",
+      "inclusionDate": "2025-06-10",
+      "typeInvestment": "variable_income",
+      "totalValue": 50
+    },
+    {
+      "id": "1d9f",
+      "name": "renda variavel",
+      "initialValue": 10,
+      "initialAmount": 5,
+      "salesValue": 30,
+      "withdrawalAmount": 2,
+      "sellDate": "2025-06-10",
+      "purchaseDate": "2025-06-10",
+      "inclusionDate": "2025-06-10",
+      "typeInvestment": "variable_income",
+      "totalValue": 60
+    },
+    {
+      "id": "d442",
+      "name": "renda variavel",
+      "initialValue": 20,
+      "initialAmount": 10,
+      "salesValue": 30,
+      "withdrawalAmount": 5,
+      "sellDate": "2025-06-10",
+      "purchaseDate": "2025-06-10",
+      "inclusionDate": "2025-06-10",
+      "typeInvestment": "variable_income",
+      "totalValue": 150
+    }
+  ],
+  "investiments-variableIncome-crypto": [
+    {
+      "id": "d320",
+      "typeInvestment": "variable_income",
+      "name": "renda variavel",
+      "value": 20,
+      "amount": 5,
+      "purchaseDate": "2025-06-10",
+      "totalValue": 100
     }
   ]
 }
