@@ -34,6 +34,31 @@ const investimentFixedIncomeExit = require("./investment_fixed_income_exit")(
   Sequelize.DataTypes
 );
 
+const investimentsVariableIncome = require("./investiments_variable_income")(
+  sequelize,
+  Sequelize.DataTypes
+);
+
+const investimentsVariableIncomeExit = require("./investiments_variable_income_exit")(
+  sequelize,
+  Sequelize.DataTypes
+);
+
+const investimentsCripto = require("./investiments_cripto")(
+  sequelize,
+  Sequelize.DataTypes
+);
+
+const investimentsCriptoExit = require("./investiments_cripto_exit")(
+  sequelize,
+  Sequelize.DataTypes
+);
+
+const investimentsDividendos = require("./investiments_dividendos")(
+  sequelize,
+  Sequelize.DataTypes
+);
+
 const db = {
   category,
   accountPayable,
@@ -42,6 +67,11 @@ const db = {
   bankStatementExpense,
   investmentFixedIncome,
   investimentFixedIncomeExit,
+  investimentsVariableIncome,
+  investimentsVariableIncomeExit,
+  investimentsCripto,
+  investimentsCriptoExit,
+  investimentsDividendos,
   sequelize,
   Sequelize,
 };
