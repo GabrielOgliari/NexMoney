@@ -65,6 +65,9 @@ export function AccountsReceivableEditModal({
                   placeholder="Digite a descrição"
                   fullWidth
                   sx={roundedInput}
+                  inputProps={{
+                    maxLength: 50,
+                  }}
                 />
               )}
             />
