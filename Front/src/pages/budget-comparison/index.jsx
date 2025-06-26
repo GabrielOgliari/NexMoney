@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { useState, useEffect } from "react";
 import api from "../../services/api";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { Draggable as DraggableItem } from "./components/draggable";
 import { NumericFormat } from "react-number-format";
@@ -112,6 +112,8 @@ export const BudgetComparisonPage = () => {
   const mappedPct =
     totalExpenses > 0 ? Math.round((totalMapped / totalExpenses) * 100) : 0;
 
+  const queryClient = useQueryClient();
+
   // Função para salvar o mapeamento
   const handleSaveMapping = async () => {
     const mappedExpenses = [];
@@ -129,6 +131,8 @@ export const BudgetComparisonPage = () => {
 
     try {
       await api.put("/bankStatementExpenses", mappedExpenses);
+      // Recarrega os dados do extrato bancário
+      queryClient.invalidateQueries(["bankStatementExpenses"]);
     } catch (error) {
       console.error("Erro ao salvar mapeamento:", error);
     }
