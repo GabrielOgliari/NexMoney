@@ -118,7 +118,7 @@ export function Dividendos() {
   const createDividendosMutation = useMutation({
     mutationFn: async (data) => {
       await api.post("/investiments-dividendos", data);
-    },
+          },
     onSuccess: () => {
       setOpenAdd(false);
       setEditData(null);
@@ -130,7 +130,7 @@ export function Dividendos() {
   const handleSubmit = (values) => {
     const formattedData = {
       ...values,
-      totalValue: Number(values),
+      totalValue: Number(values.totalValue),
       purchaseDate: values.purchaseDate,
     };
 
@@ -244,9 +244,7 @@ export function Dividendos() {
                 headerName: "Valor Total",
                 flex: 1,
                 valueFormatter: (params) =>
-                  params != null
-                    ? `R$ ${formatCurrency(params)}`
-                    : "",
+                  params != null ? `R$ ${formatCurrency(params)}` : "",
               },
             ]}
             initialState={{
@@ -293,9 +291,7 @@ export function Dividendos() {
                 headerName: "Valor Total",
                 flex: 1,
                 valueFormatter: (params) =>
-                  params != null
-                    ? `R$ ${formatCurrency(params)}`
-                    : "",
+                  params != null ? `R$ ${formatCurrency(params)}` : "",
               },
               {
                 field: "actions",
@@ -322,9 +318,7 @@ export function Dividendos() {
                       <Button
                         color="error"
                         variant="outlined"
-                        onClick={() =>
-                          deleteDividendosMutation.mutate(row.id)
-                        }
+                        onClick={() => deleteDividendosMutation.mutate(row.id)}
                       >
                         <DeleteOutlineOutlinedIcon />
                       </Button>
