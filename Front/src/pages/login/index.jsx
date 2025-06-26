@@ -1,85 +1,149 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React from "react";
+import {
+  TextField,
+  Button,
+  InputAdornment,
+  IconButton,
+  Typography,
+  Box,
+  Link,
+  Paper,
+} from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/autoplay";
 
-export const LoginPage = () => {
-  const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
-  const [bannerIndex, setBannerIndex] = useState(0);
+export function LoginPage() {
+  const [showPassword, setShowPassword] = React.useState(false);
 
-  const banners = ["/banners/banner1.jpg", "/banners/banner2.jpg"];
+  const handleTogglePassword = () => setShowPassword((prev) => !prev);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setBannerIndex((prevIndex) => (prevIndex + 1) % banners.length);
-    }, 3000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const handleLogin = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    if (email && senha) {
-      navigate("/dashboard");
-    }
+    // lógica de autenticação
   };
 
-  return (
-    <div className="min-h-screen flex">
-      <div className="hidden md:block flex-1">
-        <img
-          src={banners[bannerIndex]}
-          alt="Banner"
-          className="h-full w-full object-cover transition-opacity duration-1000"
-        />
-      </div>
+  const handleForgotPassword = (e) => {
+    e.preventDefault();
+    alert("Muito triste!");
+  };
 
-      <div className="flex items-center justify-center bg-gradient-to-br from-[#0f172a] to-[#1e293b]">
-        <div className="bg-[#0f172a] p-10 rounded-lg shadow-md w-[400px] border border-gray-700">
-          <h1 className="text-white text-2xl font-semibold text-center mb-6">
-            NexMoney
-          </h1>
-          <form onSubmit={handleLogin} className="flex flex-col gap-4">
-            <div>
-              <label className="text-sm text-white block mb-1">Email</label>
-              <input
+  const slides = [
+    {
+      image: "/banners/banner1.jpg",
+    },
+    {
+      image: "/banners/banner2.jpg",
+    },
+  ];
+
+  return (
+    <Box className="flex w-full h-screen overflow-hidden">
+      {/* Carrossel */}
+      <Box className="w-4/5 hidden md:flex h-screen">
+        <Swiper
+          modules={[Autoplay]}
+          loop
+          autoplay={{ delay: 5000, disableOnInteraction: false }}
+          className="w-full h-full"
+        >
+          {slides.map((slide, i) => (
+            <SwiperSlide key={i}>
+              <Box
+                component="img"
+                src={slide.image}
+                alt={`Slide ${i + 1}`}
+                sx={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover", // cobre toda a área mantendo proporção
+                }}
+              />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </Box>
+
+      {/* Formulário */}
+      <Box className="w-full md:w-1/5 bg-gradient-to-br from-[#0F1729] to-[#1B2232] flex items-center justify-center">
+        <Box className="w-full max-w-md px-4 sm:px-6 md:px-8">
+          <Paper
+            elevation={4}
+            className="w-full p-8 rounded-2xl text-white bg-[#111827]"
+          >
+            <Box className="text-center mb-6">
+              <Typography variant="h4" fontWeight="bold" color="primary">
+                $ NexMoney
+              </Typography>
+              <Typography variant="body1" color="gray">
+                A nova geração de controle financeiro
+              </Typography>
+            </Box>
+
+            <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
+              <TextField
                 type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="email@teste.com.br"
-                className="w-full px-4 py-2 rounded bg-[#1e293b] text-white placeholder-gray-400 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
+                fullWidth
+                placeholder="nome@exemplo.com"
+                label="Email"
+                variant="outlined"
+                sx={{ input: { color: "white" } }}
+                InputLabelProps={{ style: { color: "#ccc" } }}
               />
-            </div>
-            <div>
-              <div className="flex justify-between items-center mb-1">
-                <label className="text-sm text-white">Senha</label>
-                <a href="#" className="text-sm text-blue-400 hover:underline">
+              <TextField
+                type={showPassword ? "text" : "password"}
+                required
+                fullWidth
+                placeholder="Digite sua senha"
+                label="Senha"
+                variant="outlined"
+                sx={{ input: { color: "white" } }}
+                InputLabelProps={{ style: { color: "#ccc" } }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={handleTogglePassword} edge="end">
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+
+              <Box className="flex justify-between text-sm">
+                <span></span>
+                <Link
+                  href="#"
+                  underline="hover"
+                  color="#3b82f6"
+                  onClick={handleForgotPassword}
+                >
                   Esqueceu a senha?
-                </a>
-              </div>
-              <input
-                type="password"
-                value={senha}
-                onChange={(e) => setSenha(e.target.value)}
-                className="w-full px-4 py-2 rounded bg-[#1e293b] text-white placeholder-gray-400 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              />
-            </div>
-            <button
-              type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 transition-colors text-white py-2 rounded font-semibold"
-            >
-              Entrar
-            </button>
-          </form>
-          <div className="text-center text-sm text-gray-400 mt-4">
-            Não tem uma conta?{" "}
-            <a href="/register" className="text-blue-400 hover:underline">
-              Cadastre-se
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
+                </Link>
+              </Box>
+
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 1, fontWeight: "bold", py: 1.5, borderRadius: 2 }}
+              >
+                Entrar
+              </Button>
+            </form>
+
+            <Typography variant="body2" align="center" sx={{ mt: 4 }}>
+              Não tem uma conta?{" "}
+              <Link href="#" underline="hover" color="#3b82f6">
+                Cadastre-se
+              </Link>
+            </Typography>
+          </Paper>
+        </Box>
+      </Box>
+    </Box>
   );
-};
+}
