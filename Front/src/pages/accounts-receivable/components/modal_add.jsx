@@ -98,7 +98,7 @@ export function AccountsReceivableAddModal({
                 Data de Recebimento
               </FormLabel>
               <Controller
-                name="dueDate"
+                name="receiptDate"
                 control={control}
                 render={({ field }) => (
                   <LocalizationProvider dateAdapter={AdapterDayjs}>

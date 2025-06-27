@@ -184,14 +184,14 @@ export const InvestmentsPage = () => {
               </div>
             </Item>
           </Grid>
-          <Grid size={15}>
+          {/* <Grid size={15}>
             <Item>
               <div className="flex flex-col bg-background h-full w-full border-0 text-[18px] font-bold text-start ">
                 Histórico de Desempenho
                 <div></div>
               </div>
             </Item>
-          </Grid>
+          </Grid> */}
           <Grid size={15}>
             <Item>
               <div className="flex flex-col bg-background  h-full w-full border-0 text-[18px] font-bold text-start overflow-hidden ">
