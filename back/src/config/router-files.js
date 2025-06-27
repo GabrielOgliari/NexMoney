@@ -13,6 +13,7 @@ const filenames = {
     "investiments_cripto_exit-resource",
     "investiments_cripto-resource",
     "investiments_dividendos-resource",
+    "investment_forecast-resource",
     // Descomente os recursos adicionais quando forem implementados
     // "post-resource",
     // "reply-resource",
