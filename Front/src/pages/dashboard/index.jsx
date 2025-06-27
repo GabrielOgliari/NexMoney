@@ -57,19 +57,92 @@ export const DashboardPage = () => {
     refetchOnMount: true,
   });
 
-  const { data: investmentsData = {} } = useQuery({
-    queryKey: ["investments-total"],
+  // Carrega dados de investimentos
+  const { data: criptoData = [] } = useQuery({
+    queryKey: ["investiments-cripto"],
     queryFn: async () => {
-      const response = await api.get("/api/v1/rest/investments-total");
+      const response = await api.get("/investiments-cripto");
+      return response.data;
+    },
+    refetchOnMount: true,
+  });
+
+  const { data: dividendosData = [] } = useQuery({
+    queryKey: ["investiments-dividendos"],
+    queryFn: async () => {
+      const response = await api.get("/investiments-dividendos");
+      return response.data;
+    },
+    refetchOnMount: true,
+  });
+
+  const { data: fixedIncomeData = [] } = useQuery({
+    queryKey: ["investiments-fixed-income"],
+    queryFn: async () => {
+      const response = await api.get("/investiments-fixed-income");
+      return response.data;
+    },
+    refetchOnMount: true,
+  });
+
+  const { data: variableIncomeData = [] } = useQuery({
+    queryKey: ["investiments-variable-income"],
+    queryFn: async () => {
+      const response = await api.get("/investiments-variable-income");
       return response.data;
     },
     refetchOnMount: true,
   });
 
   // Cálculo dos totais
-  const totalReceber = receivableData.reduce((acc, item) => acc + Number(item.amount), 0);
-  const totalPagar = payableData.reduce((acc, item) => acc + Number(item.amount), 0);
-  const totalInvestido = investmentsData?.grand_total || 0;
+  const totalReceber = receivableData.reduce(
+    (acc, item) => acc + Number(item.amount),
+    0
+  );
+  const totalPagar = payableData.reduce(
+    (acc, item) => acc + Number(item.amount),
+    0
+  );
+
+  // Cálculo dos totais de investimentos seguindo a mesma lógica da página de investments
+  const criptoTotal = React.useMemo(() => {
+    if (!criptoData) return 0;
+    return criptoData
+      .filter((item) => !item.exit) // filtra só os normais (não exits)
+      .reduce((sum, item) => sum + Number(item.totalValue || 0), 0);
+  }, [criptoData]);
+
+  const dividendosTotal = React.useMemo(() => {
+    if (!dividendosData) return 0;
+    return dividendosData.reduce(
+      (sum, item) => sum + Number(item.totalValue || 0),
+      0
+    );
+  }, [dividendosData]);
+
+  const fixedIncomeTotal = React.useMemo(() => {
+    if (!fixedIncomeData) return 0;
+    return fixedIncomeData.reduce(
+      (sum, item) => sum + Number(item.value || 0),
+      0
+    );
+  }, [fixedIncomeData]);
+
+  const variableIncomeTotal = React.useMemo(() => {
+    if (!variableIncomeData) return 0;
+    return variableIncomeData.reduce(
+      (sum, item) => sum + Number(item.totalValue || 0),
+      0
+    );
+  }, [variableIncomeData]);
+
+  const totalInvestido =
+    fixedIncomeTotal + variableIncomeTotal + criptoTotal + dividendosTotal;
+  const totalInvestments =
+    criptoData.length +
+    dividendosData.length +
+    fixedIncomeData.length +
+    variableIncomeData.length;
 
   // Previsão de gastos próximos 6 meses
   const meses = Array.from({ length: 6 }, (_, i) => dayjs().add(i, "month"));
@@ -156,7 +229,7 @@ export const DashboardPage = () => {
                   })}
                 </div>
                 <div className="text-xs text-muted-foreground">
-                  {investmentsData?.total_investments || 0} aplicações
+                  {totalInvestments} aplicações
                 </div>
               </div>
             </Item>
@@ -174,10 +247,17 @@ export const DashboardPage = () => {
                   })}
                 </div>
                 <div className="text-xs text-muted-foreground">
-                  {payableData.filter((item) =>
-                    dayjs(item.dueDate).isSameOrAfter(meses[1].startOf("month")) &&
-                    dayjs(item.dueDate).isSameOrBefore(meses[1].endOf("month"))
-                  ).length}{" "}
+                  {
+                    payableData.filter(
+                      (item) =>
+                        dayjs(item.dueDate).isSameOrAfter(
+                          meses[1].startOf("month")
+                        ) &&
+                        dayjs(item.dueDate).isSameOrBefore(
+                          meses[1].endOf("month")
+                        )
+                    ).length
+                  }{" "}
                   contas previstas
                 </div>
               </div>

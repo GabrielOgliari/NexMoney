@@ -103,7 +103,7 @@ export const AccountsReceivablePage = () => {
     defaultValues: {
       description: "",
       amount: "",
-      dueDate: null, // usar null para data
+      receiptDate: null, // usar null para data
       category: "",
       categoryId: "",
       status: "pending",
@@ -123,7 +123,7 @@ export const AccountsReceivablePage = () => {
       reset({
         description: data.description || "",
         amount: data.amount || "",
-        dueDate: data.dueDate ? dayjs(data.dueDate) : null,
+        receiptDate: data.receiptDate ? dayjs(data.receiptDate) : null,
         category: data.category || "",
         categoryId: data.categoryId || "",
         status: data.status || "pending",
@@ -144,7 +144,7 @@ export const AccountsReceivablePage = () => {
     reset({
       description: "",
       amount: "",
-      dueDate: null,
+      receiptDate: null,
       category: "",
       categoryId: "",
       status: "pending",
@@ -174,7 +174,9 @@ export const AccountsReceivablePage = () => {
         typeof data.amount === "string"
           ? parseFloat(data.amount.replace(/\./g, "").replace(",", "."))
           : data.amount,
-      dueDate: data.dueDate ? data.dueDate.format("YYYY-MM-DD") : null,
+      receiptDate: data.receiptDate
+        ? data.receiptDate.format("YYYY-MM-DD")
+        : null,
       recurrence: {
         ...data.recurrence,
         endDate:
@@ -211,7 +213,7 @@ export const AccountsReceivablePage = () => {
       reset({
         description: data.description || "",
         amount: data.amount || "",
-        dueDate: data.dueDate ? dayjs(data.dueDate) : null,
+        receiptDate: data.receiptDate ? dayjs(data.receiptDate) : null,
         category: data.category || "",
         categoryId: data.categoryId || "",
         status: data.status || "pending",
@@ -299,8 +301,8 @@ export const AccountsReceivablePage = () => {
                       }).format(row.amount)}
                     </TableCell>
                     <TableCell sx={{ color: "white" }}>
-                      {row.dueDate
-                        ? dayjs(row.dueDate).format("DD/MM/YYYY")
+                      {row.receiptDate
+                        ? dayjs(row.receiptDate).format("DD/MM/YYYY")
                         : ""}
                     </TableCell>
                     <TableCell sx={{ color: "white" }}>
