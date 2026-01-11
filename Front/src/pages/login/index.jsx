@@ -37,15 +37,12 @@ export function LoginPage() {
     {
       image: "/banners/banner2.jpg",
     },
-    {
-      image: "/banners/banner3.jpg",
-    },
   ];
 
   return (
     <Box className="flex w-full h-screen overflow-hidden">
       {/* Carrossel */}
-      <Box className="w-1/2 hidden md:flex h-screen">
+      <Box className="w-4/5 hidden md:flex h-screen">
         <Swiper
           modules={[Autoplay]}
           loop
@@ -70,7 +67,7 @@ export function LoginPage() {
       </Box>
 
       {/* Formulário */}
-      <Box className="w-full md:w-1/2 bg-gradient-to-br from-[#0F1729] to-[#1B2232] flex items-center justify-center">
+      <Box className="w-full md:w-1/5 bg-gradient-to-br from-[#0F1729] to-[#1B2232] flex items-center justify-center">
         <Box className="w-full max-w-md px-4 sm:px-6 md:px-8">
           <Paper
             elevation={4}
